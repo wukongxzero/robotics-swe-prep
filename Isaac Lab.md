@@ -1,0 +1,251 @@
+---
+
+## type: concept domain: Simulation & tooling status: drafted last-reviewed: tags: [sim, isaac, fence-bot, rl, cpp, python]
+
+# Isaac Lab
+
+> [!question] Explain it cold
+> 
+> - What is Isaac Lab/Sim and what's it built on?
+> - What's the GPU-parallel-simulation advantage?
+> - How did you bridge ROS2 to Isaac in FENCE-BOT?
+> - Walk through how you set up an environment: ArticulationCfg, actuators, sensors
+
+---
+
+## Core idea
+
+Isaac Sim is NVIDIA's GPU-accelerated robotics simulator (built on Omniverse/USD with the PhysX engine); Isaac Lab is the RL/robot-learning framework layered on it. The headline feature is **massively parallel simulation** — thousands of robot instances on the GPU at once — plus high-fidelity rendering for sim-to-real perception.
+
+## Key facts & formulas
+
+- **Built on**: Omniverse + USD (Universal Scene Description) for the scene, **PhysX** for physics, GPU for both sim and rendering.
+- **Parallel envs**: simulate thousands of environments simultaneously on-GPU — the reason it's used for RL/data generation (orders of magnitude more samples/sec than CPU sims).
+- **USD scene**: assets, robots, and objects described in USD; spawn objects programmatically (e.g. `RigidObjectCfg` for a rigid body).
+- **ROS2 bridge**: Isaac talks to a ROS2 stack over a bridge — in my case a **UDP** link, not the built-in ROS2 bridge, for the teleop loop.
+- **vs MuJoCo/Gazebo**: Isaac wins on GPU parallelism + photorealistic rendering (perception sim-to-real); [[MuJoCo & Gazebo|MuJoCo]] wins on fast accurate contact for control research; Gazebo is the classic ROS-integrated workhorse.
+
+---
+
+## Setup (Ubuntu 24.04, RTX 5050 Blackwell)
+
+```bash
+# 1. Create conda env with Python 3.10 (Isaac Sim requires this)
+conda create -n isaaclab python=3.10 -y
+conda activate isaaclab
+
+# 2. Accept conda ToS (required for non-interactive install)
+conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/main
+conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/r
+
+# 3. Clone and install
+git clone https://github.com/isaac-sim/IsaacLab.git ~/IsaacLab
+cd ~/IsaacLab
+OMNI_KIT_ACCEPT_EULA=YES ./isaaclab.sh --install
+```
+
+**Key env var:** `OMNI_KIT_ACCEPT_EULA=YES` — must be set or the kit installer calls `input()` in non-interactive mode and crashes with EOFError. Add to `.bashrc`.
+
+**Driver only — no separate CUDA toolkit needed.** Isaac Sim ships its own CUDA runtime; host driver 595+ (Blackwell/RTX 5050) is sufficient.
+
+---
+
+## Known install pitfalls (2026-06-09)
+
+**Python version:** Isaac Sim requires **Python 3.10**. Running `./isaaclab.sh --install` from a Python 3.13 base env will fail silently — `isaacsim` has no cp313 wheel on PyPI. Always create a fresh conda env first.
+
+**RL dependency resolution too deep:** Running `./isaaclab.sh --install` (default = all) pulls in `rl-games → ray`, which causes `error: resolution-too-deep` from pip. Fix: use `./isaaclab.sh --install none` to skip RL frameworks and get the base simulator working first. Add RL frameworks separately later.
+
+**Install order that works (verified 2026-06-09):**
+```bash
+conda create -n isaaclab python=3.10 -y
+conda activate isaaclab
+pip install 'isaacsim[all]==4.5.0' --extra-index-url https://pypi.nvidia.com  # ~20GB, Kit runtime
+cd ~/IsaacLab && ./isaaclab.sh --install none   # IsaacLab extensions on top
+```
+
+Note: `isaacsim-rl` alone is NOT enough — it installs only the thin launcher, not `omni.kit.*`. You need `isaacsim[all]` for the full Kit runtime.
+
+---
+
+## ArticulationCfg — robot definition
+
+```python
+from isaaclab.assets import ArticulationCfg
+import isaaclab.sim as sim_utils
+from isaaclab.actuators import ImplicitActuatorCfg
+
+ASEM_CFG = ArticulationCfg(
+    prim_path="/World/envs/env_.*/Robot",
+    spawn=sim_utils.UsdFileCfg(
+        usd_path=ASEM_USD_PATH,          # from env var or repo-relative path
+        activate_contact_sensors=True,   # required to enable ContactSensor
+    ),
+    init_state=ArticulationCfg.InitialStateCfg(
+        joint_pos={"j1": 0.0, "j2": 0.0, "j3": 0.0,
+                   "j4": 0.0, "j5": 0.0, "j6": 0.0}
+    ),
+    actuators={
+        "all_joints": ImplicitActuatorCfg(
+            joint_names_expr=["j1", "j2", "j3", "j4", "j5", "j6"],
+            stiffness=800.0,   # position gain (PD built into PhysX)
+            damping=40.0       # velocity damping
+        )
+    }
+)
+```
+
+**`ImplicitActuatorCfg`**: PhysX handles PD control internally at the physics engine level. You send position targets; PhysX computes torques. Fast and stable for arm control.
+
+---
+
+## DirectRLEnv — environment base class
+
+```python
+from isaaclab.envs import DirectRLEnv, DirectRLEnvCfg
+
+class VrArmEnv(DirectRLEnv):
+    cfg: DirectRLEnvCfg
+
+    def _setup_scene(self):
+        self.robot = Articulation(self.cfg.robot_cfg)
+        self.contact_sensor = ContactSensor(self.cfg.contact_sensor_cfg)
+        self.scene.articulations["robot"] = self.robot
+        self.scene.sensors["contact"] = self.contact_sensor
+
+    def _pre_physics_step(self, actions: torch.Tensor):
+        self.robot.set_joint_position_target(actions)
+
+    def _get_observations(self):
+        joint_pos = self.robot.data.joint_pos
+        ee_pos = self.robot.data.body_pos_w[:, self.ee_idx]
+        return {"policy": torch.cat([joint_pos, ee_pos], dim=-1)}
+
+    def _get_rewards(self):
+        ...
+```
+
+**`DirectRLEnv` vs `ManagerBasedRLEnv`**: DirectRLEnv is simpler — direct tensor ops, no manager overhead. Use it for custom research envs. ManagerBasedRLEnv has built-in observation/reward/action managers for standard RL pipelines.
+
+---
+
+## ContactSensor
+
+```python
+from isaaclab.sensors import ContactSensorCfg, ContactSensor
+
+contact_sensor_cfg = ContactSensorCfg(
+    prim_path="/World/envs/env_.*/Robot/link6",
+    history_length=3,        # stores last N steps
+    track_air_time=False,
+    filter_prim_paths_expr=["/World/envs/env_.*/Cube"],  # what to detect contact with
+)
+
+# In the env loop:
+contact_forces = self.contact_sensor.data.net_forces_w  # (num_envs, 3)
+contact_mag = torch.norm(contact_forces, dim=-1)         # (num_envs,)
+in_contact = contact_mag > 0.5  # threshold in Newtons
+```
+
+**Rising-edge detection** (counts one hit per contact event, not every frame):
+```python
+new_contact = in_contact & ~self.last_in_contact   # rising edge only
+self.hit_counter += new_contact.float()
+self.last_in_contact = in_contact
+```
+
+---
+
+## DifferentialIKController (DLS)
+
+```python
+from isaaclab.controllers import DifferentialIKController, DifferentialIKControllerCfg
+
+ik_cfg = DifferentialIKControllerCfg(
+    command_type="pose",
+    use_relative_mode=False,
+    ik_method="dls",
+    ik_params={"lambda_val": 0.1}   # DLS damping — stability near singularities
+)
+ik_controller = DifferentialIKController(ik_cfg, num_envs=1, device="cuda")
+
+# Per step:
+# Get Jacobian at EE body — NOTE: index is ee_body_idx - 1 (off-by-one!)
+jacobian = robot.root_physx_view.get_jacobians()[:, ee_idx - 1, :6, :6]
+
+# Compute joint targets
+ee_pos, ee_quat = robot.data.body_pos_w[:, ee_idx], robot.data.body_quat_w[:, ee_idx]
+joint_targets = ik_controller.compute(ee_pos, ee_quat, jacobian, robot.data.joint_pos)
+joint_targets = torch.clamp(joint_targets, -3.14, 3.14)  # must clamp or arm teleports
+```
+
+**Why DLS?** Pure pseudoinverse diverges near singularities (J ill-conditioned → joint velocities explode). `lambda_val=0.1` trades off exact EE tracking for stability — essential for teleop.
+
+---
+
+## RigidObjectCfg (spawning objects)
+
+```python
+from isaaclab.assets import RigidObjectCfg
+import isaaclab.sim as sim_utils
+
+cube_cfg = RigidObjectCfg(
+    prim_path="/World/envs/env_.*/Cube",
+    spawn=sim_utils.CuboidCfg(
+        size=(0.05, 0.05, 0.05),
+        rigid_props=sim_utils.RigidBodyPropertiesCfg(),
+        mass_props=sim_utils.MassPropertiesCfg(mass=0.1),
+        visual_material=sim_utils.PreviewSurfaceCfg(diffuse_color=(1.0, 0.0, 0.0)),
+    ),
+    init_state=RigidObjectCfg.InitialStateCfg(pos=(0.5, 0.0, 0.5)),
+)
+```
+
+---
+
+## Where I've used it
+
+**FENCE-BOT**: ASEM V2 6-DOF arm in Isaac Lab, driven by ROS2 C++ middleware over UDP (port 5006). Full setup: ArticulationCfg with ImplicitActuatorCfg (stiffness=800, damping=40), ContactSensor on link6, DifferentialIKController (DLS λ=0.1), red cube RigidObjectCfg as visual EE target, CSVLogger for all states. See [[FENCE-BOT]] for the complete system.
+
+---
+
+## Interview follow-ups
+
+- **Q:** Why Isaac over MuJoCo or Gazebo?
+    - **A:** GPU-parallel simulation (thousands of envs) and photorealistic rendering for perception sim-to-real. MuJoCo is better for fast accurate contact in control research; Gazebo for classic ROS integration. I used Isaac because the project targeted it for the VR-teleop arm and its rendering/physics.
+- **Q:** How did Isaac talk to your ROS2 code?
+    - **A:** Over a UDP bridge — my C++ `robot_controller` sent joint commands to Isaac on port 5006, decoupled from the ROS2 graph. Isaac has a native ROS2 bridge too; we used UDP for the teleop loop to avoid DDS serialization latency.
+- **Q:** ImplicitActuatorCfg vs ExplicitActuatorCfg?
+    - **A:** Implicit = PhysX internal PD at the physics level (faster, more stable, stiffness/damping in Cfg). Explicit = your own actuator model in the learning framework (more control, needed for motor-level torque modeling or custom actuator dynamics).
+- **Q:** What's the parallel-sim advantage for?
+    - **A:** Generating training data / running RL at scale — thousands of simulated robots per GPU step beats CPU sims by orders of magnitude.
+
+## Gotchas / what trips me up
+
+- **Jacobian off-by-one:** `get_jacobians()[:, ee_idx - 1, ...]` — index is body index minus 1. Easy debug trap.
+- **QoS mismatch on UDP bridge:** Port 5005/5006 must not conflict. UDP is fire-and-forget — no error if Isaac listener is down.
+- **USD path hardcoded:** Always use an env var (`FENCEBOT_USD_PATH`) + repo-relative fallback. Hardcoded `/home/wukong/...` breaks on any other machine.
+- **OMNI_KIT_ACCEPT_EULA:** Must be set in the shell that runs `isaaclab.sh --install`, not just `.bashrc` for later runs.
+- **`activate_contact_sensors=True`**: Must be in UsdFileCfg — forgetting it means ContactSensor returns all zeros silently.
+- Conflating Isaac Sim (the simulator) with Isaac Lab (the learning framework on top).
+
+## Links
+
+- Related: [[FENCE-BOT]], [[VR Teleop Pipeline]], [[Inverse Kinematics & DLS]], [[Contact Modeling]], [[MuJoCo & Gazebo]], [[MPC & Virtual Fixtures]], [[Simulation Environments Comparison]]
+- Parent: [[00 Knowledge Map]]
+
+---
+
+#flashcards
+
+What is Isaac Sim/Lab built on and what's its headline feature? ? Omniverse + USD scene, PhysX physics, GPU sim+render. Headline: massively parallel simulation (thousands of envs on-GPU) plus photorealistic rendering for sim-to-real.
+
+How did FENCE-BOT bridge ROS2 to Isaac? ? UDP bridge — C++ robot_controller sent joint commands to Isaac on port 5006. Raw 28-byte struct (7 floats: x,y,z,qx,qy,qz,qw). Chose UDP over native ROS2 bridge to avoid DDS serialization latency for the real-time teleop loop.
+
+What is ImplicitActuatorCfg and what does stiffness/damping mean? ? PhysX handles PD control internally at the physics engine level. You send position targets; PhysX computes torques. stiffness = Kp (proportional gain), damping = Kd (velocity damping). Fast and stable — no need to implement your own PD loop.
+
+What is the Jacobian indexing gotcha in Isaac Lab? ? get_jacobians() shape is (num_envs, num_bodies, 6, num_joints). EE Jacobian is at index ee_body_idx - 1, not ee_body_idx — off-by-one from Isaac's body indexing convention.
+
+Why DLS IK with λ=0.1 over pure pseudoinverse? ? Pure pseudoinverse diverges at singularities (J becomes ill-conditioned → joint velocities explode). DLS adds λ²I to denominator: q̇ = Jᵀ(JJᵀ + λ²I)⁻¹·ẋ. λ=0.1 trades off exact EE tracking for stability — critical for teleop.
+
+What does activate_contact_sensors=True do in UsdFileCfg? ? Enables PhysX contact reporting for the USD asset. Without it, ContactSensor silently returns zeros even when the EE is in contact. Must be set at asset spawn time.
