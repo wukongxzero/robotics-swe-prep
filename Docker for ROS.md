@@ -8,11 +8,6 @@ tags: [compute, docker, containers, ros]
 
 # Docker for ROS
 
-> [!question] Explain it cold
-> 
-> - Why containerize a ROS2 stack at all?
-> - What does Docker Compose add over a single container?
-> - What's the GPU/device catch when containerizing on a Jetson?
 
 ---
 
@@ -167,16 +162,6 @@ Note: even with `SYS_NICE`, the container still shares the kernel scheduler. Val
 ---
 
 
-## Interview follow-ups
-
-- **Q:** Why containerize ROS2?
-    - **A:** ROS2 is dependency- and version-heavy; a container pins the distro and libs so the stack is reproducible across dev, robot, and CI, without polluting the host. Compose then wires multiple services (ROS2 + LLM) together.
-- **Q:** What's special about Docker on a Jetson/robot?
-    - **A:** You must pass GPU access (NVIDIA Container Toolkit) and hardware devices (serial, camera, CAN) explicitly, and handle DDS discovery (host networking/multicast) — none of that is automatic, and it's where containerized robots break.
-- **Q:** Would you put a hard-real-time control loop in a container?
-    - **A:** Cautiously — containers add scheduling indirection. Fine for perception/LLM; for hard real-time I'd validate latency/jitter and consider keeping that path on the host or a tuned runtime.
-
-
 ## Links
 
 - Related: [[colcon ament & launch]], [[Jetson Orin Setup]], [[LLM Tool Calling]], [[DDS & RMW]], [[NixOS for Jetson]]
@@ -184,10 +169,3 @@ Note: even with `SYS_NICE`, the container still shares the kernel scheduler. Val
 
 ---
 
-#flashcards
-
-Why containerize a ROS2 stack? ? ROS2 is dependency/version-heavy; a container pins the distro and libs for reproducibility across dev/robot/CI without polluting the host. Compose wires multiple services (e.g. ROS2 + LLM) together.
-
-Three robotics-specific Docker catches? ? GPU access needs the NVIDIA Container Toolkit; hardware devices (serial/camera/CAN) must be passed through explicitly; DDS discovery needs host networking/multicast or cross-container nodes won't find each other.
-
-How did WALL-E use Docker Compose? ? Two services — ros:humble for the ROS2 nodes and ollama/ollama for the LLaMA server — on the Jetson, keeping heavy dependency sets isolated and the stack reproducible.

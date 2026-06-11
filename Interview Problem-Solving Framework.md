@@ -11,11 +11,6 @@ tags: [interview, dsa, meta-skill, deep]
 > [!star] This is the meta-skill — how you behave in the room
 > Knowing the pattern isn't enough. Interviewers evaluate how you think out loud, how you handle being stuck, and whether you communicate before coding. This note is the script.
 
-> [!question] Explain it cold
->
-> - What are the 5 steps you follow on every problem, in order?
-> - What do you say when you're stuck?
-> - What do you say before writing a single line of code?
 
 ---
 
@@ -197,14 +192,3 @@ This is the script for the most common RSE interview problem type. Memorize the 
 
 ---
 
-#flashcards
-
-What are the 5 steps of the interview framework in order? ? (1) Understand + clarify. (2) Identify the pattern, say it out loud. (3) State approach + complexity, get buy-in. (4) Code while narrating. (5) Trace through example + check edge cases.
-
-What do you say before writing any code? ? State the pattern name, describe the approach in plain English, give time and space complexity, then ask "does that sound right before I start?" — get interviewer buy-in first.
-
-What do you say when you're completely stuck? ? State what you DO know and where exactly you're stuck. Never say "I don't know." Try a simpler version, think out loud, or ask "I'm torn between A and B — is there a constraint I should be using?"
-
-Grid BFS one-sentence spoken answer? ? "Minimum moves on an unweighted grid — BFS, queue seeded at start, mark visited on enqueue, return distance when I pop the target, -1 if queue empties. O(R×C) time and space."
-
-Why do you narrate while coding? ? Dead air signals you're lost. Narrating shows your thinking process, lets the interviewer redirect you if you're wrong, and proves you understand your own code — not just memorized it.

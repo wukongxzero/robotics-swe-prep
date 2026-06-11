@@ -4,11 +4,6 @@
 
 # OpenCV Pipelines
 
-> [!question] Explain it cold
-> 
-> - What's the difference between classical CV and learned CV, and when do you pick classical?
-> - Walk a basic color/feature detection pipeline.
-> - What's the color-space trick that makes color segmentation robust?
 
 ---
 
@@ -25,16 +20,6 @@ Classical computer vision = hand-engineered image operations (filters, threshold
 - **Camera model**: pinhole + intrinsics (focal length, principal point) and distortion coefficients; calibration (checkerboard) maps pixels to rays — prerequisite for any metric vision.
 
 
-## Interview follow-ups
-
-- **Q:** When classical CV over a neural net?
-    - **A:** Well-defined geometric/color targets, tight compute or latency budgets, need for determinism/explainability, or no training data. A color blob or fiducial marker doesn't need a CNN — classical is faster and predictable on the edge.
-- **Q:** Why HSV for color detection?
-    - **A:** HSV separates hue from brightness, so a hue threshold survives lighting changes; RGB mixes color and intensity, so RGB thresholds break under changing light.
-- **Q:** Clean up a noisy binary mask?
-    - **A:** Morphological opening (erode then dilate) to remove speckle, closing to fill holes, then contour extraction for blobs/centroids.
-
-
 ## Links
 
 - Related: [[YOLOv8 Detection]], [[SLAM & RTAB-Map]], [[CUDA & CuPy]], [[Jetson Orin Setup]], [[Sensor Fusion]]
@@ -42,10 +27,3 @@ Classical computer vision = hand-engineered image operations (filters, threshold
 
 ---
 
-#flashcards
-
-When do you pick classical CV over a neural net? ? Well-defined geometric/color targets, tight compute/latency, need for determinism/explainability, or no training data. A color blob or fiducial doesn't need a CNN.
-
-Why segment color in HSV instead of RGB? ? HSV separates hue from brightness, so a hue threshold is robust to lighting changes; RGB mixes color and intensity so its thresholds break under changing light.
-
-Typical classical CV pipeline stages? ? Capture → preprocess (resize/blur) → color/feature extraction → threshold/segment → morphology (erode/dilate) → contours/blobs → geometry (centroid/bbox) → decision.

@@ -4,11 +4,6 @@
 
 # Frequency-Domain Analysis
 
-> [!question] Explain it cold
-> 
-> - What does a Bode plot show, and what are you looking for on it?
-> - Define gain margin and phase margin — where do you read them?
-> - Nyquist vs Bode vs root locus — what does each tell you?
 
 ---
 
@@ -48,18 +43,6 @@ Classical control analyzes a system through its **transfer function** $G(s)$ —
 - **Lead-lag**: both. The classical analog of tuning PID, but done by shaping the frequency response.
 
 
-## Interview follow-ups
-
-- **Q:** What's phase margin and why do you care?
-    - **A:** 180° plus the open-loop phase at the gain-crossover frequency — the extra phase lag the loop tolerates before instability. It maps to damping/overshoot; ~30–60° is the usual target. Too little → ringing; negative → unstable.
-- **Q:** A loop is stable in sim but oscillates on hardware — frequency-domain explanation?
-    - **A:** Real-world phase lag (sensor filtering, computation delay, actuator dynamics) ate the phase margin. Delay adds phase lag that grows with frequency, pushing $\omega_{gc}$ past −180°. I'd Bode the loop including the measured delay and add a lead compensator or reduce bandwidth.
-- **Q:** Why use Nyquist over Bode?
-    - **A:** Nyquist is the rigorous criterion (encirclements of −1) and correctly handles non-minimum-phase systems and loops that cross −180° multiple times, where Bode's simple GM/PM reading can mislead.
-- **Q:** What does root locus give you that Bode doesn't?
-    - **A:** A direct picture of _where the closed-loop poles go_ as gain changes — so I can pick a gain for target damping and see exactly when a pole crosses into the RHP.
-
-
 ## Links
 
 - Related: [[PID Control]], [[State-Space & Pole Placement]], [[LQR]], [[LQG]], [[Real-Time Determinism]]
@@ -67,17 +50,3 @@ Classical control analyzes a system through its **transfer function** $G(s)$ —
 
 ---
 
-#flashcards
-
-What does a Bode plot show and what's the key frequency on it? ? Magnitude (dB) and phase (deg) vs frequency on a log scale. The gain-crossover frequency (where magnitude = 0 dB / gain = 1) is where you read phase margin.
-
-Define phase margin and gain margin. ? Phase margin = 180° + open-loop phase at the gain-crossover frequency (extra phase lag before instability). Gain margin = how much gain you can add at the −180° phase-crossover before |G| reaches 1.
-
-Why does a loop stable in sim oscillate on real hardware (frequency-domain view)? ? Real phase lag — sensor filtering, computation delay, actuator dynamics — eats the phase margin. Pure time delay adds −ωT phase lag with no gain change, silently consuming margin.
-
-Nyquist vs Bode — when do you need Nyquist? ? Nyquist (encirclements of −1) is the rigorous criterion and correctly handles non-minimum-phase systems and multiple −180° crossings, where Bode's simple GM/PM can mislead.
-
-What does root locus plot? ? How the closed-loop pole locations move through the s-plane as a gain K varies 0→∞ — used to pick K for target damping and to see when a pole crosses into the right-half plane.
-
-How do lead and lag compensators map to PID? ? Lead adds phase near crossover to improve phase margin/transients (≈ D term); lag boosts low-frequency gain to kill steady-state error (≈ I term).
-![[Pasted image 20260525103718.png]]

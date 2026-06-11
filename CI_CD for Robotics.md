@@ -8,10 +8,6 @@ tags: [ci-cd, github-actions, docker, testing, devops]
 
 # CI/CD for Robotics
 
-> [!question] Explain it cold
-> - What does a CI/CD pipeline do for a ROS2 project?
-> - What runs in a GitHub Actions workflow for a ROS2 package?
-> - Why is Docker essential for robotics CI?
 
 ---
 
@@ -122,10 +118,3 @@ Hardware-in-the-loop tests run separately on the actual robot. CI only catches s
 
 ---
 
-#flashcards
-
-What does `rosdep install --from-paths src --ignore-src -r -y` do in CI? ? Reads every package.xml in src/, resolves system dependencies (apt packages), and installs them. Essential first step before colcon build in a clean CI environment.
-
-Why use `ros:humble` Docker image in GitHub Actions instead of installing ROS2 directly? ? The runner has no ROS2. The official image gives a reproducible, pre-configured ROS2 environment in seconds. Same image works locally and in CI — no drift.
-
-What is the difference between CI and CD in a robotics context? ? CI = build + test every commit automatically (catches regressions). CD = package or deploy the result to the robot or a registry. Most robotics teams do CI; CD to robot hardware requires additional safety gates.

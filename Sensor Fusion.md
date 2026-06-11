@@ -8,12 +8,6 @@ tags: [sensor-fusion, kalman, imu, estimation, complementary-filter]
 
 # Sensor Fusion
 
-> [!question] Explain it cold
-> *Answer from memory first.*
->
-> - What is sensor fusion and why do you need it?
-> - Name three fusion architectures and when you'd pick each.
-> - What's the difference between a complementary filter and a Kalman filter for attitude estimation?
 
 ---
 
@@ -65,43 +59,9 @@ Common on mobile robots: integrate wheel odometry for position, fuse with IMU fo
 IMU + camera tightly coupled: IMU predicts at 200–1000 Hz, camera corrects at 30 Hz. Used in drones, AR, and legged robots where GPS is unavailable.
 
 
-## Interview follow-ups
-- **Q:** Why use a complementary filter instead of a Kalman filter for attitude?
-  - **A:** For attitude only, complementary is simpler (no matrices), computationally cheap, and gives equivalent performance. Kalman is worth the complexity when you have many heterogeneous sensors, need a formal uncertainty estimate, or are fusing more than 2 modalities.
-- **Q:** What's the difference between loose, tight, and deep coupling in IMU+camera fusion?
-  - **A:** Loose: fuse finished pose estimates. Tight: fuse raw features and IMU measurements together in one filter (more accurate, handles degeneracies better). Deep: integrate at the sensor hardware level (rare).
-- **Q:** Your odometry drifts after 10 meters. What's causing it and what fixes it?
-  - **A:** Encoder slip + IMU gyro bias accumulate. Fix: add loop closure (visual or LiDAR SLAM), absolute corrections (GPS, fiducial markers), or a better gyro. The drift is fundamental to dead-reckoning without absolute reference.
-
-
 ## Links
 - Related: [[Kalman Filter]], [[Complementary Filter]], [[SLAM & RTAB-Map]], [[Real-Time Determinism]]
 - Parent: [[00 Knowledge Map]]
 
 ---
 
-#flashcards
-
-What is sensor fusion?
-?
-Combining measurements from multiple sensors to produce a state estimate better than any single sensor, exploiting their complementary strengths and weaknesses.
-
-What does a complementary filter do for attitude estimation?
-?
-High-pass filters the gyro (good at fast changes, bad at DC drift) and low-pass filters the accelerometer (good at slow/static, noisy at vibration). They sum to 1, giving a drift-corrected attitude estimate.
-
-What is the complementary filter formula?
-?
-θ_hat_k = α(θ_hat_{k-1} + ω_k·Δt) + (1-α)·θ_accel_k, where α ≈ 0.95–0.98.
-
-When would you use Kalman over complementary filter?
-?
-When you have multiple heterogeneous sensors at different rates, need a formal uncertainty estimate, or have a good dynamics model. Complementary is sufficient for attitude-only with two sensors.
-
-What is VIO?
-?
-Visual-Inertial Odometry — tight fusion of IMU (200–1000 Hz) and camera (30 Hz) for pose estimation without GPS. IMU predicts, camera corrects.
-
-Why does dead-reckoning drift over time?
-?
-Encoder slip and IMU gyro bias accumulate with each integration step — errors compound. Needs absolute reference (loop closure, GPS, landmarks) to correct.

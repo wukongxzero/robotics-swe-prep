@@ -6,11 +6,6 @@
 
 > [!star] Interviewer will push here — full derivation below LQR is the "I implemented optimal control on real hardware" story. Know the cost, the Riccati equation, and what Q/R _do_, cold.
 
-> [!question] Explain it cold
-> 
-> - Write the LQR cost function and say what Q and R trade off.
-> - Where does the gain K come from? (Name the equation.)
-> - Walk the derivation from cost to Riccati at a high level.
 
 ---
 
@@ -39,18 +34,6 @@ $$J = \int_0^\infty \left( x^T Q x + u^T R u \right) dt$$
 - LQR closed loop is _guaranteed stable_ (poles of $A-BK$ in LHP) — a big advantage over hand pole-placement.
 
 
-## Interview follow-ups
-
-- **Q:** Where does K come from in LQR?
-    - **A:** $K = R^{-1}B^TP$, where $P$ solves the algebraic Riccati equation $A^TP + PA - PBR^{-1}B^TP + Q = 0$. Q and R are my design weights.
-- **Q:** How do you tune Q and R?
-    - **A:** Q penalizes state error, R penalizes effort — it's the ratio that matters. Start with Bryson's rule (diagonal entries = 1/max-acceptable-value²), then push Q up for tighter tracking or R up to calm actuation. On the gimbal I traded tracking sharpness against servo strain.
-- **Q:** Why is LQR stable by construction but pole placement isn't?
-    - **A:** LQR minimizes a positive cost with a stabilizing Riccati solution, which guarantees $A-BK$ is Hurwitz. Pole placement can technically place stable poles too, but it gives no guarantee they're _achievable_ without saturating the actuator — LQR builds the effort cost in.
-- **Q:** Do you solve Riccati on the embedded target?
-    - **A:** No — solve offline, ship the constant gain. The MCU just does $u = -Kx$, which is cheap and deterministic. Re-solving online is for gain-scheduled or adaptive cases.
-
-
 ## Links
 
 - Related: [[State-Space & Pole Placement]], [[Kalman Filter]], [[LQG]], [[MPC & Virtual Fixtures]], [[Real-Time Determinism]]
@@ -58,12 +41,3 @@ $$J = \int_0^\infty \left( x^T Q x + u^T R u \right) dt$$
 
 ---
 
-#flashcards
-
-LQR cost function and what Q and R do? ? J = ∫(xᵀQx + uᵀRu)dt. Q penalizes state error (tighter regulation), R penalizes control effort (gentler actuation); the Q/R ratio is the knob.
-
-LQR optimal gain formula? ? K = R⁻¹BᵀP, where P solves the continuous algebraic Riccati equation AᵀP + PA − PBR⁻¹BᵀP + Q = 0.
-
-Why is LQR closed-loop stable by construction? ? It minimizes a positive-definite cost via the stabilizing Riccati solution, which makes A−BK Hurwitz — and it builds control effort into the cost, unlike hand pole placement.
-
-Do you solve the Riccati equation on the embedded target? ? No — solve offline once, ship the constant gain K; the MCU just computes u = −Kx (cheap, deterministic). Online solving is for adaptive/gain-scheduled cases.

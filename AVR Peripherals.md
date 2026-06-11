@@ -4,11 +4,6 @@
 
 # AVR Peripherals
 
-> [!question] Explain it cold
-> 
-> - Derive the USART baud register value.
-> - How do you get a specific timer overflow period?
-> - What sets the I2C clock speed?
 
 ---
 
@@ -47,16 +42,6 @@ $$\text{TWBR} = \frac{F_{CPU}/f_{SCL} - 16}{2 \times \text{prescaler}}$$
 - **PWM frequency** = timer overflow frequency; **duty** = OCRx / (MAX+1).
 
 
-## Interview follow-ups
-
-- **Q:** Why the "−1" in UBRR and the "16"?
-    - **A:** 16 is the samples-per-bit oversampling in normal mode; the −1 is because the counter counts from 0, so the register holds (divisor − 1).
-- **Q:** You need a 1 ms timer tick at 16 MHz — how?
-    - **A:** Pick prescaler and compare value: with prescaler 64, 16e6/64 = 250 kHz → 250 ticks = 1 ms, so use CTC mode with OCR = 249.
-- **Q:** PWM frequency too low, causing audible whine — what do you change?
-    - **A:** Lower the prescaler or use a smaller TOP (Fast PWM with ICR/OCR as TOP) to raise the overflow frequency above ~20 kHz.
-
-
 ## Links
 
 - Related: [[AVR Register Programming]], [[Motor Control]], [[Serial Packet Protocols]]
@@ -64,12 +49,3 @@ $$\text{TWBR} = \frac{F_{CPU}/f_{SCL} - 16}{2 \times \text{prescaler}}$$
 
 ---
 
-#flashcards
-
-USART baud register formula? ? UBRR = F_CPU / (16 × baud) − 1. The 16 is oversampling (8 in U2X mode); the −1 because the counter starts at 0.
-
-Timer overflow period formula? ? t = (MAX+1) × prescaler / F_CPU, where MAX is 255 (8-bit) or 65535 (16-bit).
-
-I2C TWBR formula? ? TWBR = (F_CPU/f_SCL − 16) / (2 × prescaler), with prescaler set in TWSR.
-
-At 16 MHz, prescaler 256, 8-bit timer — overflow period? ? (256 × 256) / 16e6 = 4.096 ms.

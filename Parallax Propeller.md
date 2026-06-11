@@ -4,11 +4,6 @@
 
 # Parallax Propeller
 
-> [!question] Explain it cold
-> 
-> - What's the defining architectural feature of the Propeller?
-> - dira / outa / ina — what are they?
-> - Why does the 8-cog model give you deterministic timing without interrupts?
 
 ---
 
@@ -29,16 +24,6 @@ The Parallax Propeller is an 8-core ("cog") microcontroller with **no interrupts
 - **No interrupts**: a task that needs precise timing gets its own cog running a tight loop — no preemption, no jitter from ISR contention.
 
 
-## Interview follow-ups
-
-- **Q:** Propeller has no interrupts — how do you do real-time then?
-    - **A:** Dedicate a cog to the time-critical task. It runs a deterministic tight loop on its own core with no preemption, so timing is rock-solid without interrupt prioritization.
-- **Q:** How do cogs share data safely?
-    - **A:** Through hub RAM via the time-sliced round-robin hub window; the deterministic access pattern is what keeps it predictable. Locks exist for coordination.
-- **Q:** dira/outa/ina vs DDRx/PORTx/PINx?
-    - **A:** Same conceptual roles (direction / output / input) but per-cog, and pin outputs are OR-combined across all cogs at the hub.
-
-
 ## Links
 
 - Related: [[AVR Register Programming]], [[Real-Time Determinism]], [[Compute & acceleration]]
@@ -46,10 +31,3 @@ The Parallax Propeller is an 8-core ("cog") microcontroller with **no interrupts
 
 ---
 
-#flashcards
-
-What's the defining feature of the Parallax Propeller? ? 8 independent cores (cogs) and no interrupts — real-time tasks each get a dedicated cog for deterministic timing.
-
-Propeller's dira / outa / ina? ? Per-cog direction, output, and input registers — the Propeller analog of AVR's DDRx/PORTx/PINx (pin outputs OR-combined across cogs at the hub).
-
-How does the Propeller achieve determinism without interrupts? ? Dedicate a cog to each time-critical task; it runs an unpreempted tight loop on its own core, so no interrupt contention or jitter.

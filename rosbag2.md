@@ -8,10 +8,6 @@ tags: [ros2, debugging, rosbag2, recording, playback]
 
 # rosbag2
 
-> [!question] Explain it cold
-> - What is rosbag2 and when do you reach for it?
-> - How do you record, play back, and inspect a bag?
-> - What's the workflow for debugging a hardware failure with a bag?
 
 ---
 
@@ -121,10 +117,3 @@ ros2 bag play my_bag --start-offset 30.0  # skip first 30 seconds
 
 ---
 
-#flashcards
-
-What is the rosbag2 workflow for debugging a hardware failure without the robot? ? Record topics during the failure (`ros2 bag record`), copy bag to laptop, replay with `ros2 bag play`, inspect in RViz. Fix without needing the robot present.
-
-Command to record only specific topics to a named bag? ? `ros2 bag record /topic1 /topic2 -o bag_name`
-
-Why pass `--clock` when playing back a bag to nodes using sim time? ? Bag playback publishes messages with original timestamps. Nodes using `use_sim_time: true` subscribe to `/clock`. Without `--clock`, no clock is published and time-dependent nodes stall or behave incorrectly.

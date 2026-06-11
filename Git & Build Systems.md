@@ -8,12 +8,6 @@ tags: [git, cmake, build-systems, colcon, ament, devtools]
 
 # Git & Build Systems
 
-> [!question] Explain it cold
-> *Before reading anything below, say or write the answer from memory. This is the rep that matters — the reference section is just the answer key.*
->
-> - What is Git's storage model, in two sentences?
-> - When would you rebase vs. merge?
-> - What does CMake actually output, and what runs it?
 
 ---
 
@@ -238,25 +232,6 @@ snap interfaces
 
 ---
 
-## Interview follow-ups
-
-- **Q: What's the difference between `git merge` and `git rebase` — when would you use each?**
-  - **A:** Merge preserves branch topology and adds a merge commit; rebase replays commits linearly. I rebase feature branches before opening a PR (cleaner history, easier review), but never rebase commits already pushed to a shared branch — it rewrites SHAs and forces everyone else to `reset --hard`.
-
-- **Q: How does CMake's `target_link_libraries` with `PRIVATE/PUBLIC/INTERFACE` work?**
-  - **A:** `PRIVATE` = dep used only in this target's `.cpp`, not exposed in headers. `PUBLIC` = used in both implementation *and* headers (callers inherit the dep). `INTERFACE` = only in headers, not in `.cpp` (header-only libs). Getting this wrong causes either missing includes for downstream targets or unnecessary recompilation.
-
-- **Q: Your ROS2 node compiles but crashes at runtime with "cannot open shared object file". Why?**
-  - **A:** The installed `.so` isn't on `LD_LIBRARY_PATH` — usually means you forgot to `source install/setup.bash`, or the library was installed to a non-standard prefix not known to the dynamic linker. Fix: source the overlay, or add an `-rpath` to the CMake target, or add the path to `/etc/ld.so.conf` and run `ldconfig`.
-
-- **Q: How do you handle a conflict during `git rebase`?**
-  - **A:** Git pauses at each conflicting commit. Resolve the conflict in the file, `git add` the resolved file, then `git rebase --continue`. If it's a mess, `git rebase --abort` to return to pre-rebase state and think again.
-
-- **Q: What's `cmake --build` vs. just running `make`?**
-  - **A:** `cmake --build` is generator-agnostic — it works whether the underlying system is Make, Ninja, or MSVC. Running `make` directly couples you to the Makefile generator. CI scripts should always use `cmake --build`.
-
-- **Q: How does `git cherry-pick` differ from `git rebase`?**
-  - **A:** Cherry-pick copies a single specific commit onto HEAD. Rebase moves a *range* of commits onto a new base, rewriting the entire chain. Cherry-pick is surgical; rebase is structural.
 
 ---
 
@@ -269,56 +244,3 @@ snap interfaces
 
 ---
 
-#flashcards
-
-What are the four Git object types?
-?
-blob (file contents), tree (directory), commit (tree + parent + metadata), tag (annotated pointer to commit).
-
-What does `git reset --soft HEAD~1` do vs `--hard`?
-?
-`--soft` undoes the commit but keeps changes staged. `--hard` discards both the commit and all working-tree changes.
-
-When should you NOT rebase?
-?
-Never rebase commits already pushed to a shared/remote branch — it rewrites SHAs and forces teammates to reset.
-
-What is the CMake configure step vs the build step?
-?
-Configure: reads CMakeLists.txt and generates Makefiles/Ninja files. Build: executes the generated system to compile and link.
-
-What does `target_link_libraries(foo PUBLIC bar)` mean vs PRIVATE?
-?
-PUBLIC: bar is needed in both foo's implementation and its headers — callers inherit bar. PRIVATE: bar is only in foo's .cpp, not exposed to callers.
-
-What does `colcon build --symlink-install` do?
-?
-Installs Python scripts and launch files as symlinks into install/ so edits take effect immediately without rebuilding.
-
-How do you find which commit introduced a bug in git?
-?
-`git bisect start`, mark HEAD as bad, mark a known-good commit as good — git binary-searches through commits for you.
-
-What causes "cannot open shared object file" at ROS2 runtime?
-?
-The install overlay wasn't sourced (`source install/setup.bash`), so LD_LIBRARY_PATH doesn't include the package's lib directory.
-
-How do you stage specific files safely (instead of `git add .`)?
-?
-`git add path/to/file.cpp` — staging by name prevents accidentally committing secrets, binaries, or unrelated changes. Use `git status` first to see what's dirty.
-
-How do you undo a staged file without losing your changes?
-?
-`git restore --staged file.cpp` — removes it from the staging area but keeps the edits in the working tree.
-
-What's the difference between `git pull` and `git pull --rebase`?
-?
-`git pull` merges upstream into your branch (adds a merge commit). `git pull --rebase` replays your local commits on top of upstream — cleaner history, no merge commit noise.
-
-Snap vs apt — key difference?
-?
-apt installs `.deb` packages that share host system libraries. Snap bundles all dependencies and runs in a sandbox. Snaps auto-update; apt requires `apt upgrade`.
-
-Why might a snap fail to read files in your home directory?
-?
-Snaps are sandboxed and need the `home` interface connected: `sudo snap connect <snap>:home :home`. Without it, the snap can't see `/home` by default.

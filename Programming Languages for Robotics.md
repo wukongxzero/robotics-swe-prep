@@ -4,11 +4,6 @@
 
 # Programming Languages for Robotics
 
-> [!question] Explain it cold
->
-> - When do you write a ROS2 node in C++ vs Python?
-> - What is Python used for in a robotics stack that C++ is not?
-> - When does MATLAB show up in a robotics engineering role?
 
 ---
 
@@ -198,10 +193,3 @@ Writing embedded firmware?                → C++ (Arduino/AVR/STM32 subset)
 
 ---
 
-#flashcards
-
-When do you write a ROS2 node in C++ vs Python? ? C++ for the control path: hard timing deadlines, hardware drivers, real-time executors, safety-critical code. Python for everything else: perception, planning, training, launch files, logging.
-
-What does MATLAB give you that Python doesn't for control design? ? Control System Toolbox built-ins (lqr, kalman, place, bode, margin), Simulink block-diagram modeling, and industry-standard tools for model-based design that generate deployable C code from Simulink blocks.
-
-What is Eigen used for in C++ robotics code? ? Linear algebra — fixed-size matrices/vectors (Eigen::Matrix<double,6,6>) allocate on the stack with no heap alloc, making them real-time safe. Used for Jacobians, transforms, state vectors everywhere in control and kinematics code.

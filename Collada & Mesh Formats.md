@@ -8,10 +8,6 @@ tags: [collada, urdf, mesh, cad, gazebo, rviz]
 
 # Collada & Mesh Formats
 
-> [!question] Explain it cold
-> - What is Collada and when do you use it over URDF primitives?
-> - What is the workflow from SolidWorks/Fusion 360 to a mesh in Gazebo?
-> - What is the difference between visual mesh and collision mesh?
 
 ---
 
@@ -141,10 +137,3 @@ install(DIRECTORY meshes urdf
 
 ---
 
-#flashcards
-
-What is Collada (.dae) used for in robotics? ? Storing complex 3D mesh geometry for URDF visual links. Exported from CAD tools (SolidWorks, Fusion 360) to represent the actual robot shape in Gazebo/RViz. Referenced in URDF as `<mesh filename="package://pkg/meshes/part.dae"/>`.
-
-Why use STL for collision mesh instead of Collada? ? Collision geometry only needs shape, not color or texture. STL is simpler and lighter — physics engine computes contacts faster on low-poly STL than high-poly Collada. Always simplify collision mesh vs visual mesh.
-
-Scale issue when importing CAD mesh to URDF — what causes it and how do you fix it? ? CAD tools often export in millimeters, URDF uses meters. Fix: add `scale="0.001 0.001 0.001"` to the `<mesh>` tag, or re-export from CAD with meters as the unit.

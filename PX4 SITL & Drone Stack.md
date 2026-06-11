@@ -4,11 +4,6 @@
 
 # PX4 SITL & Drone Stack
 
-> [!question] Explain it cold
->
-> - What is PX4 and what does SITL mean?
-> - How does the full PX4 SITL stack connect — firmware, simulator, GCS, and your code?
-> - What protocol does everything communicate over?
 
 ---
 
@@ -174,12 +169,3 @@ Conversion NED → ENU: x_enu = y_ned, y_enu = x_ned, z_enu = -z_ned
 
 ---
 
-#flashcards
-
-What is PX4 SITL and how does it differ from hardware? ? SITL runs the actual PX4 firmware binary on your laptop connected to a physics simulator (Gazebo/jMAVSim) for sensor feedback. Same code as real hardware — only the sensor/actuator interface is simulated. Lets you test flight logic without a physical drone.
-
-What protocol does everything in the PX4 stack communicate over? ? MAVLink — lightweight binary protocol with message IDs, system IDs, heartbeat at 1Hz. QGroundControl on UDP 14550, MAVSDK/offboard code on UDP 14540, Gazebo bridge on 4560.
-
-What are the rules for OFFBOARD mode in PX4? ? 1) Must send setpoints at >2Hz before entering offboard. 2) Must keep sending continuously — if setpoints stop, PX4 exits offboard and triggers failsafe. 3) Order: arm → start sending setpoints → switch to OFFBOARD mode.
-
-NED vs ENU — what's the difference and why does it matter? ? NED (North-East-Down) is PX4's native frame — Z points down. ENU (East-North-Up) is ROS2/Gazebo native — Z points up. Conversion: x_enu=y_ned, y_enu=x_ned, z_enu=-z_ned. Mixing them up causes inverted altitude commands — a common SITL bug.

@@ -8,10 +8,6 @@ tags: [ros2, tf2, transforms, frames, navigation]
 
 # TF2
 
-> [!question] Explain it cold
-> - What problem does TF2 solve?
-> - How do you look up a transform between two frames?
-> - What is the difference between /tf and /tf_static?
 
 ---
 
@@ -160,10 +156,3 @@ ros2 run tf2_ros tf2_monitor
 
 ---
 
-#flashcards
-
-What is the TF2 transform tree and why does every navigation stack need it? ? TF2 maintains coordinate frame relationships over time. Nav2 needs map→odom→base_footprint to know where the robot is. RTAB-Map needs base_footprint→camera_link to know where the sensor is. One missing link breaks the whole chain.
-
-Difference between /tf and /tf_static? ? /tf: dynamic transforms (robot pose, joint angles) — published every cycle, expires from buffer. /tf_static: fixed transforms (sensor mounts) — latched, late subscribers get it, published once at startup.
-
-TF lookup raises "Extrapolation into the past" — what does this mean? ? The requested time is older than what's in the buffer (default 10s). Either the publisher stopped, there's a clock jump, or the buffer window is too small. Fix: use `TimePointZero` for latest available, or increase buffer duration.

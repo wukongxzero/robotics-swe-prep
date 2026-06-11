@@ -6,11 +6,6 @@
 
 > [!star] This is your active interview-prep front — NeetCode 150 in C++ Not robotics knowledge — the coding-screen layer. The named plan: NeetCode 150 in C++, in pattern order, timed, spoken aloud. This note is the pattern index to drill against, not a place to expand into a textbook.
 
-> [!question] Explain it cold
-> 
-> - Name the core patterns and the signal that triggers each.
-> - For your top-3 weak patterns, what's the template?
-> - What's the time/space complexity you'd state for each?
 
 ---
 
@@ -36,24 +31,6 @@ Most interview problems are one of ~15 patterns wearing a costume. The skill isn
 - **Intervals** — overlapping/merge/insert → sort by start, sweep.
 - **Bit Manipulation** — XOR tricks, masks.
 
-## Method (the named plan)
-
-- **C++** (your interview language), in **pattern order** (not random), **timed**, **spoken aloud** — articulating the approach is the actual bottleneck, not the coding. Treat every problem as a mock: state the pattern, the approach, the complexity, _then_ code.
-- Track which patterns are slow/shaky here; those are the drill targets.
-- **Gate**: mock interviews start once NeetCode ~50% done and ROS2 executors / FK / IK are fluently articulable.
-
-## RSE coding screen — what actually gets asked
-
-RSE roles (Boston Dynamics, Waymo, Figure, Cruise, etc.) test **medium** difficulty, in this priority order:
-
-- **Graphs / BFS / DFS** — #1 most relevant. Path planning, grid traversal, connectivity. Often wrapped in robotics language ("robot on a grid", "shortest path between waypoints") — still BFS underneath.
-- **Arrays / Hashing** — sensor data, dedup, counting
-- **Sliding Window** — time series, signal buffers
-- **Binary Search** — search on answer space
-- **Trees, Heap** — standard, show up regularly
-- **Hard DP, tries, bit manipulation** — rare, not the focus
-
-**Drill order for RSE:** Graphs first → Arrays/Hashing → Sliding Window → Binary Search.
 
 ---
 
@@ -100,16 +77,6 @@ def dfs(graph, node, visited=None):
 
 **Why BFS and not DFS?** BFS explores level-by-level — every node at distance 1 before distance 2, etc. The first time you reach the target, that path is guaranteed shortest. DFS can find _a_ path but not the _shortest_ one.
 
-### How to think about it (before writing any code)
-
-1. **Model the grid as a graph.** Each cell `(r, c)` is a node. Edges connect to valid neighbors (up/down/left/right, not a wall, not out of bounds).
-2. **BFS from start.** Use a queue. Mark cells visited as you enqueue them (not as you dequeue — or you'll enqueue duplicates).
-3. **Track distance.** Either store `(row, col, distance)` in the queue, or use a separate `dist` grid.
-4. **Stop when you dequeue the target.** Return the distance. If the queue empties without hitting the target, return -1 (no path).
-
-### Step-by-step spoken approach (say this out loud first)
-
-> "This is a shortest-path-on-a-grid problem — BFS, because BFS gives shortest path in unweighted graphs. I'll treat each cell as a node, use a queue seeded with the start, mark visited as I enqueue, and track distance. When I dequeue the target I return the distance. Time: O(R×C), space: O(R×C) for visited."
 
 ### Template — Python
 
@@ -339,9 +306,6 @@ A* is the default global planner in **Nav2** (`NavFn` plugin uses Dijkstra; `Sma
 
 **Mental model:** Two pointers `left` and `right` defining a window. Expand `right` to include more. When the window violates the constraint, shrink from `left` until it's valid again. The window slides forward — each element enters once and leaves once → O(n).
 
-### Step-by-step spoken approach
-
-> "Sliding window — I have a subarray constraint. I'll expand right one step at a time, update my window state, then shrink left until the window is valid again. I track the best answer while the window is valid. O(n) time."
 
 ### Template — variable-size window (find longest valid)
 
@@ -405,9 +369,6 @@ int longestValidWindow(string s, int k) {
 
 **Mental model:** A heap keeps the extreme element at the top in O(log n) per insert/remove. For "k largest", maintain a **min-heap of size k** — the top is the smallest of the k largest, so anything smaller gets kicked out.
 
-### Step-by-step spoken approach
-
-> "Top-k pattern — heap of size k. I'll push each element; when the heap exceeds size k, pop the min. What remains is the k largest. O(n log k) time."
 
 ### Template — k largest elements
 
@@ -466,9 +427,6 @@ vector<int> kLargest(vector<int>& nums, int k) {
 
 **Mental model:** BFS with a priority queue instead of a plain queue. Always expand the node with the smallest known distance first. Once a node is popped from the heap, its distance is finalized (never update again).
 
-### Step-by-step spoken approach
-
-> "Dijkstra — weighted shortest path. Min-heap seeded with (0, start). Pop the cheapest node, relax its neighbors — if new distance is better, push (new_dist, neighbor). Skip a node if we've already finalized it. O((V+E) log V)."
 
 ### Template — Python
 
@@ -557,9 +515,6 @@ int dijkstra(vector<vector<pair<int,int>>>& graph, int start, int end, int n) {
 1. **Search in array** — classic, find a target value.
 2. **Search on answer** — the answer itself is a number in a range; binary search on that range with a `feasible(mid)` check.
 
-### Step-by-step spoken approach
-
-> "Binary search — sorted data / answer-space search. Lo and hi bracket the range. Mid = lo + (hi-lo)/2 to avoid overflow. If mid satisfies the condition, record it and move the boundary to find better; if not, move the other way. O(log n)."
 
 ### Template — search in sorted array
 
@@ -792,14 +747,6 @@ vector<vector<int>> threeSum(vector<int>& nums) {
 ---
 
 
-## Interview follow-ups (meta)
-
-- **Q:** How do you approach a problem you haven't seen?
-    - **A:** Identify the pattern from the signal (sorted? substring property? top-k? ways to count?), state the approach and complexity out loud, confirm with the interviewer, then code. Pattern recognition first, code second.
-- **Q:** Two Sum variants?
-    - **A:** Unsorted → hash map (O(n)). Sorted → two pointers (O(n), O(1) space). The data's structure picks the pattern.
-
-
 ## Links
 
 - Related: [[Modern C++ for Robotics]]
@@ -807,236 +754,3 @@ vector<vector<int>> threeSum(vector<int>& nums) {
 
 ---
 
-#flashcards
-
-Valid Anagram — what are the two approaches and their complexities? ? (1) Sort both strings, compare — O(n log n) time, O(1) space. (2) Hashmap frequency count — O(n) time, O(n) space.
-
-Valid Anagram hashmap approach — what are the three steps? ? (1) Check lengths equal. (2) Increment count for each char in s, decrement for each char in t. (3) Loop through map — if any value != 0, return false. Return true.
-
-Group Anagrams — what is the key insight? ? All anagrams sort to the same string. Use the sorted string as the hashmap key → group all originals under it.
-
-Group Anagrams — what is the time complexity and why? ? O(n · k log k) — n strings, each sorted in O(k log k) where k is string length.
-
-What's the signal → pattern for "longest substring with some property"? ? Sliding window — expand to include, contract to maintain the property. O(n).
-
-What's the signal → pattern for "top-k" or "k largest/smallest"? ? Heap / priority queue of size k. O(n log k).
-
-Unsorted Two Sum vs sorted Two Sum — which pattern each? ? Unsorted → hash map (O(n) time/space). Sorted → two pointers (O(n) time, O(1) space). The data structure picks the pattern.
-
-What's the first thing you do on a new problem (the spoken-aloud habit)? ? Identify the pattern from the signal, then state the approach and time/space complexity out loud before coding — pattern recognition first, code second.
-
-Grid BFS — what are the 4 steps before writing any code? ? (1) Model: each cell is a node, edges = valid neighbors. (2) BFS from start with a queue. (3) Mark visited on enqueue, not dequeue. (4) Return distance when target is dequeued; -1 if queue empties.
-
-Why BFS and not DFS for shortest path on a grid? ? BFS explores level-by-level — the first time you reach the target is guaranteed shortest. DFS finds a path but not the shortest one.
-
-Grid BFS time and space complexity? ? O(R×C) time and space — each cell visited at most once.
-
-What is the visited-on-enqueue rule and why does it matter? ? Mark a cell visited when you add it to the queue, not when you pop it. If you mark on dequeue, the same cell gets enqueued multiple times → exponential blowup.
-
-Sliding window — what are the two pointer moves? ? Expand right by one each iteration (add element to window). Shrink left while the window violates the constraint. Window size = right - left + 1.
-
-Sliding window time complexity and why? ? O(n) — right advances n times total, left advances at most n times total. Each element enters and leaves the window at most once.
-
-Heap for k-largest: which heap type and why? ? Min-heap of size k. The top is the smallest of the k largest — anything smaller gets evicted. What remains after processing all elements is the k largest.
-
-Python heapq default, and how to get a max-heap? ? heapq is min-heap only. For max-heap: push -num and negate when popping.
-
-C++ priority_queue default, and how to get a min-heap? ? Defaults to max-heap. For min-heap: priority_queue<int, vector<int>, greater<int>>.
-
-Dijkstra vs BFS — when to use each? ? BFS for unweighted graphs (all edges cost 1), O(V+E). Dijkstra for weighted non-negative graphs, O((V+E) log V). Negative weights → Bellman-Ford.
-
-Dijkstra stale-entry rule? ? When you pop (d, node) from the heap, check if d > dist[node]. If so, skip — a shorter path was already found and processed.
-
-Binary search overflow-safe mid formula? ? mid = lo + (hi - lo) / 2. Never (lo + hi) / 2, which overflows for large integers in C++.
-
-How do you recognize an answer-space binary search problem? ? "Minimum X such that Y is possible" or "maximum X such that Y holds." Binary search on X; write a feasible(mid) function that checks if mid satisfies Y.
-
-What is the A* priority queue key and what are its two components? ? f(n) = g(n) + h(n). g(n) = actual cost from start to n; h(n) = heuristic estimate of remaining cost to goal.
-
-What makes a heuristic admissible and why does it matter for A*? ? Admissible means h(n) never overestimates the true remaining cost. Guarantees A* finds the optimal path. If h overestimates, A* may skip the optimal path to expand "promising-looking" but wrong nodes.
-
-What heuristic for A* on a 4-directional grid? ? Manhattan distance: |r - goal_r| + |c - goal_c|. Never overestimates because you can't move diagonally.
-
-BFS vs Dijkstra vs A* — when to use each? ? BFS: unweighted (all edges cost 1), O(V+E). Dijkstra: weighted non-negative, goal unknown or many goals, O((V+E) log V). A*: weighted, single known goal, can estimate distance, O((V+E) log V) but explores fewer nodes in practice.
-
-What does A* degenerate to when h=0? ? Dijkstra — no heuristic guidance, expands by actual cost only.
-
-A* stale-entry rule (same as Dijkstra)? ? When you pop (f, cost, r, c), check if cost > g[r][c]. If so, skip — a cheaper path to this cell was already found and processed.
-
-Where does A* appear in robotics? ? Nav2 global planner (SmacPlanner uses A*). SLAM occupancy grid planning. Any grid-based motion planning where start and goal are known.
-
-Valid Sudoku — what data structure and how many instances? ? Three arrays of 9 unordered_sets: rows[9], cols[9], boxes[9]. One set per row, column, and 3×3 box.
-
-Valid Sudoku — what is the box index formula? ? box_id = (i/3)*3 + (j/3). Maps any cell (i,j) to 0–8.
-
-Valid Sudoku — what is the time and space complexity? ? O(1) time and space — fixed 9×9 grid, 27 sets of max 9 chars each.
-
-Two Sum II — what pattern and why? ? Two pointers on sorted input. Sorted means left++ increases sum, right-- decreases it. O(n) time, O(1) space vs hashmap's O(n) space.
-
-Two Sum II — what do you return and why the +1? ? {left+1, right+1} — the problem is 1-indexed.
-
-Three Sum — what are the two places you skip duplicates? ? (1) Outer loop: if (i > 0 && nums[i] == nums[i-1]) continue. (2) After pushing a valid triplet: skip duplicate left and right values with while loops.
-
-Three Sum — why sort first? ? Enables two pointers (sorted order lets you steer sum by moving pointers) and makes duplicate skipping trivial (equals check on adjacent elements).
-
-Three Sum time complexity? ? O(n²) — outer loop O(n) × two-pointer scan O(n). Sorting is O(n log n) but dominated.
-
----
-
-### Container With Most Water (#11)
-
-**Pattern:** Two Pointers — converging from both ends.
-**Signal:** array of heights, find two lines that hold the most water.
-
-**Key insight:** Area = `min(height[left], height[right]) * (right - left)`. Start with the widest window (both ends). The bottleneck is always the shorter wall — moving the taller pointer inward can only make things worse, so always move the shorter one.
-
-```cpp
-int maxArea(vector<int>& height) {
-    int left = 0, right = height.size() - 1;
-    int max_area = 0;
-    while (left < right) {
-        int area = min(height[left], height[right]) * (right - left);
-        max_area = max(max_area, area);
-        if (height[left] < height[right]) left++;
-        else right--;
-    }
-    return max_area;
-}
-```
-
-**Complexity:** O(n) time, O(1) space.
-
-**Gotcha:** Don't try all pairs — that's O(n²). The key is that moving the shorter pointer is the only move that could find a larger area; moving the taller one never helps.
-
----
-
-### Trapping Rain Water (#42)
-
-**Pattern:** Two Pointers — running left/right maximums.
-**Signal:** array of heights, how much water is trapped between bars.
-
-**Key insight:** Water at position `i` = `min(max_left, max_right) - height[i]`. Brute force computes this in O(n²) by scanning both sides. Two-pointer does it in O(1) space: if `height[left] < height[right]`, `left_max` is the bottleneck — process the left side and move inward. You don't need to know `right_max` exactly because any bar to the right is taller than `height[left]`.
-
-```cpp
-int trap(vector<int>& height) {
-    int left = 0, right = height.size() - 1;
-    int left_max = 0, right_max = 0;
-    int water = 0;
-
-    while (left < right) {
-        left_max  = max(left_max,  height[left]);
-        right_max = max(right_max, height[right]);
-
-        if (height[left] < height[right]) {
-            water += left_max - height[left];
-            left++;
-        } else {
-            water += right_max - height[right];
-            right--;
-        }
-    }
-    return water;
-}
-```
-
-**Complexity:** O(n) time, O(1) space.
-
-**Common traps:**
-- Using `left_max - height[right]` on the else branch (wrong max applied to wrong side).
-- Confusing with Container With Most Water — that problem picks the best pair; this one sums water at every position.
-- Brute force `min(max_left, max_right) - height[i]` is correct logic but O(n²) — the two-pointer just avoids recomputing the maxes.
-
----
-
-## Graphs — solved problems
-
-### Clone Graph (#133)
-
-**Pattern:** DFS + hashmap as clone registry.
-**Signal:** "deep copy a graph" → traverse every node, track visited to avoid infinite loops and duplicate clones.
-
-**Key insight:** The hashmap does two jobs: (1) visited check — don't recurse into a node twice, (2) clone registry — `original→clone`, so when multiple nodes point to the same neighbor they all get the same clone back. Register the clone **before** recursing into neighbors, so back-edges find it in the map instead of looping forever.
-
-```cpp
-Node* dfs(Node* node, unordered_map<Node*, Node*>& cloned) {
-    if(cloned.count(node)) return cloned[node];
-
-    Node* copy = new Node(node->val);
-    cloned[node] = copy;   // register BEFORE recursing
-
-    for(Node* neighbor : node->neighbors)
-        copy->neighbors.push_back(dfs(neighbor, cloned));
-
-    return copy;
-}
-
-Node* clone_graph(Node* node) {
-    if(!node) return nullptr;
-    unordered_map<Node*, Node*> cloned;
-    return dfs(node, cloned);
-}
-```
-
-**Complexity:** O(V + E) time and space — every node and edge visited once.
-
-**Common traps:**
-- `return copy` inside the for loop — exits after cloning only the first neighbor.
-- Global hashmap — persists between calls, causes wrong results. Keep it local in the wrapper.
-- Forgetting the `nullptr` check — crashes on empty graph input.
-
----
-
-### Number of Islands (#200)
-
-**Pattern:** DFS/BFS on a grid — flood fill.
-**Signal:** count connected components of '1's in a binary grid.
-
-**Key insight:** For each unvisited '1', increment the island count and DFS to mark the entire connected island as '0' (visited). When the DFS returns, you've consumed the whole island.
-
-```cpp
-class Solution {
-    void dfs(vector<vector<char>>& grid, int r, int c) {
-        int rows = grid.size(), cols = grid[0].size();
-        if (r < 0 || r >= rows || c < 0 || c >= cols || grid[r][c] == '0')
-            return;
-        grid[r][c] = '0';   // mark visited by sinking the island
-        dfs(grid, r+1, c);
-        dfs(grid, r-1, c);
-        dfs(grid, r, c+1);
-        dfs(grid, r, c-1);
-    }
-public:
-    int numIslands(vector<vector<char>>& grid) {
-        int count = 0;
-        for (int r = 0; r < grid.size(); r++)
-            for (int c = 0; c < grid[0].size(); c++)
-                if (grid[r][c] == '1') { count++; dfs(grid, r, c); }
-        return count;
-    }
-};
-```
-
-**Complexity:** O(R×C) time and space — each cell visited at most once.
-
-**Common traps:**
-- Missing the column bounds check `c >= cols` in the base case.
-- Placing `return` before the recursive calls — the flood fill never runs.
-- Modifying the grid in-place is fine here; if you can't, use a `visited` bool grid instead.
-
----
-
-Trapping Rain Water — what is the key insight for the O(n) solution? ? Track running left_max and right_max. If height[left] < height[right], left_max is the bottleneck — water at left = left_max - height[left], then left++. The right side mirrors this. O(n) time, O(1) space.
-
-Trapping Rain Water vs Container With Most Water — what's the difference? ? Container picks the best single pair of bars — answer is one area. Trapping Rain Water sums water trapped at every position across the whole array. Same two-pointer structure but different accumulation logic.
-
-Container With Most Water — what pattern and key insight? ? Two pointers. Start at both ends — the bottleneck is the shorter wall. Always move the shorter pointer inward; moving the taller one can only make things worse.
-
-Container With Most Water — time and space complexity? ? O(n) time, O(1) space.
-
-Clone Graph — why does the hashmap need to be registered before recursing? ? So back-edges (neighbor pointing back to a node already being processed) find the existing clone in the map instead of recursing infinitely.
-
-Clone Graph — what are the two jobs of the hashmap? ? (1) Visited check — don't recurse into a node twice. (2) Clone registry — original→clone, so multiple nodes pointing to the same neighbor all get the same clone back.
-
-Number of Islands — pattern and approach? ? DFS/BFS on a grid. For each unvisited '1', increment count and flood-fill it to '0' so it's never counted again.
-
-Number of Islands — time and space complexity? ? O(R×C) time and space — each cell visited at most once.

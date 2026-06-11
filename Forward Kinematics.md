@@ -8,12 +8,6 @@ tags: [kinematics, FK, DH, transforms]
 
 # Forward Kinematics
 
-> [!question] Explain it cold
-> *Answer from memory first.*
->
-> - What does FK compute, and what are the inputs/outputs?
-> - What are DH parameters and what does each one mean?
-> - How do you compose transforms across multiple joints?
 
 ---
 
@@ -52,39 +46,9 @@ $$T^{i-1}_i = R_z(\theta_i)\, T_z(d_i)\, T_x(a_i)\, R_x(\alpha_i)$$
 - Prismatic joint: $d_i$ varies, $\theta_i$ fixed
 
 
-## Interview follow-ups
-- **Q:** What's the difference between FK and IK, and which is harder?
-  - **A:** FK is direct and always has a unique answer — plug in angles, get pose. IK is the inverse — find angles for a desired pose — and can have zero, one, or infinitely many solutions. IK is much harder; no closed form for >3 DOF in general.
-- **Q:** For a 6-DOF arm, how many DH transforms do you compose?
-  - **A:** Six — $T^0_6 = T^0_1 T^1_2 \cdots T^5_6$.
-- **Q:** Why are the angles cumulative in a planar arm?
-  - **A:** Each joint rotates relative to the previous link's frame, so the second link's world angle is $\theta_1 + \theta_2$.
-
-
 ## Links
 - Related: [[Jacobian]], [[Inverse Kinematics & DLS]], [[Frames & Rotations]]
 - Parent: [[00 Knowledge Map]]
 
 ---
 
-#flashcards
-
-What does forward kinematics compute?
-?
-Given joint angles q, it computes the end-effector pose (position + orientation) in the world frame.
-
-Write the FK formula for a 2-DOF planar arm.
-?
-x = l1·cos(θ1) + l2·cos(θ1+θ2), y = l1·sin(θ1) + l2·sin(θ1+θ2)
-
-Why is the second link's angle (θ1+θ2) and not just θ2?
-?
-Joint angles are cumulative — each is relative to the previous link's frame, so the world angle of link 2 is the sum of both joint angles.
-
-Name the four DH parameters.
-?
-a (link length), α (link twist), d (joint offset), θ (joint angle — variable for revolute joints).
-
-What is a homogeneous transform matrix?
-?
-A 4×4 matrix [[R, p],[0, 1]] where R is 3×3 rotation and p is 3D translation. Chains by matrix multiplication.

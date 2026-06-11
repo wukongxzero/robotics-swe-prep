@@ -8,13 +8,6 @@ tags: [linux, ipc, threading, system-design, concurrency, debugging, swe]
 
 # Linux, IPC & System Design
 
-> [!question] Explain it cold
-> *Before reading anything below, say or write the answer from memory.*
->
-> - What's the difference between a process and a thread?
-> - Name four IPC mechanisms and when you'd pick each one.
-> - What is priority inversion, and how do you fix it?
-> - Design a sensor-fusion node from scratch — what are the concurrency boundaries?
 
 ---
 
@@ -426,25 +419,6 @@ Latency budget breakdown → see [[Latency Budgets]].
 
 ---
 
-## Interview follow-ups
-
-- **Q: Difference between a mutex and a semaphore?**
-  - **A:** Mutex has ownership — only the thread that locks it can unlock it; the OS can boost its priority to prevent priority inversion. Semaphore has no ownership — any thread can signal (V) or wait (P) — useful for producer/consumer signaling. Use mutex for mutual exclusion of shared state; use semaphore (or condition_variable) for signaling.
-
-- **Q: How do you prevent priority inversion in a real-time control loop?**
-  - **A:** Use PI mutexes (`PTHREAD_PRIO_INHERIT`), which temporarily boost the lock-holder to the waiter's priority. Or avoid locks entirely on the hot path with lock-free ring buffers and atomics.
-
-- **Q: What's a data race vs. a race condition?**
-  - **A:** Data race: two threads access the same variable concurrently, at least one write, no synchronization — undefined behavior in C++. Race condition: a logic bug where the outcome depends on interleaving (can exist even with locks). All data races are UB; not all race conditions are data races.
-
-- **Q: How would you design a 1 kHz control loop in a ROS2 node?**
-  - **A:** Spawn a SCHED_FIFO thread (priority ~80), call `mlockall`, pre-allocate all buffers. Read sensor state from a lock-free ring buffer (written by a lower-priority sensor thread). Publish commands via iceoryx or a lock-free queue. Never call `malloc`, `new`, ROS2 logging (`printf` is OK), or anything that can block on that thread.
-
-- **Q: What happens if you call `malloc` in a real-time thread?**
-  - **A:** The allocator may `mmap` new pages (page fault, kernel call, non-deterministic latency). Or it may acquire an internal lock contended with another thread. Either breaks real-time guarantees. Pre-allocate everything before the RT loop starts.
-
-- **Q: What is false sharing and how do you fix it?**
-  - **A:** Two threads writing different variables that share a 64-byte cache line. Each write invalidates the other thread's cache entry, causing serial cache coherence traffic. Fix: `alignas(64)` to pad each hot variable to its own cache line.
 
 ---
 
@@ -457,60 +431,3 @@ Latency budget breakdown → see [[Latency Budgets]].
 
 ---
 
-#flashcards
-
-Process vs thread — key difference?
-?
-Processes have separate virtual address spaces (isolation: crash doesn't propagate). Threads share the same address space (cheaper to create, but a crash kills the whole process). ROS2 nodes = separate processes; callbacks = threads within a node.
-
-Name four IPC mechanisms and when to pick each.
-?
-Pipe: simple parent↔child stream. Unix socket: fast bidirectional same-host. POSIX shared memory: fastest, zero-copy for large data (iceoryx). Message queue: structured msgs with priority between processes.
-
-What is priority inversion and how do you fix it?
-?
-Low-priority thread holds a lock; high-priority thread blocks; medium-priority preempts the low one, starving the high-priority thread. Fix: PI mutex (PTHREAD_PRIO_INHERIT) boosts the lock-holder to the waiter's priority, or eliminate the lock with lock-free data structures.
-
-Four conditions for deadlock?
-?
-Mutual exclusion, hold-and-wait, no preemption, circular wait. Break circular wait by always acquiring locks in the same global order.
-
-Why can't you call malloc in a real-time thread?
-?
-malloc may mmap new pages (page fault → kernel trap, non-deterministic latency) or acquire an internal lock contended with another thread. Pre-allocate all memory before the RT loop.
-
-What does mlockall do and why is it needed for real-time?
-?
-Locks all current and future virtual pages into physical RAM, preventing page faults during the RT loop. Without it, the first access to a new stack frame or buffer causes a kernel trap with non-deterministic latency.
-
-What is false sharing?
-?
-Two threads write different variables that share a 64-byte cache line; each write invalidates the other's cache. Fix: pad variables with alignas(64) to put each on its own cache line.
-
-Mutex vs semaphore — when to use each?
-?
-Mutex: mutual exclusion with ownership — only the locking thread unlocks it; OS can do priority inheritance. Semaphore: signaling — no ownership, any thread can V or P. Use mutex for shared state protection; use semaphore/condition_variable for producer-consumer signaling.
-
-htop process states — what does D mean vs S?
-?
-S = sleeping (waiting for timer/I/O, normal). D = uninterruptible sleep (stuck in kernel I/O, bad — the process can't be killed). R = running. Z = zombie.
-
-How do you find which function in a ROS2 node is consuming the most CPU?
-?
-`perf record -g` while the node runs, then `perf report` (or generate a flamegraph). Sort by self CPU% to find the hot function.
-
-What does strace -c tell you and why is it useful for RT debugging?
-?
-Counts syscalls made by a process — type, count, time. Useful to find unexpected `futex` (lock contention), `mmap` (allocations), or `write` (logging) calls on a path that should be lock-free.
-
-How do you pin a ROS2 node to a specific CPU core?
-?
-`taskset -c 2 ros2 run my_pkg my_node`. For a running process: `taskset -cp 2 <pid>`. Combined with `isolcpus=2` in kernel boot params to fully dedicate the core.
-
-What is NUMA and when does it matter in robotics?
-?
-Non-Uniform Memory Access — on multi-socket or complex SoC systems, memory closer to a CPU node is faster (2-4×). On Jetson AGX or servers, bind control-loop process to NUMA node 0 with `numactl --cpunodebind=0 --membind=0` to avoid cross-node memory latency.
-
-What is the fastest workflow to debug "my ROS2 node keeps crashing"?
-?
-(1) `gdb -p <pid>` + `bt` for stack trace. (2) `valgrind --tool=memcheck` for heap corruption. (3) `htop` to check if it's OOM-killed (D state before dying).

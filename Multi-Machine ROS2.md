@@ -8,10 +8,6 @@ tags: [ros2, multi-machine, dds, network, distributed, jetson]
 
 # Multi-Machine ROS2
 
-> [!question] Explain it cold
-> - How do two machines communicate in ROS2 without any configuration?
-> - What is ROS_DOMAIN_ID and when do you change it?
-> - What breaks in multi-machine ROS2 and how do you debug it?
 
 ---
 
@@ -166,10 +162,3 @@ sudo ufw allow 7000:7100/udp   # DDS data
 
 ---
 
-#flashcards
-
-How do two ROS2 machines on the same network discover each other? ? DDS uses multicast UDP for automatic discovery — no ROS master needed. Nodes with the same ROS_DOMAIN_ID on the same network automatically see each other's topics, services, and actions.
-
-What is ROS_DOMAIN_ID and when do you change it? ? An integer (0-101) that isolates ROS2 networks. Nodes with different domain IDs cannot communicate. Change it when multiple robots share a network, or when CI systems shouldn't interfere with real robots.
-
-Camera image topics saturate WiFi — how do you fix it? ? Use image_transport with compressed transport (JPEG ~10x smaller than raw). Or reduce camera rate. Or run heavy processing on the robot and only send results (detections, costmaps) over the network rather than raw images.

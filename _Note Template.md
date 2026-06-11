@@ -8,12 +8,6 @@ tags: []
 
 # {{title}}
 
-> [!question] Explain it cold
-> *Before reading anything below, say or write the answer from memory. This is the rep that matters — the reference section is just the answer key.*
->
-> - What is it, in two sentences?
-> - When/why would you reach for it?
-> - What's the one thing that trips people up?
 
 ---
 
@@ -24,22 +18,9 @@ tags: []
 *The durable reference. Equations, parameter meanings, units.*
 
 
-## Interview follow-ups
-*The curveballs an interviewer asks after the surface answer. Write the question, then your answer.*
-- **Q:**
-  - **A:**
-
-
 ## Links
 - Related: [[ ]]
 - Parent: [[00 Knowledge Map]]
 
 ---
 
-#flashcards
-*Use the Spaced Repetition plugin format. One fact per card.*
-
-Question text here?
-?
-Answer text here.
-<!--SR:!2026-05-27,0,230-->

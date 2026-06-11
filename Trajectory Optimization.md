@@ -4,11 +4,6 @@
 
 # Trajectory Optimization
 
-> [!question] Explain it cold
-> 
-> - What does trajectory optimization solve, and how does it differ from MPC?
-> - Shooting vs collocation — what's the tradeoff?
-> - Why is it the backbone of modern motion planning for dynamic systems?
 
 ---
 
@@ -27,16 +22,6 @@ Trajectory optimization finds an **entire optimal motion** — a sequence of sta
 - **Solvers/tools**: NLP solvers (IPOPT, SNOPT) via modeling layers — [[acados OCS2 CasADi|CasADi]] for autodiff + NLP, acados for fast embedded, OCS2 for switched-system/whole-body.
 
 
-## Interview follow-ups
-
-- **Q:** Trajectory optimization vs MPC?
-    - **A:** Trajopt solves a full motion over a horizon (often offline) once; MPC solves a shorter horizon repeatedly online, applying the first control and re-solving — MPC is essentially trajopt in a receding-horizon feedback loop.
-- **Q:** Shooting vs collocation — which and why?
-    - **A:** Shooting optimizes controls and rolls out dynamics — few variables but ill-conditioned over long horizons. Collocation optimizes states and controls together with dynamics enforced as defect constraints between knots — more variables but much better conditioned, so it's the default for hard/long problems.
-- **Q:** How do the dynamics enter the optimization?
-    - **A:** As equality constraints — either via integration (shooting) or as defect constraints linking consecutive knot points (collocation). The optimizer can't violate physics.
-
-
 ## Links
 
 - Related: [[MPC & Virtual Fixtures]], [[Robot Dynamics Formulations]], [[Floating-Base & Whole-Body]], [[acados OCS2 CasADi]]
@@ -44,10 +29,3 @@ Trajectory optimization finds an **entire optimal motion** — a sequence of sta
 
 ---
 
-#flashcards
-
-Trajectory optimization vs MPC? ? Trajopt solves a full optimal motion over a horizon (often offline) once; MPC re-solves a shorter horizon online each step, applying the first control. MPC is trajopt in a receding-horizon loop.
-
-Direct shooting vs direct collocation? ? Shooting: optimize controls, integrate to get states — few variables but ill-conditioned over long horizons. Collocation: optimize states+controls with dynamics as defect constraints between knots — more variables, far better conditioned.
-
-How do dynamics enter a direct trajectory optimization? ? As constraints — via integration (shooting) or defect constraints between knot points (collocation) — so the optimizer cannot violate the physics.

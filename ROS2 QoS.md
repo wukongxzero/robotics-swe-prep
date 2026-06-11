@@ -4,11 +4,6 @@
 
 # ROS2 QoS
 
-> [!question] Explain it cold
-> 
-> - What is a QoS profile and what problem does it solve?
-> - Name the policies and what each controls.
-> - When does a publisher/subscriber pair _fail to connect_ even though both exist?
 
 ---
 
@@ -40,16 +35,6 @@ Subscriber's _requested_ QoS must be **no stronger** than the publisher's _offer
 - Same logic for durability and deadline. "Requesting more than is offered" breaks the match.
 
 
-## Interview follow-ups
-
-- **Q:** Your sensor publisher is running but the subscriber callback never fires. QoS is the suspect — what's the first thing you check?
-    - **A:** Reliability/durability compatibility. Classic case: sensor published `BEST_EFFORT`, subscriber defaulted to `RELIABLE`. Use `ros2 topic info -v` to see offered vs requested.
-- **Q:** Why `depth=1` for a 200 Hz IMU?
-    - **A:** I want the freshest sample, not a queue that grows under backpressure and feeds me stale data. Deep queues add latency for streaming sensors.
-- **Q:** What's `TRANSIENT_LOCAL` for?
-    - **A:** Latching — a late-joining subscriber immediately gets the last published value. Used for static transforms, maps, descriptions that don't republish.
-
-
 ## Links
 
 - Related: [[ROS2 Executors]], [[DDS & RMW]], [[ROS2 Comm Patterns]]
@@ -57,12 +42,3 @@ Subscriber's _requested_ QoS must be **no stronger** than the publisher's _offer
 
 ---
 
-#flashcards
-
-QoS compatibility rule between publisher and subscriber? ? The subscriber's requested QoS must be no stronger than the publisher's offered QoS. Sub can ask for less, never more.
-
-Pub BEST_EFFORT + Sub RELIABLE — do they communicate? ? No. The subscriber requested a stronger guarantee than the publisher offers — incompatible, no data flows.
-
-Which QoS settings for a 200 Hz IMU stream and why? ? BEST_EFFORT, KEEP_LAST, depth=1 — freshest sample matters more than every sample, and a shallow queue avoids stale-data latency under backpressure.
-
-What does TRANSIENT_LOCAL durability give you? ? Latching — late-joining subscribers immediately receive the last published sample. Used for maps, static transforms, robot_description.

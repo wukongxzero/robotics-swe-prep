@@ -8,10 +8,6 @@ tags: [ros2, testing, gtest, launch_testing, ci]
 
 # ROS2 Testing
 
-> [!question] Explain it cold
-> - What are the three levels of ROS2 testing?
-> - How do you write a unit test for a ROS2 C++ node?
-> - What does a launch test verify that a unit test can't?
 
 ---
 
@@ -170,10 +166,3 @@ colcon test --packages-select wall_e_bringup --pytest-args -k test_state_machine
 
 ---
 
-#flashcards
-
-Three levels of ROS2 testing and what each catches? ? Unit tests (gtest): pure logic, no ROS, fastest. Integration tests: nodes communicating, catches topic/service wiring bugs. Launch tests: full system bringup, catches startup failures and broken TF chains. Most teams only do unit tests — launch tests are the differentiator.
-
-How do you add a gtest to a ROS2 package CMakeLists.txt? ? Inside `if(BUILD_TESTING)`, call `find_package(ament_cmake_gtest REQUIRED)` then `ament_add_gtest(test_name test/test_file.cpp)` and `target_link_libraries(test_name your_lib)`.
-
-Command to run tests and see results for a specific package? ? `colcon test --packages-select <pkg>` then `colcon test-result --all --verbose`.

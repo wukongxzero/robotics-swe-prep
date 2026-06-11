@@ -6,11 +6,6 @@
 
 > [!warning] Research-direction tooling — learning, not yet used in anger These are the MPC/optimal-control toolchains scoped for the [[MPC & Virtual Fixtures|Kim project]] (Spring 2027). Frame as "the toolchain I'm picking up for the virtual-fixtures MPC work," not shipped experience.
 
-> [!question] Explain it cold
-> 
-> - What does each of the three tools do, and how do they relate?
-> - Why do you need a special toolchain for real-time MPC?
-> - Where does autodiff fit in?
 
 ---
 
@@ -30,15 +25,6 @@ Building real-time [[MPC & Virtual Fixtures|MPC]] / [[Trajectory Optimization|tr
 
 - **Kim project (planned)**: MPC-based virtual fixtures, simulation-only, using acados/OCS2/CasADi in [[Isaac Lab]]/[[MuJoCo & Gazebo|MuJoCo]]. This note is the toolchain map for that work — honest framing: learning these for the project, not prior production use.
 
-## Interview follow-ups
-
-- **Q:** Why not just use IPOPT/a generic NLP solver for MPC?
-    - **A:** Too slow for a control loop. MPC has exploitable structure — a banded/stagewise problem from the time horizon — and embedded solvers like acados exploit that sparsity and generate C code to solve within the control period. CasADi models and differentiates the problem; acados solves it fast.
-- **Q:** What does CasADi specifically give you?
-    - **A:** Symbolic modeling plus automatic differentiation — exact gradients/Jacobians/Hessians of your dynamics and cost, and interfaces to solvers. It removes hand-derived derivatives, which is where bugs live.
-- **Q:** When OCS2?
-    - **A:** Complex systems — switched dynamics, legged/whole-body MPC — where you want a framework with SLQ/DDP-family solvers built for that structure rather than rolling it yourself.
-
 
 ## Links
 
@@ -47,10 +33,3 @@ Building real-time [[MPC & Virtual Fixtures|MPC]] / [[Trajectory Optimization|tr
 
 ---
 
-#flashcards
-
-What does each of CasADi / acados / OCS2 do? ? CasADi: symbolic modeling + autodiff (exact derivatives, NLP interface). acados: fast embedded NMPC solver with C-code gen for real-time. OCS2: optimal-control framework for switched/whole-body systems.
-
-Why can't you use a generic NLP solver for real-time MPC? ? Too slow for the control loop. MPC has exploitable banded/stagewise structure from the time horizon; embedded solvers (acados) exploit sparsity and generate C code to solve within the control period.
-
-What does CasADi's autodiff remove the need for? ? Hand-derived gradients/Jacobians/Hessians — it generates exact derivatives of dynamics and cost symbolically, eliminating a common source of bugs.

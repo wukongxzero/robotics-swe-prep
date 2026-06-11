@@ -8,10 +8,6 @@ tags: [camera, pinhole, intrinsics, extrinsics, projection, calibration, stereo]
 
 # Camera Model & Projection
 
-> [!question] Explain it cold
-> - What is the pinhole camera model and what are intrinsic parameters?
-> - How do you project a 3D point into pixel coordinates?
-> - What does camera calibration actually compute?
 
 ---
 
@@ -159,12 +155,3 @@ A: 3D points project to wrong pixel positions. SLAM features mismatch, depth bac
 
 ---
 
-#flashcards
-
-Pinhole projection formula — 3D point (X,Y,Z) to pixel (u,v)? ? u = fx*(X/Z) + cx, v = fy*(Y/Z) + cy. Where fx,fy are focal lengths in pixels and cx,cy is the principal point (image center).
-
-What do camera intrinsics represent physically? ? fx,fy: focal length in pixels — how much a unit displacement in 3D maps to pixels. cx,cy: principal point — where the optical axis hits the image plane (usually center). Together they form the K matrix.
-
-How do you get a 3D point from a depth image pixel? ? Backproject: X=(u-cx)*depth/fx, Y=(v-cy)*depth/fy, Z=depth. This reverses the projection equation using the known depth value.
-
-What does camera calibration compute and what's a good reprojection error? ? Calibration finds the intrinsic matrix K and distortion coefficients [k1,k2,p1,p2,k3] from checkerboard images using cv2.calibrateCamera(). RMS reprojection error < 0.5 pixels = good calibration.

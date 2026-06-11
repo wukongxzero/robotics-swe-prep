@@ -4,12 +4,6 @@
 
 # Nav2 Stack
 
-> [!question] Explain it cold
-> 
-> - What does Nav2 do, and what are its major components?
-> - Global vs local planner — what's the split?
-> - What's a costmap, and why two of them?
-> - How does AMCL localize the robot?
 
 ---
 
@@ -124,18 +118,6 @@ See [[Kalman Filter]] for full math.
 
 ---
 
-## Interview follow-ups
-
-- **Q:** Global vs local planner?
-    - **A:** Global plans a full path to the goal over the global costmap (A*/Dijkstra-style), runs occasionally. Local/controller follows that path at control rate while avoiding live obstacles (DWB/TEB/MPPI), emitting velocity commands.
-- **Q:** Why two costmaps?
-    - **A:** Global covers the whole map for long-range planning; local is a small sensor-updated rolling window for immediate obstacle avoidance. Different scope, different update rate.
-- **Q:** Why behavior trees instead of a state machine?
-    - **A:** BTs make navigation logic composable and recoverable — recovery behaviors (clear costmap, spin, back up) slot in cleanly, and the tree is reconfigurable without rewriting control flow.
-- **Q:** What's costmap inflation?
-    - **A:** A cost buffer expanded around obstacles by the robot's radius so the planner keeps a safe margin and treats the robot as a point.
-- **Q:** How does AMCL differ from SLAM?
-    - **A:** AMCL localizes on a known map (particle filter, no map building). SLAM builds the map while localizing simultaneously. AMCL needs a pre-built map; SLAM creates one.
 
 ## Common failure modes
 
@@ -155,16 +137,3 @@ See [[Kalman Filter]] for full math.
 
 ---
 
-#flashcards
-
-Global vs local planner in Nav2? ? Global: full path to goal over the global costmap (A*/Dijkstra/Smac), runs occasionally. Local/controller: follows the path at control rate while avoiding live obstacles (DWB/TEB/MPPI), emits velocity commands.
-
-Why does Nav2 use two costmaps? ? Global costmap = whole map for long-range planning; local costmap = small sensor-updated rolling window for immediate obstacle avoidance. Different scope and update rate.
-
-Why behavior trees over a flat state machine in Nav2? ? BTs make navigation composable and recoverable — recovery behaviors (clear costmap, spin, back up) slot in cleanly and the logic reconfigures without rewriting control flow.
-
-What is costmap inflation? ? A cost buffer grown around obstacles by the robot's radius, so the planner keeps a safe margin and can treat the robot as a point. Too small → clips walls. Too large → narrow passages become impassable.
-
-How does AMCL localize a robot? ? Particle filter: scatter N particles (pose hypotheses), propagate with odometry + noise (motion model), weight each by how well its predicted LiDAR scan matches actual scan against map (sensor model), resample toward high-weight particles. Adaptive N — more when uncertain, fewer when localized.
-
-What is the TF tree for Nav2 and what publishes each link? ? map→odom: AMCL (can jump on corrections). odom→base_link: odometry/EKF (continuous, no jumps). base_link→sensors: robot_state_publisher from URDF. Never confuse map and odom — odom is continuous, map has pose corrections.

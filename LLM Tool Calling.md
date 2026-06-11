@@ -4,11 +4,6 @@
 
 # LLM Tool Calling
 
-> [!question] Explain it cold
-> 
-> - What is LLM tool/function calling and how does it bridge language to action?
-> - How do you run an LLM on an edge robot, and what's the catch?
-> - How do you keep an LLM's output safe to feed a real actuator?
 
 ---
 
@@ -24,16 +19,6 @@ LLM tool calling = the model, instead of replying in prose, emits a **structured
 - **Safety layering**: the LLM output is a _suggestion_ that passes through validation, bounds-checking, and the [[ROS2 Node & Lifecycle|state machine]] before any motion. Never wire model output straight to actuators — the deterministic safety layer sits between.
 
 
-## Interview follow-ups
-
-- **Q:** How does an LLM control a robot safely?
-    - **A:** It doesn't directly. It does natural-language → structured tool call against a vetted action schema; the runtime validates the call, bounds-checks args, and routes through the state machine. The LLM proposes intent; a deterministic layer executes only safe, validated commands.
-- **Q:** Why run the model on-device instead of the cloud?
-    - **A:** Latency and connectivity independence — a robot can't depend on a network round-trip for commands. The cost is a smaller, weaker model and competing for the Jetson's compute, so I used a 3b model and kept the LLM off the real-time path.
-- **Q:** How do you make LLM output parseable for control?
-    - **A:** Constrain it — function-calling schemas or JSON/grammar-constrained decoding — so the output is a finite, typed, validatable command set rather than free text.
-
-
 ## Links
 
 - Related: [[ROS2 Node & Lifecycle]], [[YOLOv8 Detection]], [[Docker for ROS]], [[Jetson Orin Setup]], [[Safety-Critical Architecture]]
@@ -41,10 +26,3 @@ LLM tool calling = the model, instead of replying in prose, emits a **structured
 
 ---
 
-#flashcards
-
-What is LLM tool calling and how does it bridge language to robot action? ? The model emits a structured function call (name + typed args, JSON) from a vetted tool schema instead of prose. It's a natural-language front-end that maps intent to a constrained, validatable action set — not the controller itself.
-
-How do you keep LLM-driven robot commands safe? ? The LLM only proposes a structured call; a deterministic layer validates, bounds-checks, and routes it through the state machine before any motion. Model output never wires straight to actuators.
-
-Why run the LLM on-device (Ollama, 3b model) and what's the catch? ? Latency and connectivity independence — no network round-trip for commands. The catch: smaller/weaker model and competition for the Jetson's compute, so keep it off the real-time path.

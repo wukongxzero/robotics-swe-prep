@@ -4,11 +4,6 @@
 
 # Probability & Optimization
 
-> [!question] Explain it cold
-> 
-> - Why is a Gaussian the default noise model, and what two parameters define it?
-> - Convex vs non-convex — why do you care?
-> - Gradient descent vs a QP solver — when each?
 
 ---
 
@@ -37,15 +32,6 @@ Two math toolkits underpinning estimation and control. **Probability** models un
 - **Control**: [[LQR]] (quadratic cost), [[MPC & Virtual Fixtures|MPC]] (QP), [[Trajectory Optimization]] (NLP).
 - **ML**: [[Lagrangian Neural Networks|LNN]]/[[PINN Contact Estimation|PINN]] training is gradient-based non-convex optimization.
 
-## Interview follow-ups
-
-- **Q:** Why model noise as Gaussian?
-    - **A:** Central limit theorem (aggregated noise tends Gaussian) and closure under linear operations — a Gaussian through a linear system stays Gaussian, defined by just mean and covariance. That's what makes the Kalman filter tractable.
-- **Q:** Why care if a problem is convex?
-    - **A:** Convex problems have a single global optimum and are solved reliably and fast; non-convex ones can trap solvers in local minima with no global guarantee. Formulating control as a convex QP (like MPC) is what makes it real-time solvable.
-- **Q:** When QP vs general NLP?
-    - **A:** QP (quadratic cost, linear constraints) is convex and fast — linear MPC and whole-body control use it. NLP handles nonlinear dynamics/costs (nonlinear MPC, trajopt) via SQP/interior-point, slower and needing gradients.
-
 
 ## Links
 
@@ -54,10 +40,3 @@ Two math toolkits underpinning estimation and control. **Probability** models un
 
 ---
 
-#flashcards
-
-Why is the Gaussian the default noise model? ? Central limit theorem (aggregated noise tends Gaussian) + closure under linear operations (Gaussian through a linear system stays Gaussian, defined by mean and covariance) — which makes the Kalman filter tractable.
-
-Convex vs non-convex — why does it matter? ? Convex problems have a single global optimum, solved reliably and fast; non-convex can trap solvers in local minima with no global guarantee. Formulating control as a convex QP makes it real-time solvable.
-
-QP vs NLP in robotics? ? QP (quadratic cost + linear constraints, convex, fast): linear MPC, whole-body control. NLP (nonlinear): nonlinear MPC, trajectory optimization — via SQP/interior-point, needs gradients.

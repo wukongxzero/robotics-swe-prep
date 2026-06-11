@@ -8,10 +8,6 @@ tags: [point-cloud, pcl, icp, voxel, lidar, slam, perception]
 
 # Point Cloud Processing
 
-> [!question] Explain it cold
-> - What is a point cloud and how is it generated from a depth camera?
-> - What does ICP do and when does it fail?
-> - What is a voxel grid and why do you downsample?
 
 ---
 
@@ -158,10 +154,3 @@ Eigen::Matrix4f transform = icp.getFinalTransformation();
 
 ---
 
-#flashcards
-
-What is ICP and when does it fail? ? ICP (Iterative Closest Point) iteratively matches nearest-neighbor point pairs and minimizes distance to align two clouds. Fails when: poor initial alignment (local minimum), too little overlap, planar/symmetric environments (degenerate), or excessive noise. Point-to-plane ICP is more robust than point-to-point.
-
-Why downsample a point cloud with a voxel grid? ? Raw point clouds have millions of points — too slow for real-time registration and mapping. Voxel grid keeps one representative point per cubic cell, reducing size 10-100x while preserving shape. RTAB-Map, ICP, and Nav2 voxel layers all use this.
-
-How do you backproject a depth image pixel to a 3D point? ? X = (u - cx) * depth / fx, Y = (v - cy) * depth / fy, Z = depth. This is the inverse of the pinhole projection — requires camera intrinsics (fx, fy, cx, cy) from camera_info.

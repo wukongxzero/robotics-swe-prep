@@ -6,11 +6,6 @@
 
 > [!star] You debugged this — strong "I found subtle ML bugs" story Fixing the LNN's structure-violating bugs is a sharp story: it shows you understand _both_ the physics and the ML, and can find errors that break the math invariants silently. Most candidates can't.
 
-> [!question] Explain it cold
-> 
-> - What is an LNN and what does it preserve that a vanilla net doesn't?
-> - What were the three bugs you fixed, and why did each break the physics?
-> - Why did free-flight converge but contact underfit?
 
 ---
 
@@ -35,18 +30,6 @@ A Lagrangian Neural Network learns a system's **Lagrangian** $L = T - V$ with a 
 - **Contact LNN underfit** — only **28 collision samples**, and contact dynamics are **non-smooth/discontinuous** ([[Contact Modeling]]), violating the smoothness the Euler–Lagrange + Hessian machinery relies on. Sparse data + non-smooth physics = the LNN's worst case. This isn't a bug, it's the structural limitation.
 
 
-## Interview follow-ups
-
-- **Q:** What does an LNN preserve that a normal network doesn't?
-    - **A:** It learns the Lagrangian and derives dynamics via Euler–Lagrange, so energy conservation and the equations of motion hold by construction — it can't predict physically impossible, energy-violating trajectories the way a black-box regressor can off-distribution.
-- **Q:** You normalized inputs with StandardScaler and the model broke — why?
-    - **A:** The Euler–Lagrange derivation assumes the network's coordinates are the physical ones. An affine scaling makes the learned Lagrangian correspond to scaled coordinates, so the derived dynamics are inconsistent with the real system. The physics structure and the preprocessing fought each other.
-- **Q:** Why did a discrete collision flag corrupt training?
-    - **A:** The LNN takes second derivatives (Hessian of L) via autodiff; differentiating w.r.t. a discrete/non-smooth input gives meaningless second derivatives. Discrete contact state shouldn't flow through the smooth Lagrangian path.
-- **Q:** Why did contact underfit but free-flight converge?
-    - **A:** Free-flight is smooth and conservative — ideal for the LNN. Contact is non-smooth/discontinuous and I had only 28 samples; the smoothness assumption behind Euler–Lagrange and the Hessian breaks down, so it underfits. Structural limit, not a code bug.
-
-
 ## Links
 
 - Related: [[Robot Dynamics Formulations]], [[Contact Modeling]], [[PINN Contact Estimation]], [[SymPy & scipy]]
@@ -54,12 +37,3 @@ A Lagrangian Neural Network learns a system's **Lagrangian** $L = T - V$ with a 
 
 ---
 
-#flashcards
-
-What does a Lagrangian Neural Network preserve, and how? ? Energy conservation and the equations of motion — it learns the Lagrangian L=T−V and derives dynamics via Euler–Lagrange, so physics structure holds by construction (unlike a black-box next-state regressor).
-
-Why did StandardScaler break the LNN? ? Euler–Lagrange assumes the net's coordinates are the physical ones; an affine scaling makes the learned Lagrangian correspond to scaled coordinates, so the derived dynamics become inconsistent with the real system.
-
-Why did a discrete collision flag corrupt the LNN's training? ? The LNN takes the Hessian of L via autodiff; differentiating w.r.t. a discrete/non-smooth input gives meaningless second derivatives. Discrete contact state must not flow through the smooth Lagrangian path.
-
-Why did the contact LNN underfit while free-flight converged (MSE ~1.12)? ? Free-flight is smooth/conservative — ideal for the LNN. Contact is non-smooth/discontinuous with only 28 samples, violating the smoothness Euler–Lagrange and the Hessian rely on. A structural limit, not a bug.

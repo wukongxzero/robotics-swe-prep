@@ -6,11 +6,6 @@
 
 > [!star] Interviewer will push here — full predict/update below The Kalman filter is the "I fuse noisy sensors into a clean state estimate" story. Know the two-step cycle, the gain, and what the covariances mean, cold.
 
-> [!question] Explain it cold
-> 
-> - What problem does the Kalman filter solve?
-> - Write the predict and update steps.
-> - What does the Kalman gain actually balance? What do Q and R mean here?
 
 ---
 
@@ -93,17 +88,6 @@ $$\chi_0 = \hat{x}, \quad \chi_i = \hat{x} + (\sqrt{(n+\lambda)P})_i, \quad \chi
 All in `/home/wukong/Robot_practice/core_robotics_programs/`
 
 
-## Interview follow-ups
-
-- **Q:** What does the Kalman gain balance?
-    - **A:** Prediction uncertainty ($P^-$) against measurement noise ($R$). High sensor noise → gain near zero, trust the model; high prediction uncertainty → high gain, trust the measurement. It's the minimum-variance blend.
-- **Q:** Walk me through the two steps.
-    - **A:** Predict: propagate state through A (plus input B·u) and grow covariance by Q. Update: compute gain from $P^-$ and R, correct the state by gain × innovation, shrink covariance by $(I-KH)$.
-- **Q:** What if the system is nonlinear?
-    - **A:** EKF — linearize about the current estimate with Jacobians each step. UKF if the nonlinearity is strong, using sigma points to avoid linearization error.
-- **Q:** Kalman vs complementary filter for the gimbal — why pick one?
-    - **A:** Complementary filter is cheap, tuning-by-one-constant, great when I just need to fuse a fast-but-drifting gyro with a slow-but-stable accelerometer. Kalman is principled, models noise covariances, optimal under Gaussian assumptions, and extends to more states — at higher compute and tuning cost. On an ATmega at 200 Hz that tradeoff is real.
-
 ## Computational cost & the inversion problem
 
 The update step requires inverting $(HP^-H^T + R)$ — an $m \times m$ matrix where $m$ = number of measurements. Cost is $O(m^3)$.
@@ -127,24 +111,3 @@ The update step requires inverting $(HP^-H^T + R)$ — an $m \times m$ matrix wh
 
 ---
 
-#flashcards
-
-What does the Kalman filter optimally fuse, and what does it track besides the estimate? ? A model prediction and a noisy measurement, weighted by their uncertainties (minimum-variance under Gaussian noise). It also tracks the estimate's covariance P.
-
-The two predict-step equations? ? x̂⁻ = Ax̂ + Bu (propagate state); P⁻ = APAᵀ + Q (grow covariance by process noise Q).
-
-Kalman gain formula and what it balances? ? K = P⁻Hᵀ(HP⁻Hᵀ + R)⁻¹. It balances prediction uncertainty P⁻ against measurement noise R — high R → trust model, high P⁻ → trust measurement.
-
-In the Kalman filter, what are Q and R (vs LQR)? ? Here Q = process noise covariance (model trust), R = measurement noise covariance (sensor trust) — NOT LQR's state/effort weights, despite the same letters.
-
-EKF vs UKF? ? EKF linearizes the nonlinear model with Jacobians each step; UKF propagates sigma points through the nonlinearity (better for strong nonlinearity, no Jacobians).
-
-EKF predict step — what's different from linear KF? ? State: x = f(x) — propagate through the NONLINEAR function directly. Covariance: P = FPFᵀ + Q — propagate through the JACOBIAN F = ∂f/∂x evaluated at current x. Linear KF uses A everywhere; EKF uses f(x) for state and F (Jacobian) for covariance.
-
-What are UKF sigma points and why 2n+1? ? Carefully chosen sample points around the current estimate: 1 center point + n points in each ± direction of the covariance square root. 2n+1 total captures the mean and spread without Jacobians. Each is pushed through f(x) directly.
-
-When do you pick UKF over EKF? ? When the nonlinearity is strong enough that first-order linearization (EKF) introduces significant error — e.g., large angle swings, highly curved trajectories. UKF captures higher-order effects at the cost of 2n+1 function evaluations per step instead of 1.
-
-What is S (innovation covariance) in the update step? ? S = H·P⁻·Hᵀ + R — the total expected variance of the measurement surprise. H·P⁻·Hᵀ is uncertainty projected into sensor space; +R adds sensor noise. K is normalized by S.
-
-What is the computational cost of the Kalman update inversion, and what are the fixes? ? Inverting (HP⁻Hᵀ+R) costs O(m³) where m = number of measurements. Fixes: Joseph form (numerical stability), square root filter (propagate √P), information filter (inverse covariance space), or sequential scalar updates (avoid matrix inversion entirely).

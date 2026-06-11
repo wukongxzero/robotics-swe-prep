@@ -6,11 +6,6 @@
 
 > [!star] Hands-on (control layer) + domain (surgeon-facing) — flagship pattern The master-slave teleop pattern is the heart of surgical robotics and connects directly to your FENCE-BOT VR pipeline. Provenance: hands-on for the control/comms; domain-level for the surgeon-ergonomics specifics.
 
-> [!question] Explain it cold
-> 
-> - What is master-slave teleoperation?
-> - What does motion scaling do, and why is it essential in surgery?
-> - What is tremor filtering and how does it relate to the control loop?
 
 ---
 
@@ -27,16 +22,6 @@ Teleoperation maps a human operator's motion (master device) onto a remote/const
 - **Latency is safety-critical**: the master-slave loop must be low-latency and deterministic, or the surgeon feels lag/instability — which is _why_ the [[iceoryx Zero-Copy|zero-copy]] / [[Real-Time Determinism|real-time]] work matters here specifically.
 
 
-## Interview follow-ups
-
-- **Q:** Why is motion scaling important in surgery?
-    - **A:** It converts coarse hand motion into fine instrument motion — the surgeon moves several mm, the tool moves one — enabling precision beyond unaided human dexterity for delicate tissue. It's a gain in the master-slave mapping with outsized clinical value.
-- **Q:** What's tremor filtering and what's its cost?
-    - **A:** Filtering out the involuntary ~8–12 Hz hand tremor before commanding the instrument. The cost is added phase lag/latency, which eats into the teleop loop's stability margin — so it has to be budgeted against responsiveness.
-- **Q:** Why is latency such a big deal in surgical teleop?
-    - **A:** The surgeon is in a closed feedback loop with the instrument (and haptics); lag makes it feel sluggish or unstable and is a safety issue. That's the direct motivation for deterministic, low-latency comms — zero-copy, real-time dispatch.
-
-
 ## Links
 
 - Related: [[Multi-Arm Laparoscopy]], [[VR Teleop Pipeline]], [[Force Feedback & Haptics]], [[Latency Budgets]], [[Virtual Fixtures]], [[iceoryx Zero-Copy]]
@@ -44,10 +29,3 @@ Teleoperation maps a human operator's motion (master device) onto a remote/const
 
 ---
 
-#flashcards
-
-What is motion scaling and why does surgery need it? ? The slave instrument moves a fraction of the master's motion (e.g. 3:1) — converting coarse hand motion into fine instrument motion for precision beyond unaided dexterity. A mapping gain with large clinical effect.
-
-What is tremor filtering and what does it cost? ? Low-pass/notch removal of the ~8–12 Hz physiological hand tremor before commanding the instrument. Cost: added phase lag/latency that eats teleop stability margin — budgeted against responsiveness.
-
-Why is low, deterministic latency safety-critical in surgical teleop? ? The surgeon is in a closed feedback loop (motion + haptics) with the instrument; lag makes it feel sluggish/unstable — a safety issue. This motivates zero-copy, real-time-deterministic comms.

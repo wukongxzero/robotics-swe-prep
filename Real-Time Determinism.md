@@ -6,11 +6,6 @@
 
 > [!star] Differentiator territory "Real-time" in surgical robotics means _predictable_, not _fast_. This is the conceptual spine connecting iceoryx, control loops, and safety. Own it cold.
 
-> [!question] Explain it cold
-> 
-> - What does "real-time" actually mean? (Hint: not "fast.")
-> - Hard vs soft real-time — example of each.
-> - What is jitter, and why is it worse than latency for a control loop?
 
 ---
 
@@ -28,16 +23,6 @@ Real-time means **deterministic timing** — the system guarantees a response wi
 - **Priority inversion**: a low-priority task holding a lock blocks a high-priority task. Fix: priority inheritance / ceiling protocols. (Mars Pathfinder is the classic war story.)
 
 
-## Interview follow-ups
-
-- **Q:** Is a 1 GHz CPU more real-time than a 100 MHz MCU?
-    - **A:** Not necessarily. Real-time is about bounded, predictable response, not raw speed. A simple MCU with no OS jitter can be _more_ deterministic than a fast CPU running a general-purpose OS.
-- **Q:** Why is dynamic allocation banned on real-time paths?
-    - **A:** malloc can take unbounded time (fragmentation, lock contention, syscalls) and can fail — non-deterministic. Pre-allocate everything up front.
-- **Q:** What's priority inversion and how do you prevent it?
-    - **A:** A high-priority task blocked by a low-priority task holding a shared lock. Prevent with priority inheritance or priority-ceiling protocols on the mutex.
-
-
 ## Links
 
 - Related: [[iceoryx Zero-Copy]], [[ROS2 Executors]], [[Watchdog Timers]], [[Safety-Critical Architecture]], [[Latency Budgets]]
@@ -45,12 +30,3 @@ Real-time means **deterministic timing** — the system guarantees a response wi
 
 ---
 
-#flashcards
-
-What does "real-time" actually guarantee? ? A bounded, predictable response within a deadline every time — determinism, not raw speed.
-
-Latency vs jitter — which hurts a fixed-dt control loop more, and why? ? Jitter (variance in latency). The loop's discretization assumes a fixed dt; wandering dt corrupts the control math even if average latency is fine.
-
-Why is malloc banned on real-time hot paths? ? It can take unbounded time and may fail (fragmentation, lock contention) — non-deterministic. Pre-allocate instead.
-
-What is priority inversion and the fix? ? A high-priority task is blocked by a low-priority task holding a shared lock; fix with priority inheritance or priority-ceiling protocols.

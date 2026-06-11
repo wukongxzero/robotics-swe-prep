@@ -11,13 +11,6 @@ tags: [ros2, iceoryx, zero-copy, real-time, differentiator]
 > [!star] Differentiator territory
 > Most RSE candidates have *used* ROS2 topics. Far fewer have run **iceoryx zero-copy over DDS in production** on a latency-critical control path. This note should be the most fluent one in the vault — it's the Articulus story that separates you.
 
-> [!question] Explain it cold
-> *Before reading anything below, say or write the answer from memory.*
->
-> - What is zero-copy and what cost does it eliminate?
-> - How does iceoryx achieve it (the actual mechanism)?
-> - What are the API calls a publisher makes, in order?
-> - When would you NOT use it?
 
 ---
 
@@ -149,31 +142,6 @@ target_link_libraries(my_node
 
 ---
 
-## Interview follow-ups
-
-- **Q: What is "zero" in zero-copy?**
-  - **A:** Zero *copies* of the payload between producer and consumer. Publisher writes once into shared memory; all subscribers read that same memory. Eliminates: serialize → copy → transport → deserialize.
-
-- **Q: Why is latency constant with payload size?**
-  - **A:** You transfer a pointer/handle into the shared-memory chunk, not the bytes. A 1 KB and a 10 MB message take the same time to "send" — nothing is moved.
-
-- **Q: What's RouDi and what does it do at runtime?**
-  - **A:** The iceoryx daemon — Routing and Discovery. It allocates and manages the POSIX shared-memory segments and brokers pub/sub connections. Critically, it is *not* in the hot data path — the data moves directly between publisher and subscriber via the segment; RouDi only manages the bookkeeping and cleanup.
-
-- **Q: Walk me through the publisher API calls.**
-  - **A:** `offer()` → per-message: `loan()` gets a chunk pointer, write into it, `publish()` enqueues the pointer for subscribers. If `loan()` returns an error (pool exhausted), handle it — don't just ignore `expected<>`.
-
-- **Q: How does a subscriber avoid busy-polling?**
-  - **A:** Use a WaitSet (blocks until any attached object has data, reactor pattern) or a Listener (attaches a callback fired in a background thread). Never spin on `take()` in a loop.
-
-- **Q: Why can't you use iceoryx for cross-machine communication?**
-  - **A:** It's POSIX shared memory — a hardware-level shared address space. That only exists within a single host. For cross-machine you'd still use DDS (with UDP/TCP); iceoryx handles the on-host hot path.
-
-- **Q: What constraint does iceoryx impose on message types, and why?**
-  - **A:** Fixed-size, POD-like — no internal heap pointers. The memory layout must be interpretable by any process that maps the segment; a pointer valid in one process's heap is garbage in another's address space.
-
-- **Q: When would you NOT use iceoryx?**
-  - **A:** Cross-machine comms, variable-length/heap-heavy messages (e.g. `std::vector` inside the message), low-rate small messages where copy cost is negligible and RouDi operational overhead isn't worth it, or anywhere you can't guarantee RouDi is running.
 
 ---
 
@@ -186,40 +154,3 @@ target_link_libraries(my_node
 
 ---
 
-#flashcards
-
-What does iceoryx zero-copy eliminate from the message path?
-?
-Serialization, the payload copy, transport, and deserialization — the publisher writes once into shared memory and all subscribers read that same chunk by reference.
-<!--SR:!2026-05-27,0,230-->
-
-Why is iceoryx transfer latency independent of message size?
-?
-You transfer a pointer to a shared-memory chunk, not the bytes — so payload size doesn't affect send time.
-<!--SR:!2026-05-27,0,230-->
-
-What is RouDi and what does it NOT do?
-?
-RouDi (Routing and Discovery) manages POSIX shared-memory segments and brokers pub/sub connections. It is NOT in the hot data path — data moves directly between processes; RouDi only handles bookkeeping and cleanup.
-<!--SR:!2026-05-28,1,230-->
-
-Walk through the publisher API calls in order.
-?
-`offer()` once; then per-message: `loan()` → write into chunk → `publish()`. Handle the `expected<>` error from `loan()` (pool can exhaust).
-<!--SR:!2026-05-27,0,230-->
-
-What are WaitSet and Listener, and why do you need them?
-?
-WaitSet (reactor): blocks until any attached object has data, returns a notification vector — one thread handles many topics. Listener (proactor): fires a callback in a background thread per event. Both avoid busy-polling `take()`.
-
-What constraints does iceoryx impose on message types and deployment?
-?
-Fixed-size / POD-like (no internal heap pointers — layout must be valid across process address spaces), and same-host only (POSIX shared memory, not network transport).
-
-How does rmw_iceoryx integrate iceoryx into ROS2?
-?
-Swaps the RMW layer: `RMW_IMPLEMENTATION=rmw_iceoryx_cpp`. DDS handles discovery; iceoryx handles the actual data movement via its untyped API. Requires fixed-size message types.
-
-When would you NOT use iceoryx?
-?
-Cross-machine comms, variable-length/heap-heavy messages, low-rate small messages where copy cost is negligible, or when you can't guarantee RouDi is running.

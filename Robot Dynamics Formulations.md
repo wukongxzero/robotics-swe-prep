@@ -4,11 +4,6 @@
 
 # Robot Dynamics Formulations
 
-> [!question] Explain it cold
-> 
-> - Write the manipulator equation of motion and name each term.
-> - Lagrangian vs Newton–Euler vs Hamiltonian — what's each good for?
-> - What's the difference between forward and inverse dynamics?
 
 ---
 
@@ -37,16 +32,6 @@ $$M(q)\ddot{q} + C(q,\dot{q})\dot{q} + g(q) = \tau$$
 - **Forward dynamics**: given $\tau$, find resulting $\ddot q$ (solve $M^{-1}(\tau - C\dot q - g)$). Used for **simulation** (then integrate). This is what physics engines like [[MuJoCo & Gazebo|MuJoCo]] / Isaac do.
 
 
-## Interview follow-ups
-
-- **Q:** Write the equation of motion and explain the terms.
-    - **A:** $M(q)\ddot q + C(q,\dot q)\dot q + g(q) = \tau$ — inertia times acceleration, plus velocity-dependent Coriolis/centrifugal, plus gravity, equals applied torque. External forces enter as $J^TF$.
-- **Q:** Lagrangian vs Newton–Euler — when each?
-    - **A:** Lagrangian (energy-based) to _derive_ clean symbolic equations and for analysis; Newton–Euler (recursive force balance) for _efficient real-time_ computation — it's the O(n) workhorse for inverse dynamics.
-- **Q:** Forward vs inverse dynamics?
-    - **A:** Inverse: motion → required torque (control/feedforward). Forward: torque → resulting acceleration (simulation). Simulators do forward dynamics then integrate.
-
-
 ## Links
 
 - Related: [[Jacobian]], [[Lagrangian Neural Networks]], [[Floating-Base & Whole-Body]], [[Contact Modeling]], [[MPC & Virtual Fixtures]], [[Trajectory Optimization]]
@@ -54,12 +39,3 @@ $$M(q)\ddot{q} + C(q,\dot{q})\dot{q} + g(q) = \tau$$
 
 ---
 
-#flashcards
-
-Write the manipulator equation of motion and name the terms. ? M(q)q̈ + C(q,q̇)q̇ + g(q) = τ: inertia matrix × acceleration + Coriolis/centrifugal + gravity = applied torque (external forces add JᵀF).
-
-Lagrangian vs Newton–Euler — when do you use each? ? Lagrangian (energy, T−V) to derive clean symbolic EOM and for analysis; Newton–Euler (recursive force balance) for efficient O(n) real-time inverse dynamics.
-
-Forward vs inverse dynamics? ? Inverse: desired motion → required torque (control/feedforward). Forward: torque → acceleration q̈ = M⁻¹(τ − Cq̇ − g) (simulation, then integrate).
-
-Why do all three formulations agree? ? They derive the same equations of motion from different starting points (energy / force balance / phase space); they differ in derivation path and computational efficiency, not physics.

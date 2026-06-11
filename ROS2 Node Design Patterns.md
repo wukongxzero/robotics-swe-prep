@@ -4,11 +4,6 @@
 
 # ROS2 Node Design Patterns
 
-> [!question] Explain it cold
->
-> - What is the canonical structure of a well-written ROS2 C++ node?
-> - How do you safely share data between a subscriber callback and a timer?
-> - When do you need a background thread, and how do you manage its lifetime?
 
 ---
 
@@ -333,24 +328,3 @@ def generate_launch_description():
 
 ---
 
-#flashcards
-
-What is the canonical structure of a ROS2 C++ node? ? Class inherits rclcpp::Node. Constructor: declare params, create subscriptions/publishers/timers. Callbacks: short, lock mutex, store data. Control loop in timer. RAII for hardware. main() only does init/spin/shutdown.
-<!--SR:!2026-05-27,0,230-->
-
-How do you safely share data between a ROS2 subscriber callback and a timer? ? std::mutex + std::lock_guard in both the callback (write) and the timer (read). Also use a bool flag (new_data_) so the timer knows whether data has been updated since the last tick.
-<!--SR:!2026-05-30,3,250-->
-
-Why does a QoS mismatch silently drop all messages? ? ROS2 DDS matches subscribers to publishers only if QoS is compatible. Reliable publisher won't match best_effort subscriber. No error is thrown — the subscription just receives nothing. Always explicitly match QoS on both sides.
-
-What pattern do you use when you need to read from serial/hardware blocking in a ROS2 node? ? Background thread with a running_ bool flag. Thread calls read() in a loop. Destructor sets running_=false, waits briefly, then closes the hardware. Publishers called from the thread are safe — rclcpp publishers are thread-safe.
-
-What does a mutex protect — the mutex itself or the data? ? The DATA — latest_pose_, new_data_, etc. The mutex is the lock mechanism, not the thing being protected. "Protecting the mutex" is a common misstatement.
-
-What is RAII? Give a concrete ROS2 example. ? Resource Acquisition Is Initialization — a resource is tied to object lifetime: acquired in constructor, released in destructor. Example: serial port fd_ opened in MegaNode constructor, closed in destructor. No explicit cleanup needed elsewhere.
-
-What is the correct destructor order for a node with a background read thread? ? (1) Set running_=false to signal the thread. (2) Wait for it to exit (join or sleep). (3) Stop hardware safely. (4) Close the file descriptor. Closing fd_ first causes the thread to read() on a closed handle — undefined behavior.
-
-Why does the new_data_ flag exist in the subscriber+timer pattern? ? Prevents sending stale data every tick. Without it, the 50Hz timer acts on the last received message every cycle even if no new message arrived. The flag resets to false after each use so the timer skips ticks with no fresh data.
-
-QoS compatibility direction — which side must be more restrictive? ? The publisher sets the contract; the subscriber must match or be more permissive. A best_effort subscriber won't match a reliable publisher — subscriber receives nothing silently. Fix: match QoS explicitly on both sides.

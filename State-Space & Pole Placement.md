@@ -4,11 +4,6 @@
 
 # State-Space & Pole Placement
 
-> [!question] Explain it cold
-> 
-> - Write the state-space form and say what each matrix is.
-> - What do controllability and observability mean, and how do you check them?
-> - What does pole placement actually let you choose, and what's its limitation vs LQR?
 
 ---
 
@@ -30,16 +25,6 @@ With full-state feedback $u = -Kx$, the closed loop becomes $\dot{x} = (A - BK)x
 - **Limitation**: pole placement says nothing about _cost_. Aggressive poles may demand impossible control effort. [[LQR]] fixes this by optimizing a cost instead of guessing poles.
 
 
-## Interview follow-ups
-
-- **Q:** You can't place all the poles — why?
-    - **A:** The system isn't fully controllable — the controllability matrix is rank-deficient, so some modes can't be moved by the input.
-- **Q:** Pole placement vs LQR — when do you pick which?
-    - **A:** Pole placement when I have specific dynamic targets and a low-order system. LQR when I want a principled tradeoff between state error and control effort rather than hand-guessing pole locations that might demand unrealistic actuation.
-- **Q:** Why do you need observability for the gimbal?
-    - **A:** I don't measure the full state directly (rate vs angle); I estimate it via the complementary filter / Kalman. That estimation requires the system to be observable from the available outputs.
-
-
 ## Links
 
 - Related: [[LQR]], [[Kalman Filter]], [[PID Control]], [[Complementary Filter]], [[Real-Time Determinism]]
@@ -47,12 +32,3 @@ With full-state feedback $u = -Kx$, the closed loop becomes $\dot{x} = (A - BK)x
 
 ---
 
-#flashcards
-
-State-space form and what each matrix means? ? ẋ = Ax + Bu, y = Cx + Du. A = dynamics, B = input, C = output, D = feedthrough. Closed loop with u = −Kx gives ẋ = (A−BK)x.
-
-How do you check controllability, and what does it gate? ? Rank of [B AB A²B … Aⁿ⁻¹B] must equal n. If rank-deficient, you can't place all closed-loop poles / steer all modes.
-
-What sets the closed-loop dynamics in full-state feedback? ? The eigenvalues (poles) of (A−BK): negative real part = stable, further left = faster, imaginary part = oscillation.
-
-Pole placement's key limitation vs LQR? ? It ignores control cost — you guess pole locations that may demand unrealistic actuation. LQR optimizes a state-vs-effort cost instead.

@@ -4,12 +4,6 @@
 
 # Isaac Lab
 
-> [!question] Explain it cold
-> 
-> - What is Isaac Lab/Sim and what's it built on?
-> - What's the GPU-parallel-simulation advantage?
-> - How did you bridge ROS2 to Isaac in FENCE-BOT?
-> - Walk through how you set up an environment: ArticulationCfg, actuators, sensors
 
 ---
 
@@ -206,17 +200,6 @@ cube_cfg = RigidObjectCfg(
 
 ---
 
-## Interview follow-ups
-
-- **Q:** Why Isaac over MuJoCo or Gazebo?
-    - **A:** GPU-parallel simulation (thousands of envs) and photorealistic rendering for perception sim-to-real. MuJoCo is better for fast accurate contact in control research; Gazebo for classic ROS integration. I used Isaac because the project targeted it for the VR-teleop arm and its rendering/physics.
-- **Q:** How did Isaac talk to your ROS2 code?
-    - **A:** Over a UDP bridge — my C++ `robot_controller` sent joint commands to Isaac on port 5006, decoupled from the ROS2 graph. Isaac has a native ROS2 bridge too; we used UDP for the teleop loop to avoid DDS serialization latency.
-- **Q:** ImplicitActuatorCfg vs ExplicitActuatorCfg?
-    - **A:** Implicit = PhysX internal PD at the physics level (faster, more stable, stiffness/damping in Cfg). Explicit = your own actuator model in the learning framework (more control, needed for motor-level torque modeling or custom actuator dynamics).
-- **Q:** What's the parallel-sim advantage for?
-    - **A:** Generating training data / running RL at scale — thousands of simulated robots per GPU step beats CPU sims by orders of magnitude.
-
 
 ## Links
 
@@ -225,16 +208,3 @@ cube_cfg = RigidObjectCfg(
 
 ---
 
-#flashcards
-
-What is Isaac Sim/Lab built on and what's its headline feature? ? Omniverse + USD scene, PhysX physics, GPU sim+render. Headline: massively parallel simulation (thousands of envs on-GPU) plus photorealistic rendering for sim-to-real.
-
-How did FENCE-BOT bridge ROS2 to Isaac? ? UDP bridge — C++ robot_controller sent joint commands to Isaac on port 5006. Raw 28-byte struct (7 floats: x,y,z,qx,qy,qz,qw). Chose UDP over native ROS2 bridge to avoid DDS serialization latency for the real-time teleop loop.
-
-What is ImplicitActuatorCfg and what does stiffness/damping mean? ? PhysX handles PD control internally at the physics engine level. You send position targets; PhysX computes torques. stiffness = Kp (proportional gain), damping = Kd (velocity damping). Fast and stable — no need to implement your own PD loop.
-
-What is the Jacobian indexing gotcha in Isaac Lab? ? get_jacobians() shape is (num_envs, num_bodies, 6, num_joints). EE Jacobian is at index ee_body_idx - 1, not ee_body_idx — off-by-one from Isaac's body indexing convention.
-
-Why DLS IK with λ=0.1 over pure pseudoinverse? ? Pure pseudoinverse diverges at singularities (J becomes ill-conditioned → joint velocities explode). DLS adds λ²I to denominator: q̇ = Jᵀ(JJᵀ + λ²I)⁻¹·ẋ. λ=0.1 trades off exact EE tracking for stability — critical for teleop.
-
-What does activate_contact_sensors=True do in UsdFileCfg? ? Enables PhysX contact reporting for the USD asset. Without it, ContactSensor silently returns zeros even when the EE is in contact. Must be set at asset spawn time.

@@ -4,11 +4,6 @@
 
 # Floating-Base & Whole-Body
 
-> [!question] Explain it cold
-> 
-> - What makes a system "floating-base" and why does it complicate dynamics?
-> - What is underactuation and why is it the core challenge?
-> - What does whole-body control coordinate?
 
 ---
 
@@ -27,16 +22,6 @@ A **fixed-base** manipulator is bolted down — its base frame is the inertial w
 - **Centroidal dynamics / momentum**: a common reduced model — track the robot's center-of-mass and total momentum rather than every link, for tractable balance/gait planning.
 
 
-## Interview follow-ups
-
-- **Q:** What's different about floating-base vs fixed-base dynamics?
-    - **A:** The base pose becomes part of the state and is unactuated — you add 6 DOF you can't directly command, plus contact-force terms ($J_c^T\lambda$). The robot drives its base only through contacts, which is why locomotion is hard.
-- **Q:** What is underactuation?
-    - **A:** Fewer actuators than degrees of freedom — captured by the selection matrix $S$ zeroing the base rows. You can't independently command every DOF, so you control the unactuated ones indirectly via contact forces and momentum.
-- **Q:** What does whole-body control do?
-    - **A:** Solves for joint commands satisfying multiple prioritized objectives at once — balance/CoM, end-effector tasks, contact and limit constraints — usually a hierarchical QP per control step.
-
-
 ## Links
 
 - Related: [[Robot Dynamics Formulations]], [[Trajectory Optimization]], [[Contact Modeling]], [[MPC & Virtual Fixtures]]
@@ -44,10 +29,3 @@ A **fixed-base** manipulator is bolted down — its base frame is the inertial w
 
 ---
 
-#flashcards
-
-What makes a system floating-base and why is it harder? ? No fixed anchor — the base pose (6 DOF in SE(3)) is part of the state and unactuated. The robot moves its base only through contact forces, adding J_cᵀλ terms and underactuation.
-
-What is underactuation, and where does it show up in the equations? ? Fewer actuators than DOF. In floating-base dynamics the selection matrix S zeros the base rows (Sᵀτ), making the base uncommandable directly — controlled via contacts/momentum.
-
-What does whole-body control coordinate? ? All joints at once to meet multiple prioritized tasks (balance/CoM, end-effector tracking, contact & limit constraints), typically a hierarchical QP each timestep.

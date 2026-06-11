@@ -4,11 +4,6 @@
 
 # Edge Inference
 
-> [!question] Explain it cold
-> 
-> - What does TensorRT do to a trained model, and why?
-> - What is quantization and what does it trade?
-> - Why not just run the PyTorch model on the robot?
 
 ---
 
@@ -28,16 +23,6 @@ Edge inference = running trained neural nets _on the robot_ under tight compute/
 - **Why not raw PyTorch on-device**: works, but leaves large speed/memory on the table — no fusion, no INT8, framework overhead. On a shared-compute robot that's the difference between hitting frame rate and not.
 
 
-## Interview follow-ups
-
-- **Q:** What does TensorRT actually do?
-    - **A:** Compiles a trained model into a hardware-specific inference engine — fuses layers, calibrates precision (FP16/INT8), auto-tunes kernels, plans memory. The result is much faster inference than running the training framework on-device.
-- **Q:** FP16 vs INT8 quantization?
-    - **A:** FP16 roughly doubles throughput with minimal accuracy loss — usually a free win. INT8 is faster still but needs calibration data to set quantization scales and risks more accuracy loss. Pick based on accuracy headroom.
-- **Q:** Why not run PyTorch directly on the Jetson?
-    - **A:** It works but wastes performance — no operator fusion, no INT8, framework overhead. On a robot sharing compute across perception, control, and an LLM, the TensorRT engine is what makes frame rate achievable.
-
-
 ## Links
 
 - Related: [[YOLOv8 Detection]], [[Jetson Orin Setup]], [[CUDA & CuPy]], [[OpenCV Pipelines]]
@@ -45,10 +30,3 @@ Edge inference = running trained neural nets _on the robot_ under tight compute/
 
 ---
 
-#flashcards
-
-What does TensorRT do to a trained model? ? Compiles it into a hardware-specific inference engine: layer/tensor fusion, precision calibration (FP16/INT8), kernel auto-tuning, memory planning — far faster than running the training framework on-device.
-
-FP16 vs INT8 quantization tradeoff? ? FP16: ~2× throughput, minimal accuracy loss — usually free. INT8: faster still but needs calibration data and risks more accuracy loss. Quantize as far as accuracy tolerates.
-
-Why not run PyTorch directly on the robot? ? It works but wastes performance — no fusion, no INT8, framework overhead. On shared-compute robots the TensorRT engine is what makes frame rate achievable.

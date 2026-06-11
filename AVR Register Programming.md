@@ -4,11 +4,6 @@
 
 # AVR Register Programming
 
-> [!question] Explain it cold
-> 
-> - What do DDRx, PORTx, and PINx do?
-> - How do you set one pin without disturbing the others?
-> - Why bypass `digitalWrite()` and go to registers?
 
 ---
 
@@ -30,16 +25,6 @@ On AVR (ATmega328/2560 — Arduino UNO/Mega), GPIO is controlled by three regist
 - Same pattern generalizes to every peripheral: configure by setting bits in control registers (see [[AVR Peripherals]]).
 
 
-## Interview follow-ups
-
-- **Q:** Set pin 13 (PB5) high without touching other pins on port B?
-    - **A:** `PORTB |= (1<<PB5);` — OR-assign so other bits are preserved. Never `PORTB = 0x20` (clobbers the rest).
-- **Q:** Why does `PORTB = 0b00100000` risk a bug?
-    - **A:** It overwrites the entire port, clearing every other pin. Always use read-modify-write (`|=`, `&= ~`).
-- **Q:** What's the fastest way to toggle a pin?
-    - **A:** `PORTB ^= (1<<PB5)`, or the AVR trick of writing 1 to the PINB bit, which toggles PORTB in one instruction.
-
-
 ## Links
 
 - Related: [[AVR Peripherals]], [[Serial Packet Protocols]], [[Real-Time Determinism]]
@@ -47,12 +32,3 @@ On AVR (ATmega328/2560 — Arduino UNO/Mega), GPIO is controlled by three regist
 
 ---
 
-#flashcards
-
-DDRx, PORTx, PINx — what does each control? ? DDRx = direction (1 out / 0 in); PORTx = output level (or pull-up enable when input); PINx = read live pin state.
-
-Set, clear, and toggle bit n in a register — the three idioms? ? Set: REG |= (1<<n). Clear: REG &= ~(1<<n). Toggle: REG ^= (1<<n).
-
-Why use register writes over digitalWrite() on a tight loop? ? digitalWrite does pin lookups and interrupt masking (~50× slower); register writes are single instructions — needed for deterministic timing and bit-banging.
-
-What does writing a 1 to a PINx bit do on AVR? ? It toggles the corresponding PORTx output bit — a one-instruction toggle trick.

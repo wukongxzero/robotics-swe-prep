@@ -4,11 +4,6 @@
 
 # Serial Packet Protocols
 
-> [!question] Explain it cold
-> 
-> - What problem does a fixed-size binary packet solve over text/CSV serial?
-> - Why does struct padding matter, and how do you get a known wire size?
-> - How do you frame/sync a byte stream so the receiver doesn't desync?
 
 ---
 
@@ -32,16 +27,6 @@ For high-rate MCU↔MCU or MCU↔host comms, you send **fixed-size binary packet
 - **Endianness**: sender and receiver must agree (AVR is little-endian) — multi-byte fields (`short`) must be interpreted consistently.
 
 
-## Interview follow-ups
-
-- **Q:** Why send a packed binary struct instead of comma-separated values?
-    - **A:** No parsing cost, fixed deterministic size and timing, compact on the wire — matters at control-loop rates. CSV is for debugging/logging, not the hot path.
-- **Q:** Your two MCUs agree on the struct definition but fields come out garbage. Why?
-    - **A:** Struct padding/alignment differs, or endianness mismatch, or framing desync. Pin the layout (packed / explicit padding), agree on endianness, add a sync byte + checksum.
-- **Q:** One byte gets dropped on the line — what happens without framing?
-    - **A:** The receiver desyncs and every subsequent packet is misaligned. A sync header + fixed length lets it re-find boundaries; a checksum lets it reject corrupt frames.
-
-
 ## Links
 
 - Related: [[AVR Register Programming]], [[AVR Peripherals]], [[iceoryx Zero-Copy]], [[Motor Control]]
@@ -49,12 +34,3 @@ For high-rate MCU↔MCU or MCU↔host comms, you send **fixed-size binary packet
 
 ---
 
-#flashcards
-
-Why fixed-size binary packets over text/CSV on a control-rate serial link? ? No parsing cost, fixed deterministic size and timing, compact on the wire. CSV is for logging, not the hot path.
-
-Why does the TankStatus struct include explicit padding bytes? ? To make the on-wire size a known fixed 16 bytes regardless of compiler alignment, so sender and receiver agree byte-for-byte.
-
-Two MCUs share the struct definition but fields decode as garbage — three suspects? ? Struct padding/alignment mismatch, endianness mismatch, or framing desync from a dropped byte.
-
-What does a sync byte + fixed length + checksum buy you in a byte stream? ? Boundary recovery after a dropped byte (re-sync) and rejection of corrupted frames — prevents permanent desync.

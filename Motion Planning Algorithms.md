@@ -8,10 +8,6 @@ tags: [motion-planning, path-planning, A-star, RRT, PRM, configuration-space, na
 
 # Motion Planning Algorithms
 
-> [!question] Explain it cold
-> - What is configuration space and why do planners work in it?
-> - Explain A* — how does it differ from Dijkstra?
-> - When do you use RRT vs PRM vs A*?
 
 ---
 
@@ -138,12 +134,3 @@ controller_server:
 
 ---
 
-#flashcards
-
-A* vs Dijkstra — one key difference? ? A* adds a heuristic h(n) (estimated cost to goal) to the priority: f = g + h. Dijkstra only uses g (cost from start). The heuristic guides A* toward the goal, making it much faster. Both guarantee optimal paths when the heuristic is admissible (never overestimates).
-
-When do you use RRT vs PRM? ? RRT: single query in unknown/dynamic environment — fast path finding, not optimal. PRM: many queries in the same static environment — build roadmap once offline, query fast repeatedly. If the environment changes, PRM becomes stale.
-
-What is configuration space and why do planners use it? ? C-space maps every robot configuration (joint angles or pose) to a single point in N-dimensional space. Obstacles become obstacle regions. Planning reduces to point-to-point path finding regardless of robot complexity. A 6-DOF arm plans in 6D C-space; a mobile robot plans in 3D (x,y,θ).
-
-What is an admissible heuristic and why does it matter for A*? ? Admissible = never overestimates the true cost to goal. h(n) ≤ true_cost(n, goal). Guarantees A* finds the optimal path. Euclidean distance is admissible for uniform-cost grids. If h overestimates, A* may miss the optimal path.

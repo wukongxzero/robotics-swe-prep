@@ -8,10 +8,6 @@ tags: [ros2, hardware, ros2_control, hardware_interface, controllers]
 
 # ros2_control
 
-> [!question] Explain it cold
-> - What problem does ros2_control solve vs writing your own serial node?
-> - What are the three layers of ros2_control?
-> - When would you use it for WALL-E vs the current mega_node approach?
 
 ---
 
@@ -129,10 +125,3 @@ public:
 
 ---
 
-#flashcards
-
-What are the three layers of ros2_control and what does each do? ? Controller Manager (lifecycle, loads/switches controllers). Controllers (read state interfaces, compute output, write command interfaces — e.g. diff_drive_controller). Hardware Interface plugin (your code: reads command buffers → sends to hardware, reads hardware → writes state buffers).
-
-What is a state interface vs command interface in ros2_control? ? State interface: what hardware reports (joint position, velocity, effort) — controllers read these. Command interface: what controllers write (velocity setpoint, position target) — hardware interface reads these and sends to the device.
-
-When would you choose ros2_control over a custom serial node? ? When you need runtime controller switching, MoveIt integration, multiple joint controllers, or team-standard patterns. For a simple differential drive prototype, a custom serial node like mega_node is faster to implement and debug.

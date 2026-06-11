@@ -8,10 +8,6 @@ tags: [odometry, localization, slam, lidar, imu, drift, navigation]
 
 # Odometry vs Localization vs SLAM
 
-> [!question] Explain it cold
-> - What is the difference between odometry, localization, and SLAM?
-> - Why is LiDAR fused with IMU instead of used alone?
-> - How is odometry drift handled in practice?
 
 ---
 
@@ -144,23 +140,3 @@ Output: pose at 200Hz with LiDAR accuracy
 
 ---
 
-#flashcards
-
-One-line difference: odometry vs localization vs SLAM? ? Odometry: how far you've moved (encoder integration, drifts). Localization: where you are in a known map (AMCL, scan matching). SLAM: build the map AND localize simultaneously, no prior map needed.
-
-Why fuse LiDAR with IMU instead of using LiDAR alone? ? LiDAR scans at 10–20Hz — fast motion between scans causes bad matching. IMU runs at 200–1000Hz and pre-integrates pose between scans. LiDAR corrects IMU drift at each scan. Result: high-rate accurate pose estimate that LiDAR or IMU alone can't achieve.
-
-How does loop closure handle odometry drift in SLAM? ? When the robot revisits a known place, SLAM detects the match and adds a constraint between the current pose and the stored one. A global graph optimisation then adjusts the entire trajectory to be consistent. Error that accumulated in the open loop is redistributed and reduced.
-
-What publishes `map → odom` TF and what publishes `odom → base_footprint`? ? `map → odom`: RTAB-Map or AMCL — the drift correction from localization/SLAM. `odom → base_footprint`: raw encoder odometry (mega_node, diff-drive plugin, or odom_to_tf.py). The two stack together to give the robot's pose in the map frame.
-
-How does EKF in robot_localization reduce odometry drift? ? Fuses wheel odometry (drifts from slip) and IMU (drifts from bias). Filter weights both by noise covariances Q and R. Combined estimate drifts slower than either sensor alone. Output: pose estimate (position + orientation + velocity).
-
-What does scan matching do in SLAM and how does it differ from loop closure? ? Scan matching continuously aligns the current scan against the previous one on every frame — small corrections at high frequency. Loop closure is a large periodic correction when a known place is revisited. Scan matching fights short-term drift; loop closure bounds long-term error.
-
-## Drill notes (2026-06-10)
-- Concepts understood from day one. Consistent gap: stopping after "what" without explaining the "how" (mechanism).
-- Loop closure: needed multiple prompts to reach graph optimisation → constraint → trajectory adjustment → error redistribution.
-- LiDAR-IMU: knew failure mode but needed prompting to explain pre-integration.
-- EKF: knew Jacobians vs sigma points but initially couldn't connect EKF to drift correction or state the output.
-- All three locked by end of session after re-drilling.

@@ -4,11 +4,6 @@
 
 # Simulation Environments Comparison
 
-> [!question] Explain it cold
->
-> - What simulator do you reach for and why?
-> - Why is Gazebo bad for physics-heavy tasks?
-> - What's the GPU-parallelism advantage of Isaac Lab over everything else?
 
 ---
 
@@ -90,12 +85,3 @@ Quick prototype or learning?
 
 ---
 
-#flashcards
-
-Which simulator do you use for RL training and why? ? Isaac Lab — GPU-parallel simulation runs thousands of envs simultaneously on one GPU (PhysX vectorized), giving orders of magnitude more samples/sec than CPU sims like MuJoCo or Gazebo.
-
-Why is Gazebo bad for contact-heavy tasks? ? Its ODE physics solver is numerically weak — objects drift and behave unrealistically under load. Fine for nav/SLAM/ROS2 stack testing, but invalid results for force/torque or RL training.
-
-MuJoCo vs Isaac Lab — when do you pick each? ? MuJoCo: accurate contact dynamics, control research, fast single-env stepping. Isaac Lab: RL at scale (GPU parallel), photorealistic sim-to-real, high-fidelity manipulation with thousands of envs.
-
-What is Gazebo Harmonic and when do you use it? ? The new ROS2-native Gazebo (replaces Classic), integrated with ROS2 Jazzy. Use it when you need the full ROS2 sensor/tf/nav2 stack. Still CPU-only with mediocre physics.

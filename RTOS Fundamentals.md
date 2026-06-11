@@ -8,10 +8,6 @@ tags: [rtos, scheduling, embedded, real-time, priority, preemption]
 
 # RTOS Fundamentals
 
-> [!question] Explain it cold
-> - What makes an OS "real-time" vs a general-purpose OS?
-> - What is preemptive scheduling and why does it matter?
-> - What is priority inversion and how do you fix it?
 
 ---
 
@@ -125,12 +121,3 @@ If total CPU utilization < 69.3%, RMS guarantees all deadlines are met.
 
 ---
 
-#flashcards
-
-What is priority inversion and how does priority inheritance fix it? ? Priority inversion: low-priority task holds a mutex that a high-priority task needs, while a medium-priority task runs and starves the low-priority task, blocking the high-priority task indefinitely. Priority inheritance: temporarily boost the mutex holder's priority to match the waiting high-priority task so it can finish and release.
-
-Mutex vs semaphore — when do you use each? ? Mutex: mutual exclusion on a shared resource — has an owner, supports priority inheritance. Semaphore: signaling between tasks — no owner, any task can give/take. Use mutex to protect shared data, semaphore to signal that an event occurred.
-
-RMS schedulability bound for large n? ? U = Σ(Cᵢ/Tᵢ) ≤ ln(2) ≈ 0.693. If total CPU utilization across all periodic tasks is below 69.3%, Rate Monotonic Scheduling guarantees all deadlines are met.
-
-Preemptive vs cooperative scheduling — key difference? ? Preemptive: scheduler interrupts any task at any tick to run a higher-priority ready task — bounded response time guaranteed. Cooperative: tasks yield voluntarily — one misbehaving task starves everything else. All modern RTOSes are preemptive.

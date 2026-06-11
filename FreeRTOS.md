@@ -8,10 +8,6 @@ tags: [freertos, embedded, arduino, rtos, tasks, queues]
 
 # FreeRTOS
 
-> [!question] Explain it cold
-> - What is FreeRTOS and where does it run?
-> - How do you share data safely between two FreeRTOS tasks?
-> - How is a FreeRTOS queue different from a mutex?
 
 ---
 
@@ -195,12 +191,3 @@ Each task needs its own stack. On Mega (8KB SRAM total):
 
 ---
 
-#flashcards
-
-FreeRTOS queue vs mutex — when do you use each? ? Queue: pass data between tasks safely (producer-consumer pattern). Mutex: protect a shared resource from concurrent access. Queue is the preferred pattern — avoids shared state entirely. Mutex is for when you must share state (e.g. a hardware peripheral).
-
-How do you send data from an ISR to a FreeRTOS task? ? Use `xSemaphoreGiveFromISR()` or `xQueueSendFromISR()` (not the regular versions — ISRs can't block). Call `portYIELD_FROM_ISR(higherPriorityWoken)` at the end to immediately schedule the unblocked task.
-
-What happens if a FreeRTOS task never calls vTaskDelay or blocks? ? It monopolizes the CPU — all lower-priority tasks starve. The idle task never runs, which means memory cleanup and watchdog reset never happen. Always yield in the main loop, even with `vTaskDelay(1)`.
-
-Why does FreeRTOS mutex support priority inheritance but binary semaphore does not? ? Mutex has an owner (the task that took it), so the scheduler knows whose priority to boost when a higher-priority task is waiting. Semaphores have no owner — any task can give them — so there's no concept of "boost the holder."

@@ -6,11 +6,6 @@
 
 > [!note] Mixed provenance — domain + adjacent Force _sensing/estimation_ connects to your PINN contact work (hands-on-adjacent); haptic _rendering_ and the surgeon-facing feel are domain-level. Flag/correct per your actual Articulus exposure.
 
-> [!question] Explain it cold
-> 
-> - What is haptic feedback and why does it matter in surgery?
-> - Why is haptic rendering a control-stability problem?
-> - How do you get force information without a tip force sensor?
 
 ---
 
@@ -28,16 +23,6 @@ Haptics closes the loop back to the operator's hand: the surgeon _feels_ the for
 - **Bilateral teleoperation**: force flows both ways (master↔slave); stability of that two-way loop under latency is the classic teleop-haptics research problem (wave variables, passivity controllers).
 
 
-## Interview follow-ups
-
-- **Q:** Why is haptic rendering hard / a control problem?
-    - **A:** It's a closed loop between the operator's hand and the environment; stiffness, latency, and discretization can make it actively unstable (oscillate). Stability is governed by passivity — the rendered system mustn't add energy — so it demands tight, low-latency, high-rate control.
-- **Q:** How do you get force feedback without a tip force sensor?
-    - **A:** Estimate it — from motor currents/joint torques via τ = JᵀF, or a model-based/learned estimator (e.g. a physics-informed network). That's the contact-force-estimation approach, avoiding a hard-to-sterilize tip sensor.
-- **Q:** Why do some surgical robots ship without haptics?
-    - **A:** Stable, sterile, cost-effective force feedback is genuinely hard — the stability-under-latency problem plus sensor sterilization/cost. Some systems rely on visual force estimation instead; it's an active tradeoff.
-
-
 ## Links
 
 - Related: [[PINN Contact Estimation]], [[Contact Modeling]], [[Jacobian]], [[Teleoperation & Motion Scaling]], [[Latency Budgets]], [[Real-Time Determinism]]
@@ -45,10 +30,3 @@ Haptics closes the loop back to the operator's hand: the surgeon _feels_ the for
 
 ---
 
-#flashcards
-
-Why is haptic rendering a control-stability problem? ? It's a closed loop between operator and environment; stiffness + latency + discretization can make it unstable (oscillate). Stability is governed by passivity (don't add energy), demanding tight low-latency high-rate control.
-
-How do you get force feedback without a tool-tip force sensor? ? Estimate it from motor currents/joint torques (τ = JᵀF) or a model-based/learned estimator (e.g. PINN) — avoiding a hard-to-sterilize, costly tip sensor.
-
-Why do some surgical robots ship without full haptics? ? Stable, sterile, cost-effective force feedback is hard — stability under latency plus sensor sterilization/cost. Some rely on visual force estimation instead; it's an active tradeoff.

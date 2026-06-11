@@ -4,11 +4,6 @@
 
 # NixOS for Jetson
 
-> [!question] Explain it cold
-> 
-> - What makes Nix different from apt/pip/Docker for reproducibility?
-> - What does "declarative, reproducible system" actually mean?
-> - Why would you run NixOS on an embedded robot board?
 
 ---
 
@@ -25,16 +20,6 @@ Nix is a purely-functional package manager (and NixOS, a Linux distro built on i
 - **The cost**: steep learning curve, the Nix language, and ARM/Jetson + proprietary NVIDIA drivers (CUDA) are genuinely painful to get working under Nix's purity model.
 
 
-## Interview follow-ups
-
-- **Q:** What does Nix give you that Docker doesn't?
-    - **A:** Nix reproduces the _build_ hermetically — pinned inputs, content-addressed store, no hidden state — and declares the whole system, with atomic rollback. Docker reproduces an image; they compose (Nix can build the image). Nix is reproducibility at the build/system level.
-- **Q:** Why care about reproducibility on a robot?
-    - **A:** A field robot you can't casually re-flash benefits from a version-controlled, declarative environment with atomic rollback — if an update breaks, you revert to a known-good generation deterministically.
-- **Q:** What's hard about NixOS on a Jetson?
-    - **A:** ARM plus proprietary NVIDIA/CUDA drivers fight Nix's purity model, and the learning curve/language is steep. It's a real investment for the reproducibility payoff.
-
-
 ## Links
 
 - Related: [[Docker for ROS]], [[Jetson Orin Setup]], [[AVR Peripherals]]
@@ -42,10 +27,3 @@ Nix is a purely-functional package manager (and NixOS, a Linux distro built on i
 
 ---
 
-#flashcards
-
-What makes Nix reproducible where apt/pip aren't? ? Purely-functional: every package builds in isolation from pinned inputs, stored by content hash, with no hidden global state — same inputs always yield the same output, and the whole system is declared in code.
-
-Nix vs Docker for reproducibility? ? Docker reproduces a container image; Nix reproduces the build itself (hermetic, pinned) and declares the whole system with atomic rollback. They compose — Nix can build the image.
-
-Why is NixOS hard on a Jetson? ? Proprietary NVIDIA/CUDA drivers and ARM fight Nix's purity model, plus a steep language/learning curve.

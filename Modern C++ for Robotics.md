@@ -6,11 +6,6 @@
 
 > [!star] The language your real-time stack lives in — RSE screens probe this Articulus + FENCE-BOT middleware were C++. "Real-time-safe C++" is a genuine differentiator — most candidates know C++ syntax; fewer know what's forbidden on a hot path and why. Own RAII, move semantics, and the no-alloc rule cold.
 
-> [!question] Explain it cold
-> 
-> - What is RAII and why is it the foundation of safe C++?
-> - What's forbidden on a real-time hot path and why?
-> - Move vs copy — when does each happen and why care?
 
 ---
 
@@ -66,18 +61,6 @@ From your own code: `lock_guard<mutex>` unlocks on scope exit, `~MegaNode()` clo
 - **Concurrency**: `std::thread`, `std::atomic`, lock-free patterns for the RT path; but real-time threading usually means OS priorities + pinning ([[Real-Time Determinism]]).
 
 
-## Interview follow-ups
-
-- **Q:** What is RAII?
-    - **A:** Bind a resource's lifetime to an object's scope — acquire in constructor, release in destructor — so cleanup is automatic, deterministic, and exception-safe. Smart pointers and lock_guard are RAII; it's why modern C++ doesn't need manual free.
-- **Q:** What can't you do on a real-time control loop in C++?
-    - **A:** No dynamic allocation (new/malloc/vector growth — unbounded time, may block), no unbounded locking or I/O, often no exceptions (non-deterministic unwinding), and watch hidden allocations (std::function, STL realloc). Pre-allocate and keep timing bounded.
-- **Q:** Move vs copy?
-    - **A:** Copy duplicates; move transfers ownership cheaply by stealing internals and leaving the source valid-but-empty. std::move enables it. Critical for performance with heap-owning types and for expressing single ownership via unique_ptr.
-- **Q:** unique_ptr vs shared_ptr?
-    - **A:** unique_ptr is a single move-only owner, zero overhead. shared_ptr is reference-counted shared ownership with an atomic refcount cost — use it only when ownership is genuinely shared, not by default.
-
-
 ## Links
 
 - Related: [[Real-Time Determinism]], [[VR Teleop Pipeline]], [[colcon ament & launch]], [[DSA Patterns]], [[Git & Build Systems]]
@@ -85,12 +68,3 @@ From your own code: `lock_guard<mutex>` unlocks on scope exit, `~MegaNode()` clo
 
 ---
 
-#flashcards
-
-What is RAII and why is it foundational? ? Bind a resource's lifetime to an object's scope (acquire in constructor, release in destructor) — automatic, deterministic, exception-safe cleanup. Smart pointers and lock_guard are RAII; it removes manual free/delete.
-
-What's forbidden on a C++ real-time hot path, and why? ? Dynamic allocation (new/malloc/vector growth — unbounded time, may block), unbounded locking/I/O, often exceptions (non-deterministic unwinding), and hidden allocations (std::function, STL realloc). Pre-allocate; keep timing bounded.
-
-Move vs copy in C++? ? Copy duplicates; move transfers ownership cheaply by stealing internals, leaving the source valid-but-empty (std::move enables it). Key for heap-owning types and single-ownership semantics.
-
-unique_ptr vs shared_ptr — default choice? ? Prefer unique_ptr: single move-only owner, zero overhead. shared_ptr adds atomic reference-counting cost — use only for genuinely shared ownership.

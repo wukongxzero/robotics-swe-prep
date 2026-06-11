@@ -4,11 +4,6 @@
 
 # Dynamixel ROS2
 
-> [!question] Explain it cold
->
-> - What is the Dynamixel SDK and how does it talk to motors?
-> - What is bulk read/write and why does it matter for multi-joint robots?
-> - Walk through the setup sequence: port → baud → mode → torque
 
 ---
 
@@ -157,10 +152,3 @@ Dynamixel motor chain (daisy-chained, each with unique ID)
 
 ---
 
-#flashcards
-
-What is the correct Dynamixel setup sequence and why does order matter? ? 1) Open port → 2) Set baud rate → 3) Set operating mode → 4) Enable torque. Order matters because operating mode register is locked when torque is enabled — changing mode with torque on is silently ignored.
-
-What is the difference between sync write and bulk write for Dynamixels? ? Sync write: same register + same data size across multiple motors, one TX no RX — fastest. Bulk write: different registers/sizes per motor, one TX no RX. Use sync write when commanding all joints to goal position (same register), bulk write when setting different parameters per motor.
-
-Why use a ROS2 service for Dynamixel position reads but a subscription for writes? ? Reads need a response — service is request/reply. Writes are fire-and-forget (set and move on) — subscription is one-way with lower overhead. Mixing them (using service for writes) adds unnecessary latency to the control loop.

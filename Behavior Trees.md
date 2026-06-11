@@ -8,10 +8,6 @@ tags: [behavior-trees, nav2, task-planning, robotics, BT]
 
 # Behavior Trees
 
-> [!question] Explain it cold
-> - What is a behavior tree and how does it differ from a state machine?
-> - What are the four node types in a BT?
-> - How does Nav2 use behavior trees for navigation?
 
 ---
 
@@ -153,10 +149,3 @@ A: The tree is traversed from root every control cycle. Each node executes its l
 
 ---
 
-#flashcards
-
-Four BT node types and what each returns? ? Action: executes work, returns Running/Success/Failure. Condition: checks instantly, returns Success/Failure only. Sequence: all children must succeed (AND logic). Fallback: first success wins (OR logic / try alternatives).
-
-Sequence vs Fallback node — behavior? ? Sequence: ticks children left-to-right, returns Success only if ALL succeed, Failure on first failure. Fallback: ticks children left-to-right, returns Success on first success, Failure only if ALL fail. Sequence = AND. Fallback = OR / try-next.
-
-How does Nav2 use behavior trees? ? bt_navigator loads an XML BT that orchestrates: compute path → follow path → recovery on failure (spin, back up, clear costmap). The BT re-ticks every cycle, enabling reactive replanning when the path fails or obstacles appear.

@@ -4,12 +4,6 @@
 
 # MuJoCo & Gazebo
 
-> [!question] Explain it cold
-> 
-> - What is MuJoCo known for, and why control researchers love it?
-> - What's Gazebo's niche?
-> - How do you pick a simulator for a given robotics problem?
-> - Walk through the MuJoCo API: load → step → read EE position
 
 ---
 
@@ -173,17 +167,6 @@ Full note: [[Foundations of Robotics — UR10e Project]]
 
 ---
 
-## Interview follow-ups
-
-- **Q:** Why is MuJoCo popular for control/RL?
-    - **A:** Fast, stable, accurate contact via a soft-constraint model that avoids the stiffness/blowups of naive rigid contact, plus analytical derivatives that suit gradient-based control and trajopt.
-- **Q:** When Gazebo over MuJoCo?
-    - **A:** When I want tight ROS2 integration and realistic sensor models — Gazebo's plugins and URDF/SDF ecosystem fit that. MuJoCo is more of a physics/control research tool.
-- **Q:** How do you choose a simulator?
-    - **A:** Match strength to problem: MuJoCo for contact-rich control/RL, Gazebo for ROS-integrated sensor-rich sim, Isaac for GPU-parallel RL or photorealistic perception.
-- **Q:** How do you read EE position in MuJoCo?
-    - **A:** Via a named site: `mujoco.mj_name2id(model, mjOBJ_SITE, "attachment_site")` then `data.site_xpos[site_id]`. Sites are defined in MJCF at a fixed offset from a body — cleaner than computing through the body chain.
-
 
 ## Links
 
@@ -192,16 +175,3 @@ Full note: [[Foundations of Robotics — UR10e Project]]
 
 ---
 
-#flashcards
-
-What is MuJoCo known for? ? Fast, stable, accurate contact dynamics via a smooth soft-constraint model (avoids rigid-contact blowups), plus analytical derivatives — the default for control/RL research.
-
-When do you pick Gazebo over MuJoCo? ? For tight ROS2 integration and realistic sensor models in a full-robot system test (URDF/SDF, sensor plugins). MuJoCo is more a physics/control research tool.
-
-How do you choose among MuJoCo / Gazebo / Isaac? ? MuJoCo: contact-rich control/RL. Gazebo: ROS-integrated sensor-rich sim. Isaac: GPU-parallel RL or photorealistic perception.
-
-What is the difference between mj_forward and mj_step in MuJoCo? ? mj_forward computes forward kinematics and dynamics from current state but does not advance time — use it to read positions/velocities after setting qpos/qvel. mj_step advances the simulation by one timestep using data.ctrl as actuator commands.
-
-How do you get gravity compensation in a MuJoCo velocity controller? ? Use mj_inverse with qacc=0 to compute the torques that produce zero acceleration at the current configuration — that's gravity + Coriolis. Add these as feedforward to your PD terms. Without this the arm sags under its own weight and the controller fights gravity instead of executing the motion.
-
-Why use data.site_xpos over data.body_xpos for EE position in MuJoCo? ? Sites are defined in MJCF at a fixed offset from a body — the attachment_site is placed exactly at the EE tip. body_xpos gives the body origin which is usually not the EE. Sites are cleaner and avoid manually computing the offset transform.

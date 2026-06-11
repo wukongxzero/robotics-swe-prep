@@ -6,11 +6,6 @@
 
 > [!star] Differentiator + research direction This is double-duty: review _and_ prep for the Prof. Kim project (MPC-based virtual fixtures for teleoperated manipulation, simulation-only, Spring 2027). It's also the most surgical-robotics-relevant control note — virtual fixtures are an active-constraint safety concept straight out of the domain.
 
-> [!question] Explain it cold
-> 
-> - What is MPC and what does it do that LQR doesn't?
-> - What's the receding-horizon idea, and what gets solved each step?
-> - What is a virtual fixture, and why is MPC a natural fit for it?
 
 ---
 
@@ -35,18 +30,6 @@
 - Ties to [[Safety-Critical Architecture]], [[Teleoperation & Motion Scaling]], and [[Force Feedback & Haptics]] — the surgical-robotics cluster.
 
 
-## Interview follow-ups
-
-- **Q:** MPC vs LQR — when is the extra cost worth it?
-    - **A:** When I have hard constraints — actuator saturation, state bounds, safety/no-go regions. LQR can't encode those; MPC enforces them over a predictive horizon. The price is solving a QP/NLP online each step, so it's worth it when constraints matter and I have the compute.
-- **Q:** What's "receding horizon"?
-    - **A:** Optimize over an N-step future window, apply only the first control, then re-optimize next step with fresh state. The repeated re-solving is what gives feedback and robustness to disturbance.
-- **Q:** How would you implement a surgical no-go region?
-    - **A:** As a forbidden-region virtual fixture — a state constraint in the MPC keeping the tool tip out of the protected volume across the prediction horizon, so it slows/redirects _before_ contact rather than reacting after.
-- **Q:** What makes MPC hard in real time?
-    - **A:** Solving the optimization within the control period. Mitigations: linearize to a QP, warm-start from the last solution, condense the problem, use embedded solvers like acados. Nonlinear MPC is the expensive case.
-
-
 ## Links
 
 - Related: [[LQR]], [[Trajectory Optimization]], [[acados OCS2 CasADi]], [[Safety-Critical Architecture]], [[Teleoperation & Motion Scaling]], [[Virtual Fixtures]], [[Isaac Lab]]
@@ -54,12 +37,3 @@
 
 ---
 
-#flashcards
-
-What does MPC do that LQR cannot? ? Handle explicit constraints (state, input, safety/no-go regions) by solving a constrained optimization over a finite horizon each step. Unconstrained infinite-horizon MPC reduces to LQR.
-
-What is the receding-horizon principle? ? At each step, optimize control over an N-step future window, apply only the first control, then re-solve next step with new state. The repeated re-solving provides feedback.
-
-What is a virtual fixture, and why is MPC a natural fit? ? A software-imposed motion constraint (guidance path or forbidden region) for a teleoperated tool. MPC fits because a fixture is a state constraint x ∈ X_safe, which MPC enforces predictively — anticipating violations, not reacting.
-
-What's the core real-time challenge of MPC, and typical mitigations? ? Solving the QP/NLP within the control period. Mitigations: linearize to a QP, warm-start, condense, use embedded solvers (acados).

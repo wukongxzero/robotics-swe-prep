@@ -4,11 +4,6 @@
 
 # URDF & CAD Pipeline
 
-> [!question] Explain it cold
->
-> - What is URDF and what does it describe?
-> - Walk through writing a robot URDF from scratch
-> - What breaks when you go from CAD to simulator?
 
 ---
 
@@ -203,14 +198,3 @@ python -m mujoco.mjcf.convert robot.urdf robot.xml
 
 ---
 
-#flashcards
-
-What are the two required components of every URDF? ? Links (rigid bodies: geometry, inertia, visual/collision mesh) and Joints (connections between links: type, axis, origin, limits).
-
-Why do you keep visual and collision meshes separate in URDF? ? Visual = high-poly for rendering quality. Collision = simplified convex hull for fast physics. Using high-poly meshes for collision slows simulation and causes tunneling artifacts.
-
-Robot explodes in Isaac/Gazebo after loading URDF — most likely cause? ? Bad inertia tensor (non-positive-definite). Recompute from CAD mass properties or use primitive shape formulas. Add a small diagonal offset if values are near zero.
-
-What does fusion2urdf commonly get wrong? ? Joint axes (come out rotated — always verify), inertia tensors (estimates only), and collision meshes (visual quality by default — must decimate before sim).
-
-What is xacro and when do you use it? ? URDF macro language — use for any robot with repeated structure (arm links, legs). Avoids copy-paste URDF and makes parameterization clean.

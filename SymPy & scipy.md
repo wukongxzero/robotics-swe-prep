@@ -4,11 +4,6 @@
 
 # SymPy & scipy
 
-> [!question] Explain it cold
-> 
-> - SymPy vs scipy — symbolic vs numeric, when each?
-> - How do you derive equations of motion symbolically then simulate them?
-> - What does solve_ivp do?
 
 ---
 
@@ -25,16 +20,6 @@ The Python scientific stack split: **SymPy** does _symbolic_ math (derive equati
 - **The workflow**: SymPy derives $M(q)\ddot q + C\dot q + g = \tau$ symbolically → lambdify to a numeric RHS → `solve_ivp` integrates it → trajectory data. Exact derivation, fast simulation.
 
 
-## Interview follow-ups
-
-- **Q:** SymPy vs scipy — when each?
-    - **A:** SymPy for exact symbolic derivation (equations of motion, closed-form derivatives); scipy for numeric work (integrating those dynamics, optimization, linear algebra). Derive symbolically, simulate numerically.
-- **Q:** How do you go from a Lagrangian to a simulation?
-    - **A:** SymPy derives the equations of motion symbolically, lambdify converts them to a fast numeric function, then scipy's solve_ivp integrates that ODE from initial conditions to get a trajectory.
-- **Q:** What's solve_ivp?
-    - **A:** scipy's initial-value-problem integrator — give it ẋ = f(t,x) and x₀, it adaptively steps (RK45 etc.) to produce the trajectory. The numeric simulation workhorse.
-
-
 ## Links
 
 - Related: [[Lagrangian Neural Networks]], [[Robot Dynamics Formulations]], [[Contact Modeling]]
@@ -42,10 +27,3 @@ The Python scientific stack split: **SymPy** does _symbolic_ math (derive equati
 
 ---
 
-#flashcards
-
-SymPy vs scipy? ? SymPy: symbolic/exact math (derive equations of motion, closed-form derivatives). scipy: numeric (integrate ODEs, optimize, linalg). Derive symbolically, simulate numerically.
-
-How do you go from a Lagrangian to a forward simulation? ? SymPy derives the equations of motion symbolically → lambdify to a fast numeric RHS → scipy solve_ivp integrates it from initial conditions → trajectory.
-
-What is scipy's solve_ivp? ? An initial-value ODE integrator: given ẋ = f(t,x) and x₀, it adaptively steps (RK45 etc.) to produce the trajectory. Use a stiff solver (Radau/BDF) for stiff/contact dynamics.

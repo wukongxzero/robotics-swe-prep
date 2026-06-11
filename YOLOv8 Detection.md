@@ -4,11 +4,6 @@
 
 # YOLOv8 Detection
 
-> [!question] Explain it cold
-> 
-> - What does "you only look once" mean architecturally?
-> - What's the output of a detection model, and how do you clean overlapping boxes?
-> - Why YOLOv8n specifically for edge robotics?
 
 ---
 
@@ -26,16 +21,6 @@ YOLO is a **single-stage** object detector: one forward pass over the whole imag
 - **Edge deployment**: export to TensorRT/ONNX for the Jetson, quantize (FP16/INT8) for throughput — see [[Edge Inference]].
 
 
-## Interview follow-ups
-
-- **Q:** Single-stage vs two-stage detection?
-    - **A:** Single-stage (YOLO) predicts all boxes and classes in one pass — fast, good for real-time. Two-stage (Faster R-CNN) proposes regions then classifies them — more accurate, especially on small objects, but slower. Robotics usually takes the speed.
-- **Q:** Why do you need NMS?
-    - **A:** The detector outputs many overlapping boxes for one object; NMS keeps the highest-confidence box and suppresses overlaps above an IoU threshold, leaving one box per object.
-- **Q:** Why the nano model on the robot?
-    - **A:** YOLOv8n has the fewest parameters and highest throughput, and the Jetson was simultaneously running ROS2, the LLM, and other nodes — I traded some accuracy for a model that fits the shared compute and hits frame rate.
-
-
 ## Links
 
 - Related: [[OpenCV Pipelines]], [[Edge Inference]], [[CUDA & CuPy]], [[Jetson Orin Setup]], [[LLM Tool Calling]]
@@ -43,10 +28,3 @@ YOLO is a **single-stage** object detector: one forward pass over the whole imag
 
 ---
 
-#flashcards
-
-What makes YOLO "single-stage" and why does it matter for robots? ? One forward pass predicts all boxes + classes simultaneously (vs two-stage region-proposal-then-classify). The single pass is what makes it real-time fast enough for robot perception.
-
-What is NMS and why is it needed? ? Non-Max Suppression: the detector emits many overlapping boxes per object; NMS keeps the highest-confidence one and suppresses overlaps above an IoU threshold.
-
-Why YOLOv8n (nano) on the Jetson? ? Fewest parameters, highest throughput — the Jetson was also running ROS2, Ollama, and other nodes, so it traded accuracy for a model that fits the shared compute budget and hits frame rate.

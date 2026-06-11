@@ -8,10 +8,6 @@ tags: [state-machine, FSM, HSM, behavior-trees, robotics, control]
 
 # State Machines in Robotics
 
-> [!question] Explain it cold
-> - What is an FSM and when do you use it over a behavior tree?
-> - What is a hierarchical state machine and why does it help?
-> - What are the failure modes of state machines?
 
 ---
 
@@ -131,10 +127,3 @@ void toggle_callback(const std_msgs::msg::Bool::SharedPtr msg) {
 
 ---
 
-#flashcards
-
-FSM vs Behavior Tree — when do you use each? ? FSM: safety-critical mode switching with few states and explicit transitions (WALL-E MANUAL/AUTONOMOUS/IDLE). BT: complex task sequencing with retries, conditions, and parallel subtasks (Nav2 navigation). FSMs are easier to reason about; BTs handle complexity better.
-
-What is state explosion in FSMs and how do HSMs fix it? ? With N features and M modes, flat FSMs need N×M states. HSMs group shared behavior into parent states — children inherit parent transitions, reducing duplication. A "handle emergency stop" transition defined once on the parent applies to all children.
-
-What is the ROS2 lifecycle node FSM? ? Every lifecycle node has states: Unconfigured → (configure) → Inactive → (activate) → Active → (deactivate) → Inactive → (cleanup) → Unconfigured. Nav2's lifecycle_manager drives all Nav2 nodes through this sequence at startup.

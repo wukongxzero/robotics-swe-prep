@@ -8,10 +8,6 @@ tags: [tools, debugging, profiling, workflow, ros2, jetson]
 
 # Robotics Toolchain
 
-> [!question] Explain it cold
-> - What tools do you use to debug a ROS2 node that isn't receiving messages?
-> - How do you profile a C++ node that's missing its deadline?
-> - What's your workflow from code to robot?
 
 ---
 
@@ -180,10 +176,3 @@ git stash                         # save work before switching context
 
 ---
 
-#flashcards
-
-First tool to open when a ROS2 topic isn't arriving? ? `rqt_graph` to see if publisher and subscriber are connected, then `ros2 topic info /topic --verbose` to check QoS compatibility. QoS mismatch is the most common silent failure — no error, no data.
-
-How do you check the rate and bandwidth of a topic? ? `ros2 topic hz /topic` for message rate. `ros2 topic bw /topic` for bandwidth in bytes/sec. If rate is 0, the publisher stopped or QoS is mismatched.
-
-Jetson CPU/GPU monitoring command? ? `jtop` (install with `pip install jetson-stats`) — shows CPU cores, GPU, RAM, temperature, and power mode. `tegrastats` is the built-in alternative.

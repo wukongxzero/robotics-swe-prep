@@ -8,12 +8,6 @@ tags: [motor-control, FOC, BLDC, Clarke, Park, PWM, embedded]
 
 # Motor Control
 
-> [!question] Explain it cold
-> *Answer from memory first.*
->
-> - What is a BLDC motor and how does it differ from a brushed DC motor?
-> - What problem does 6-step commutation have, and how does FOC fix it?
-> - Walk through the FOC pipeline step by step.
 
 ---
 
@@ -93,53 +87,9 @@ Because the control always operates in the rotor's frame, the applied force vect
 - **Dynamixel** servos have FOC built in with position/velocity/current control modes; you communicate over TTL/RS-485 protocol and set control mode + goal.
 
 
-## Interview follow-ups
-- **Q:** Why set $I_d = 0$ in FOC?
-  - **A:** $I_d$ produces magnetic flux but not torque — it heats the motor without doing useful work. Setting it to zero maximizes torque per amp (efficiency). Field weakening intentionally uses non-zero $I_d$ to extend speed range beyond base speed, at the cost of efficiency.
-- **Q:** What does the Park transform need that Clarke doesn't?
-  - **A:** The rotor's current electrical angle $\theta$ — from an encoder. Clarke is a fixed geometric transform; Park is a rotation that tracks the rotor in real time.
-- **Q:** FOC vs 6-step — when would you use 6-step?
-  - **A:** 6-step is simpler (no encoder required for hall-sensor commutation, no transforms) and sufficient for fans, pumps, and simple BLDC drives. FOC is worth the complexity when you need smooth torque, precise current control, or quiet operation — robotics actuators.
-- **Q:** What is field weakening?
-  - **A:** Running $I_d < 0$ intentionally to reduce air-gap flux, which allows higher RPM beyond base speed (back-EMF limit). Used in EVs and high-speed spindles. Trades torque/amp efficiency for extended speed range.
-
-
 ## Links
 - Related: [[AVR Peripherals]], [[Real-Time Determinism]], [[PID Control]], [[Serial Packet Protocols]]
 - Parent: [[00 Knowledge Map]]
 
 ---
 
-#flashcards
-
-What does FOC stand for and what is its core goal?
-?
-Field-Oriented Control. Keeps the stator field perpendicular to the rotor field at all times for maximum torque efficiency.
-
-What problem does 6-step commutation have?
-?
-The torque-producing force vector jumps in 60° increments relative to the rotor, causing torque ripple and noise.
-
-What does the Clarke transform do?
-?
-Converts 3-phase currents (Ia, Ib, Ic) into a 2-axis stationary frame (Iα, Iβ). Reduces 3 variables to 2 since they sum to zero.
-
-What does the Park transform do, and what does it need?
-?
-Rotates the stationary (α,β) frame into a rotor-aligned rotating frame (d,q). Needs the real-time rotor electrical angle θ from an encoder.
-
-What are Id and Iq?
-?
-Id = flux-producing current (set to 0 for max efficiency). Iq = torque-producing current (your torque throttle).
-
-Why is FOC smooth compared to 6-step?
-?
-The control always operates in the rotor's frame, so the applied force vector continuously tracks the rotor — no discrete 60° jumps.
-
-What is field weakening?
-?
-Running Id < 0 to reduce air-gap flux, allowing higher RPM beyond base speed at the cost of torque/amp efficiency.
-
-What is the electrical angle vs mechanical angle?
-?
-θ_electrical = p × θ_mechanical, where p is the number of pole pairs. Park transform needs electrical angle.

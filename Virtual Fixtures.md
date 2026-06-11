@@ -6,11 +6,6 @@
 
 > [!note] Domain + research-direction The surgical-robotics framing of virtual fixtures; the control/MPC implementation lives in [[MPC & Virtual Fixtures]] (Kim project). This note is the _why it matters clinically_ companion.
 
-> [!question] Explain it cold
-> 
-> - What is a virtual fixture, in surgical terms?
-> - Guidance vs forbidden-region — the two types.
-> - How is a virtual fixture different from just teleoperation?
 
 ---
 
@@ -33,15 +28,6 @@ A virtual fixture is software-enforced **active assistance/constraint** on a tel
 - **Research direction (Kim project)**: MPC-based virtual fixtures for teleoperated manipulation, simulation-only, Spring 2027 — the implementation note is [[MPC & Virtual Fixtures]]. This is forward-looking, framed honestly as the planned project.
 - **Articulus / teleop**: the natural safety augmentation on a master-slave system like the one I worked on — domain-level connection.
 
-## Interview follow-ups
-
-- **Q:** What's a virtual fixture and what are the two kinds?
-    - **A:** Software-enforced active assistance on a teleoperated tool. Guidance fixtures steer the tool along a desired path (anisotropic stiffness); forbidden-region fixtures keep it out of a protected volume (a no-fly zone around critical anatomy). The surgeon still drives; the software shapes the motion.
-- **Q:** How is that different from teleoperation?
-    - **A:** Teleop just maps the operator's motion to the instrument. A virtual fixture adds constraint/assistance on top — actively preventing unsafe motion or guiding toward a plan, rather than passively mirroring.
-- **Q:** Why implement a forbidden region with MPC?
-    - **A:** It's a state constraint; MPC enforces constraints predictively over a horizon, so the tool decelerates/redirects before reaching the boundary instead of reacting at it. Anticipation is the safety advantage over a reactive barrier.
-
 
 ## Links
 
@@ -50,10 +36,3 @@ A virtual fixture is software-enforced **active assistance/constraint** on a tel
 
 ---
 
-#flashcards
-
-What is a virtual fixture and what are the two types? ? Software-enforced active assistance/constraint on a teleoperated tool. Guidance: steers along a desired path (anisotropic stiffness). Forbidden-region: keeps the tool out of a protected volume (no-fly zone). Surgeon still drives.
-
-How does a virtual fixture differ from plain teleoperation? ? Teleop just maps operator motion to the instrument; a virtual fixture adds constraint/assistance on top — actively preventing unsafe motion or guiding toward a plan, not just mirroring.
-
-Why implement a forbidden-region fixture with MPC? ? It's a state constraint x ∈ X_safe; MPC enforces it predictively over a horizon, so the tool decelerates/redirects before the boundary rather than reacting at it — anticipation is the safety win.

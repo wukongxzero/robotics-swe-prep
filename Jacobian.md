@@ -6,11 +6,6 @@
 
 > [!star] You implemented this — own it cold The Jacobian is the hinge between FK and IK and the thing the DLS IK actually operates on. Interviewers love it because it connects velocity, singularities, forces, and IK in one object.
 
-> [!question] Explain it cold
-> 
-> - What does the Jacobian map, and what are its rows/columns?
-> - What is a singularity, in Jacobian terms?
-> - How does the Jacobian relate joint torques to end-effector forces?
 
 ---
 
@@ -29,18 +24,6 @@ The manipulator Jacobian $J(q)$ is the matrix that maps **joint velocities → e
 - **Force–torque duality (statics)**: $\tau = J^T F$. Joint torques needed to exert end-effector wrench $F$ are the Jacobian-transpose times the wrench. The _same_ matrix relates velocities (forward) and forces (transpose) — elegant and heavily asked.
 
 
-## Interview follow-ups
-
-- **Q:** What does the Jacobian map and what's its structure?
-    - **A:** Joint velocities to end-effector spatial velocity, $\dot x = J\dot q$. It's 6×n; columns are per-joint velocity contributions, top three rows linear, bottom three angular.
-- **Q:** What happens at a singularity?
-    - **A:** J drops rank — the arm loses the ability to move the tool in some task direction, and the inverse-Jacobian IK demands huge/infinite joint velocities. That's the failure DLS damping fixes.
-- **Q:** How do joint torques relate to end-effector force?
-    - **A:** $\tau = J^TF$ — Jacobian transpose maps a task-space wrench to joint torques. Same Jacobian, transposed; it's the static duality of the velocity mapping.
-- **Q:** How do you measure closeness to singularity?
-    - **A:** Manipulability $\sqrt{\det(JJ^T)}$ or the smallest singular value of J — both go to zero at a singularity.
-
-
 ## Links
 
 - Related: [[Forward Kinematics]], [[Inverse Kinematics & DLS]], [[Frames & Rotations]], [[Contact Modeling]], [[Robot Dynamics Formulations]]
@@ -48,12 +31,3 @@ The manipulator Jacobian $J(q)$ is the matrix that maps **joint velocities → e
 
 ---
 
-#flashcards
-
-What does the manipulator Jacobian map, and what's its shape? ? Joint velocities → end-effector spatial velocity (ẋ = Jq̇). It's 6×n: columns are per-joint contributions, top 3 rows linear velocity, bottom 3 angular.
-
-What is a singularity in Jacobian terms? ? A configuration where J loses rank — the tool can't move in some task direction (or needs infinite joint speed). Detected by det(JJᵀ)=0 or a vanishing singular value.
-
-How do joint torques relate to end-effector force? ? τ = JᵀF — the Jacobian transpose maps a task-space wrench to joint torques (statics duality of the velocity map).
-
-What is manipulability? ? A scalar w = √det(JJᵀ) measuring distance from singularity / freedom of motion; zero at a singularity. Visualized as the manipulability ellipsoid.

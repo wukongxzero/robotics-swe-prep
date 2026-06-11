@@ -6,11 +6,6 @@
 
 > [!star] Differentiator territory CAN on a production multi-arm surgical system (Articulus) is real industrial/medical fieldbus experience most candidates don't have. Pair it with [[iceoryx Zero-Copy]] and [[Motor Control]] for the full real-time-systems story.
 
-> [!question] Explain it cold
-> 
-> - What is CAN and why is it used for motor/actuator networks?
-> - How does arbitration work, and why is it non-destructive?
-> - What makes CAN deterministic for high-priority messages?
 
 ---
 
@@ -328,16 +323,6 @@ can0: <...> mtu 16 ...
 
 ---
 
-## Interview follow-ups
-
-- **Q:** Why CAN for a motor network instead of, say, Ethernet or UART?
-    - **A:** Multi-master with priority-based, non-destructive arbitration gives deterministic latency for critical messages; differential signaling is noise-immune; built-in error confinement. Purpose-built for distributed real-time control in noisy environments.
-- **Q:** Two nodes transmit at once — what happens?
-    - **A:** Bitwise arbitration: the dominant-bit (lower ID, higher priority) message wins and continues uncorrupted; the loser backs off and retries. No collision destruction, no retransmit penalty for the winner.
-- **Q:** Why does ID encode priority?
-    - **A:** Because arbitration compares IDs bit by bit and dominant bits win — a numerically lower ID is more dominant, so it has higher priority by construction.
-- **Q:** What's CAN FD give you over classic CAN?
-    - **A:** Larger payloads (up to 64 bytes) and a faster data phase, while keeping the arbitration scheme.
 
 ## CAN FD — Flexible Data-rate
 
@@ -597,58 +582,3 @@ Roboticists encounter both. Know the tradeoff so you can justify your choice in 
 
 ---
 
-#flashcards
-
-In CAN, what does the message ID encode besides identity? ? Priority — lower ID = higher priority, because bitwise arbitration favors dominant (0) bits.
-
-How is CAN arbitration non-destructive? ? Nodes transmit simultaneously; a node sending recessive that sees dominant backs off. The highest-priority frame continues uncorrupted with no retransmission — unlike Ethernet collision destruction.
-
-What property makes CAN deterministic for critical messages? ? The highest-priority message always wins arbitration immediately and transmits without delay or corruption, giving bounded latency for that frame.
-
-CAN FD vs classic CAN? ? Up to 64 data bytes (vs 8) and a faster data-phase bitrate, keeping the same priority arbitration.
-
-What does the ACK slot do and who writes it? ? Sender transmits it recessive. Any receiver that accepted the frame (CRC passed) pulls it dominant. If no node pulls dominant, sender knows transmission failed and raises an ACK error.
-
-What is bit stuffing in CAN and what error does it catch? ? After 5 consecutive bits of the same polarity, the sender inserts an opposite-polarity bit. Receivers remove it. A stuff error fires if >5 same-polarity bits appear — detects lost synchronization.
-
-CAN fault confinement — three states and their TEC/REC thresholds? ? Error Active (TEC/REC < 128) — normal operation. Error Passive (TEC or REC >= 128) — sends passive error frames, longer backoff. Bus-Off (TEC >= 256) — node disconnects from bus. Recovers after 128 × 11 recessive bits.
-
-PDO vs SDO in CANopen — when do you use each? ? PDO: fire-and-forget, no ack, real-time control loop data (position, torque, velocity). SDO: request/response, confirmed, used for configuration at startup (gains, mode, limits). PDO = fast, SDO = reliable.
-
-What NMT state must a CANopen node be in to send/receive PDOs? ? OPERATIONAL. NMT master sends a broadcast frame to transition all nodes simultaneously.
-
-CANopen object dictionary indexes for position control? ? 0x6040 = controlword, 0x6041 = statusword, 0x607A = target position, 0x60FF = target velocity.
-
-How do you bridge CAN into ROS2? ? ros2_socketcan package — socketcan_receiver publishes can_msgs/Frame on /from_can_bus; socketcan_sender subscribes on /to_can_bus and writes to the CAN interface.
-
-How do you check if a CAN node has gone bus-off? ? `ip -details link show can0` — shows TEC, REC, and state (error-active/passive/bus-off). Also visible as silence on candump.
-
-Two most common causes of a completely silent CAN bus? ? Missing 120 Ω termination at both ends (signal reflections corrupt every frame), or bitrate mismatch between nodes (immediate error storm → bus-off).
-
-Why 120 Ω termination on CAN and why at both ends? ? CAN wire is a transmission line at high bitrates — unterminated ends reflect signals back, corrupting frames. 120 Ω matches the characteristic impedance of standard CAN twisted pair, absorbing the signal. Two resistors because the bus has two physical ends.
-
-Why does CAN max bitrate decrease as cable length increases? ? Longer cable = higher propagation delay. At high bitrates the bit time shrinks — if propagation delay exceeds the bit time, arbitration breaks. 1 Mbit/s → ~40 m max; 125 kbit/s → ~500 m max.
-
-Symptom of missing CAN termination on candump? ? Error frames everywhere, frames randomly missing ACK, TEC climbing. Works at short distances but fails as cable gets longer or bitrate increases.
-
-CAN FD vs classic CAN — the two phases and what changes? ? Arbitration phase runs at ≤1 Mbit/s (same as classic). Data phase runs up to 8 Mbit/s. BRS bit signals the switch. Payload expands to 64 bytes. CRC grows to 17 or 21 bits.
-
-When does CAN FD matter in robotics? ? High-DOF robots (7-joint state in one frame vs 7 frames), firmware updates over CAN, high-rate IMU/force-torque sensor data.
-
-What are the four bit-timing segments in a CAN bit and what does each do? ? Sync Seg (1 TQ, synchronization). Prop Seg (compensates cable propagation delay). Phase Seg 1 (can be lengthened for late edges). Phase Seg 2 (can be shortened for early edges). Sample point = end of Phase Seg 1.
-
-CANopen CiA 402 — what are the three cyclic sync modes and when do you use them? ? CSP (mode 8) = Cyclic Sync Position, CSV (mode 9) = Cyclic Sync Velocity, CST (mode 10) = Cyclic Sync Torque. Use these for real-time control loops — your controller sends a new setpoint every cycle, drive handles inner servo loop.
-
-CiA 402 startup sequence — 8 steps? ? (1) NMT reset. (2) NMT pre-operational. (3) SDO set mode. (4) SDO set PDO mappings. (5) NMT operational. (6) Controlword = Shutdown. (7) Controlword = Switch On. (8) Controlword = Enable Operation.
-
-DB9 CAN pinout (CiA 303-1)? ? Pin 2 = CAN_L, Pin 3 = GND, Pin 7 = CAN_H, Pin 9 = CAN_V+ (optional power).
-
-Why must CAN cable be twisted pair? ? Twisting cancels common-mode noise — both wires pick up the same interference, and the differential receiver rejects it. Untwisted wire acts as an antenna.
-
-Max stub length at 1 Mbit/s and why? ? ~0.3 m. Stubs reflect signals. At high bitrates the bit time is short — a reflection arriving late corrupts the current bit. Rule: stub < 1/10 of signal wavelength.
-
-SocketCAN filter mask logic? ? (received_id & mask) == (filter_id & mask) → accept. To accept exact ID: mask = 0x7FF. To accept a range (e.g., all SDO responses 0x580–0x5FF): id=0x580, mask=0x780.
-
-CAN priority assignment rule for safety-critical systems? ? Safety-critical (e-stop, fault) → lowest IDs (0x001–0x00F). Control loop commands → next (0x100–0x1FF). Sensor feedback → mid (0x200–0x3FF). Telemetry → highest IDs (0x600+). Lower ID = higher priority = guaranteed bus access first.
-
-CAN vs EtherCAT — when to pick each? ? CAN: cheap, built into every MCU, good for research/medical/WALL-E-style robots, up to 1 Mbit/s. EtherCAT: 100 Mbit/s, sub-ms synchronous multi-axis, requires ASIC slave chip — used in Fanuc/KUKA/UR industrial arms.
