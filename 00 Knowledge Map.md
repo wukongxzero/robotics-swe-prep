@@ -1,14 +1,118 @@
 ---
 type: moc
-status: skeleton
-created: 2026-05-24
+status: active
 ---
 
-# 00 — Robotics Knowledge Map
+# 00 — Knowledge Map
 
-This is the front door to the vault. Every concept I know lives somewhere below. The job here is *capture* (so nothing decays) and *recall* (so I can say it out loud in an interview). If a note doesn't serve the portfolio or the drilling, it doesn't get written.
+The index page for this vault. Every topic links to its own reference note.
 
-> [!tip] How to use this vault
-> 1. Each leaf below becomes its own note using `[[_Note Template]]`.
-> 2. Notes are recall-shaped: answer the "explain it cold" prompt from memory *before* reading the reference.
-> 3. `
+---
+
+## DSA & Algorithms
+- [[DSA Patterns]] — pattern index, C++ templates, complexity reference
+
+## ROS2
+- [[ROS2 Node & Lifecycle]]
+- [[ROS2 Executors]]
+- [[ROS2 Comm Patterns]]
+- [[ROS2 QoS]]
+- [[ROS2 Node Design Patterns]]
+- [[ROS2 Testing]]
+- [[colcon ament & launch]]
+- [[ros2_control]]
+- [[rosbag2]]
+- [[TF2]]
+- [[DDS & RMW]]
+- [[Multi-Machine ROS2]]
+- [[Nav2 Stack]]
+
+## Control Theory
+- [[PID Control]]
+- [[State-Space & Pole Placement]]
+- [[LQR]]
+- [[LQG]]
+- [[MPC & Virtual Fixtures]]
+- [[Trajectory Optimization]]
+- [[Frequency domain Analysis]]
+
+## State Estimation & Sensor Fusion
+- [[Kalman Filter]]
+- [[Sensor Fusion]]
+- [[Complementary Filter]]
+- [[SLAM & RTAB-Map]]
+- [[Odometry vs Localization vs SLAM]]
+
+## Kinematics & Dynamics
+- [[Frames & Rotations]]
+- [[Forward Kinematics]]
+- [[Jacobian]]
+- [[Inverse Kinematics & DLS]]
+- [[Robot Dynamics Formulations]]
+- [[Floating-Base & Whole-Body]]
+
+## Motion Planning
+- [[Motion Planning Algorithms]]
+- [[Virtual Fixtures]]
+- [[Teleoperation & Motion Scaling]]
+
+## Linux & Systems
+- [[Linux, IPC & System Design]]
+- [[Real-Time Determinism]]
+- [[Latency Budgets]]
+- [[Safety-Critical Architecture]]
+- [[iceoryx Zero-Copy]]
+
+## Simulation
+- [[Isaac Lab]]
+- [[MuJoCo & Gazebo]]
+- [[Simulation Environments Comparison]]
+
+## Perception
+- [[YOLOv8 Detection]]
+- [[OpenCV Pipelines]]
+- [[Point Cloud Processing]]
+- [[Camera Model & Projection]]
+- [[SLAM & RTAB-Map]]
+
+## Infrastructure
+- [[Docker for ROS]]
+- [[Git & Build Systems]]
+- [[CI_CD for Robotics]]
+- [[Jetson Orin Setup]]
+- [[NixOS for Jetson]]
+
+## Hardware & Embedded
+- [[CAN Bus]]
+- [[Serial Packet Protocols]]
+- [[Motor Control]]
+- [[AVR Peripherals]]
+- [[AVR Register Programming]]
+- [[FreeRTOS]]
+- [[RTOS Fundamentals]]
+- [[Watchdog Timers]]
+- [[Dynamixel ROS2]]
+- [[Parallax Propeller]]
+
+## ML & AI
+- [[LLM Tool Calling]]
+- [[Edge Inference]]
+- [[CUDA & CuPy]]
+- [[PINN Contact Estimation]]
+- [[Lagrangian Neural Networks]]
+
+## Robotics Theory
+- [[Linear Algebra Refresher]]
+- [[Probability & Optimization]]
+- [[Contact Modeling]]
+- [[Force Feedback & Haptics]]
+- [[Behavior Trees]]
+- [[State Machines in Robotics]]
+- [[Design_Patterns]]
+- [[Programming Languages for Robotics]]
+
+## Assets & Tooling
+- [[URDF & CAD Pipeline]]
+- [[Collada & Mesh Formats]]
+- [[SymPy & scipy]]
+- [[Robotics Toolchain]]
