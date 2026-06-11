@@ -1,16 +1,16 @@
-# Robotics SWE Interview Prep — Knowledge Vault
+# Robotics SWE Knowledge Vault
 
-A comprehensive Obsidian vault for engineers targeting **Robotics Software Engineer (RSE)** roles at companies like Boston Dynamics, Waymo, Figure, Cruise, and similar.
+A reference vault for Robotics Software Engineers. Covers the full technical stack — DSA patterns in C++, ROS2 internals, real-time Linux, control theory, motion planning, and simulation.
 
-97 pages covering the full technical stack — from DSA patterns to ROS2 internals to real-time Linux to RL simulation.
+Built for engineers working in or targeting robotics SWE roles.
 
 ---
 
 ## What's inside
 
-### DSA & Coding Screens
-- **DSA Patterns** — NeetCode 150 in C++, pattern index, templates, flashcards (Two Pointers, Graphs, BFS/DFS, Sliding Window, Heap, Dijkstra, A*, Binary Search, DP)
-- **Interview Problem-Solving Framework** — spoken approach, 5-step method
+### DSA & Algorithms
+- **DSA Patterns** — C++ templates for Two Pointers, Graphs, BFS/DFS, Sliding Window, Heap, Dijkstra, A*, Binary Search, DP
+- Graph algorithms with robotics context (path planning, dependency resolution)
 
 ### ROS2
 - Node design patterns, executors, lifecycle, QoS, comm patterns
@@ -27,24 +27,20 @@ A comprehensive Obsidian vault for engineers targeting **Robotics Software Engin
 ### Systems & Infrastructure
 - Linux IPC, real-time scheduling, concurrency, debugging tools (htop/btop, perf, strace, gdb)
 - Docker for ROS, Jetson Orin setup, CUDA & CuPy, Edge Inference
-- Git & Build Systems, snap, CI/CD for Robotics
+- Git & Build Systems, CI/CD for Robotics
 - Safety-Critical Architecture, Real-Time Determinism, Latency Budgets
 
 ### Hardware & Embedded
 - CAN Bus, Serial Packet Protocols, AVR, FreeRTOS, RTOS Fundamentals
-- Motor Control, Dynamixel, Watchdog Timers, Parallax Propeller
+- Motor Control, Dynamixel, Watchdog Timers
 
 ### Simulation & RL
-- Isaac Lab/Sim setup, ArticulationCfg, DirectRLEnv, ContactSensor, DLS IK
+- Isaac Lab/Sim — ArticulationCfg, DirectRLEnv, ContactSensor, DLS IK
 - MuJoCo & Gazebo, Simulation Environments Comparison
 
 ### Perception
 - YOLOv8, OpenCV Pipelines, Point Cloud Processing, Camera Model & Projection
 - URDF & CAD Pipeline, Collada & Mesh Formats
-
-### Projects (real implementations)
-- **WALL-E V3** — autonomous mobile robot, ROS2 + Nav2 + LLaMA + YOLO on Jetson Orin
-- **FENCE-BOT** — 6-DOF arm in Isaac Lab with VR teleop, DLS IK, contact sensing
 
 ---
 
@@ -53,11 +49,11 @@ A comprehensive Obsidian vault for engineers targeting **Robotics Software Engin
 1. Install [Obsidian](https://obsidian.md)
 2. Clone this repo: `git clone https://github.com/wukongxzero/robotics-swe-prep`
 3. Open Obsidian → Open folder as vault → select the cloned directory
-4. Enable the **Spaced Repetition** plugin for flashcard drilling
 
-Each page follows the same structure:
-- **Explain it cold** callout — test yourself before reading
-- Core concepts with C++ code examples
-- Interview follow-ups with model answers
-- Gotchas section
-- `
+Each page covers: core concepts, code examples, key formulas, and common pitfalls.
+
+---
+
+## Contributing
+
+PRs welcome — especially for gaps in coverage or pages marked `status: stub`.
