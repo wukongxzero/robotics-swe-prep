@@ -26,10 +26,6 @@ Trajectory optimization finds an **entire optimal motion** — a sequence of sta
 - **Indirect methods**: derive optimality conditions (Pontryagin / calculus of variations) first, then solve. Elegant, accurate, but hard to set up and brittle — less common in practice.
 - **Solvers/tools**: NLP solvers (IPOPT, SNOPT) via modeling layers — [[acados OCS2 CasADi|CasADi]] for autodiff + NLP, acados for fast embedded, OCS2 for switched-system/whole-body.
 
-## Where I've used it / context
-
-- **Prof. Kim coursework**: trajectory optimization alongside floating-base dynamics and gait — the planning layer above the dynamics. Direct context for the [[MPC & Virtual Fixtures|MPC virtual-fixtures project]] (MPC = receding-horizon trajopt).
-- **Theory/tooling depth** rather than a shipped implementation — frame honestly, but it's the conceptual bridge between my dynamics knowledge and the optimization-based control direction.
 
 ## Interview follow-ups
 
@@ -40,10 +36,6 @@ Trajectory optimization finds an **entire optimal motion** — a sequence of sta
 - **Q:** How do the dynamics enter the optimization?
     - **A:** As equality constraints — either via integration (shooting) or as defect constraints linking consecutive knot points (collocation). The optimizer can't violate physics.
 
-## Gotchas / what trips me up
-
-- Calling collocation "more accurate" — it's better _conditioned/robust_; both are direct methods approximating the same problem.
-- Forgetting shooting's long-horizon sensitivity is the reason collocation exists.
 
 ## Links
 

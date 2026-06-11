@@ -791,14 +791,6 @@ vector<vector<int>> threeSum(vector<int>& nums) {
 
 ---
 
-## Where I am
-
-- Drilling NeetCode 150 in C++ as the coding-screen prep. (Update progress in `status`/last-reviewed.)
-- Day 2: completed planar 3-link FK + Jacobian + DLS IK in Python. Bugs were syntax (array nesting, bracket vs paren), not conceptual.
-- Day 3 (2026-05-29): Valid Anagram + Group Anagrams in C++. Both hashmap pattern.
-- Day 4 (2026-05-30): Grid pathfinding — BFS vs DFS vs A* on obstacle grid. Implemented A* in C++ from scratch, debugged 7 errors. Added to vault.
-- 2026-06-09: Valid Sudoku (#36) — hashmap per row/col/box. Two Sum II (#167) — two pointers on sorted array. Three Sum (#15) — sort + two pointers + duplicate skip. NeetCode now 12/150.
-- 2026-06-11: Container With Most Water (#11) — two pointers from both ends, move shorter pointer. Number of Islands (#200) — DFS flood fill. Fixed A* bug (was checking cost array instead of grid for obstacles). Trapping Rain Water (#42) — two pointers with running max. Two Pointers pattern complete. Clone Graph (#133) — DFS + hashmap clone registry. NeetCode now 16/150.
 
 ## Interview follow-ups (meta)
 
@@ -807,11 +799,6 @@ vector<vector<int>> threeSum(vector<int>& nums) {
 - **Q:** Two Sum variants?
     - **A:** Unsorted → hash map (O(n)). Sorted → two pointers (O(n), O(1) space). The data's structure picks the pattern.
 
-## Gotchas / what trips me up
-
-- Jumping to code before stating the pattern/complexity (the spoken-aloud habit fixes this).
-- Off-by-one in sliding window / binary search bounds.
-- DP: not defining the state/recurrence before coding.
 
 ## Links
 

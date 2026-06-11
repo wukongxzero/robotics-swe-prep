@@ -25,10 +25,6 @@
 - QoS lives at the DDS layer — see [[ROS2 QoS]]. That's _why_ QoS feels low-level: it's the DDS contract surfaced up.
 - Transport: typically UDP under the hood; loopback/shared-memory transports exist per-vendor (lead-in to [[iceoryx Zero-Copy]]).
 
-## Where I've used it
-
-- **Articulus**: ran DDS with **iceoryx** for zero-copy shared-memory transport on the latency-critical path — DDS for discovery/structure, iceoryx for the actual high-rate, low-latency data movement. Vendor choice and transport tuning were real engineering decisions, not defaults.
-- Awareness that **Connext** shows up in regulated medical/industrial contexts is useful framing for surgical-robotics interviews.
 
 ## Interview follow-ups
 
@@ -39,10 +35,6 @@
 - **Q:** Discovery problem at scale?
     - **A:** Default multicast discovery is O(N²)-ish in chatter as participants grow. Mitigate with discovery servers, domain partitioning, or restricting discovery ranges.
 
-## Gotchas / what trips me up
-
-- Saying "ROS2 has no networking config to worry about" — domain IDs, multicast reachability, and RMW choice all bite in practice.
-- Conflating DDS (the standard/transport) with RMW (the ROS abstraction over it).
 
 ## Links
 

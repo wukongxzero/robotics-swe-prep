@@ -92,10 +92,6 @@ Because the control always operates in the rotor's frame, the applied force vect
 - Magnetic encoders give 12–14 bit resolution (4096–16384 positions/rev) — smooth FOC.
 - **Dynamixel** servos have FOC built in with position/velocity/current control modes; you communicate over TTL/RS-485 protocol and set control mode + goal.
 
-## Where I've used it
-- **FENCE-BOT / WALL-E**: Dynamixel servos handle FOC internally. Understanding FOC explains why Dynamixels feel smooth and why current-control mode directly commands torque.
-- **AVR PWM**: [[AVR Peripherals]] — generating PWM via Timer1 for brushed motor H-bridge control is the simpler case this builds on.
-- Motor control is the gap between "I write ROS nodes" and "I understand what the actuator is actually doing." Interviewers at actuator-focused companies (Boston Dynamics, Apptronik, etc.) probe here.
 
 ## Interview follow-ups
 - **Q:** Why set $I_d = 0$ in FOC?
@@ -107,10 +103,6 @@ Because the control always operates in the rotor's frame, the applied force vect
 - **Q:** What is field weakening?
   - **A:** Running $I_d < 0$ intentionally to reduce air-gap flux, which allows higher RPM beyond base speed (back-EMF limit). Used in EVs and high-speed spindles. Trades torque/amp efficiency for extended speed range.
 
-## Gotchas / what trips me up
-- Clarke and Park use different normalizations in different libraries — check whether your implementation uses amplitude-invariant or power-invariant form.
-- The rotor angle for Park transform is the **electrical** angle, not mechanical. For a motor with $p$ pole pairs: $\theta_e = p \cdot \theta_m$.
-- Dead time in the PWM driver causes current distortion at low speeds — advanced controllers compensate for it.
 
 ## Links
 - Related: [[AVR Peripherals]], [[Real-Time Determinism]], [[PID Control]], [[Serial Packet Protocols]]

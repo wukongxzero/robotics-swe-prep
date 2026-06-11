@@ -121,14 +121,6 @@ See [[Kalman Filter]] for full math.
 
 ---
 
-## Where I've used it
-
-- **Home Service Bot** ([[Home Service Bot]]): full Nav2 stack — AMCL localization, A* global planner, DWB local controller, costmap 2D, pick-and-place pipeline with MoveIt2. AMCL particle filter drove localization from LiDAR on a pre-built map.
-- **WALL-E V3 sim (2026-06-04 validated)**: Full Nav2 + RTAB-Map stack in Gazebo Harmonic. Robot drives to NavigateToPose goals autonomously. Key lessons:
-  - `controller_server` remaps `cmd_vel` to an intermediate topic for the velocity smoother — if smoother remappings are wrong, nothing reaches `/cmd_vel` and the robot sits still despite goal being accepted. Verify the full chain: controller → smoother → `/cmd_vel` → diff drive
-  - Error code 204 = controller (DWB) failure. Can happen because: map is empty (no obstacles = DWB confused), cmd_vel not reaching diff drive, or TF too stale
-  - `transform_tolerance` defaults to 0.3s. With RTAB-Map at 1Hz, the map→odom TF is up to 1s old between updates — set `transform_tolerance: 1.5` in both local and global costmap params
-  - An empty map (RTAB-Map built nothing) still allows the planner to accept a goal but DWB may abort immediately
 
 ---
 
@@ -155,12 +147,6 @@ See [[Kalman Filter]] for full math.
 | TF extrapolation error | Clock sync issue or missing TF | Check `use_sim_time`, verify all TF publishers running |
 | `NavigateToPose` fails silently | Goal outside map or in obstacle | Check costmap values at goal, verify reachability |
 
-## Gotchas / what trips me up
-
-- Confusing AMCL (localize on known map) with SLAM (build the map).
-- Forgetting `NavigateToPose` is an action (cancellable/long-running), not a service.
-- `map → odom` can jump (AMCL corrections); `odom → base_link` never does — mixing them up breaks sensor fusion.
-- Particle filter needs motion to converge — robot must move for weights to differentiate pose hypotheses.
 
 ## Links
 

@@ -39,10 +39,6 @@ Building real-time [[MPC & Virtual Fixtures|MPC]] / [[Trajectory Optimization|tr
 - **Q:** When OCS2?
     - **A:** Complex systems — switched dynamics, legged/whole-body MPC — where you want a framework with SLQ/DDP-family solvers built for that structure rather than rolling it yourself.
 
-## Gotchas / what trips me up
-
-- Treating them as competitors — they interoperate (CasADi models, acados solves).
-- Don't overclaim — this is forward-looking toolchain knowledge for the research project.
 
 ## Links
 

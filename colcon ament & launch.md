@@ -25,10 +25,6 @@ The build-and-bring-up toolchain: **ament** is the ROS2 build system (CMake/Pyth
 - **Launch** — Python (or XML/YAML) files that declare nodes, parameters, remappings, namespaces, composition containers, and conditionals. Lets you bring up a whole system with one command and parameterize it.
 - **Launch features**: `Node(...)`, parameter files (YAML), `remappings`, `LaunchConfiguration` + `DeclareLaunchArgument` for args, `ComposableNodeContainer` for [[ROS2 Node & Lifecycle]] composition, event handlers for ordered bring-up.
 
-## Where I've used it
-
-- **WALL-E V3**: multi-node bring-up (`uno_bridge`, `mega_node`, `controller_node`, `state_machine`) — a launch file beats four terminals. Ran inside Docker Compose (`ros:humble` + `ollama/ollama`), so launch + container orchestration stacked together.
-- **FENCE-BOT**: hit the classic colcon failure modes head-on — wrong source filename in `CMakeLists.txt`, missing runtime dependencies in `package.xml`, running `colcon` from the wrong directory, and **stale binaries** from not re-sourcing. Good war stories for "tell me about a debugging session."
 
 ## Interview follow-ups
 
@@ -39,11 +35,6 @@ The build-and-bring-up toolchain: **ament** is the ROS2 build system (CMake/Pyth
 - **Q:** Why a launch file over a bash script of `ros2 run`s?
     - **A:** Declarative composition, parameter files, remappings, namespaces, ordered/conditional bring-up, and composable-node containers — all first-class, reproducible, and parameterizable.
 
-## Gotchas / what trips me up
-
-- Forgetting `source install/setup.bash` after a build → stale binaries (cost me real debugging time on FENCE-BOT).
-- Missing an `<exec_depend>` in package.xml — builds fine, fails at runtime.
-- Running `colcon build` from inside `src/` instead of the workspace root.
 
 ## Links
 

@@ -51,9 +51,6 @@ $$T^{i-1}_i = R_z(\theta_i)\, T_z(d_i)\, T_x(a_i)\, R_x(\alpha_i)$$
 - Revolute joint: $\theta_i$ varies, $d_i$ fixed
 - Prismatic joint: $d_i$ varies, $\theta_i$ fixed
 
-## Where I've used it
-- **Today's C++ problem**: 2-DOF planar FK — computed $(x,y)$ from $(\theta_1,\theta_2)$ using cumulative angle formula.
-- **FENCE-BOT**: DLS IK requires the [[Jacobian]], which is $\partial\,\text{FK}/\partial q$ — correct FK is the foundation.
 
 ## Interview follow-ups
 - **Q:** What's the difference between FK and IK, and which is harder?
@@ -63,9 +60,6 @@ $$T^{i-1}_i = R_z(\theta_i)\, T_z(d_i)\, T_x(a_i)\, R_x(\alpha_i)$$
 - **Q:** Why are the angles cumulative in a planar arm?
   - **A:** Each joint rotates relative to the previous link's frame, so the second link's world angle is $\theta_1 + \theta_2$.
 
-## Gotchas / what trips me up
-- Two DH variants exist (classic vs modified/Craig) — they differ in frame assignment order. Know which one your library uses before trusting its output.
-- Getting the $z$-axis assignment wrong cascades through every transform downstream.
 
 ## Links
 - Related: [[Jacobian]], [[Inverse Kinematics & DLS]], [[Frames & Rotations]]

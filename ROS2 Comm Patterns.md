@@ -23,11 +23,6 @@ Three communication primitives, chosen by _interaction shape_: **topics** (conti
 - **Actions** — for goals that take time and need: periodic **feedback**, a final **result**, and **cancellation/preemption**. Built _from_ topics + services under the hood (goal service, result service, feedback topic, status topic, cancel service).
 - Decision rule: _streaming?_ → topic. _Quick call-and-answer?_ → service. _Takes seconds+, want progress and the ability to cancel?_ → action.
 
-## Where I've used it
-
-- **WALL-E V3**: TankStatus / odometry / IMU = topics (streams). "Switch to AUTONOMOUS" = service-shaped (confirmed state change). A "navigate to landmark" behavior is the textbook action — long-running, want feedback, want to cancel. (Nav2 exposes navigation as actions — relevant for the summer Nav2 work.)
-- **FENCE-BOT**: `/vr_pose` is a topic (continuous teleop stream). A "home the arm" command would be an action.
-- **Articulus**: high-rate control/telemetry over topics; mode/config changes as services; anything long-horizon as an action so it's cancellable mid-execution — important for safety.
 
 ## Interview follow-ups
 
@@ -38,10 +33,6 @@ Three communication primitives, chosen by _interaction shape_: **topics** (conti
 - **Q:** Many subscribers to one topic — issue?
     - **A:** Fine, that's the design (many-to-many), but mind QoS compatibility per pair and the publisher's serialization cost if not intra-process.
 
-## Gotchas / what trips me up
-
-- Reaching for a service on a long task → blocks the executor thread, no cancel. Use an action.
-- Forgetting actions are composite — debugging them means looking at the underlying topics/services.
 
 ## Links
 

@@ -75,14 +75,6 @@ rtabmap_ros node
 /rtabmap/mapData        → 3D point cloud map
 ```
 
-## Where I've used it
-- **Home service bot (Udacity Nanodegree)**: built a full SLAM + navigation pipeline. The practical intuition is there even if the recall has faded — revisiting this is reconnecting, not learning from scratch.
-- **WALL-E V3 sim (2026-06-04 validated)**: Full RTAB-Map + Nav2 stack running in Gazebo Harmonic. Robot drives to Nav2 goals autonomously. Key lessons from building it:
-  - `Rtabmap/DetectionRate: "0"` (process every frame) causes queue backup when processing takes >500ms per frame and camera is at 2-5Hz — set to `"1"` to cap at 1Hz and drop frames
-  - Plain featureless walls (no texture, no color variation) = zero visual keypoints = RTAB-Map can't do visual odometry or loop closure. Add colored objects to the environment
-  - `subscribe_scan: true` uses laserscan for the occupancy grid (good) but still needs visual features for frame-to-frame odometry
-  - RTAB-Map publishes map→odom TF at its processing rate (1Hz when DetectionRate=1). Set `transform_tolerance: 1.5` in Nav2 costmaps or they reject the TF as stale
-  - Next: Isaac Sim port for RL training + perception coursework
 
 ## Interview follow-ups
 - **Q:** Why is SLAM hard / circular?
@@ -96,10 +88,6 @@ rtabmap_ros node
 - **Q:** What does RTAB-Map's memory management do?
   - **A:** Keeps the working memory bounded so loop closure search stays real-time. Older nodes are moved to long-term memory and only recalled when a candidate loop closure is near them.
 
-## Gotchas / what trips me up
-- Loop closure ≠ localization. Loop closure corrects the map during mapping. Localization-only mode (known map) is a different mode.
-- Don't confuse the bag-of-words similarity score with geometric verification — RTAB-Map does both; similarity is the candidate filter, geometry is the confirmation.
-- RTAB-Map's `/odom` output is corrected odometry — use this, not raw wheel odometry, as input to Nav2.
 
 ## Links
 - Related: [[Nav2 Stack]], [[Kalman Filter]], [[Sensor Fusion]], [[OpenCV Pipelines]], [[Jetson Orin Setup]]

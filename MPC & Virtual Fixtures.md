@@ -34,11 +34,6 @@
 - **Why MPC fits**: a virtual fixture _is_ a state constraint $x \in \mathcal{X}_{safe}$. MPC's native ability to enforce constraints over a predictive horizon makes it the principled way to implement fixtures that anticipate violations rather than reacting after the fact — exactly the safety property surgical teleop wants.
 - Ties to [[Safety-Critical Architecture]], [[Teleoperation & Motion Scaling]], and [[Force Feedback & Haptics]] — the surgical-robotics cluster.
 
-## Where I've used it / where it's going
-
-- **Articulus context**: teleoperated multi-arm laparoscopy is the domain virtual fixtures live in — active constraints + motion scaling + safety.
-- **Prof. Kim project (Spring 2027, planned)**: MPC-based virtual fixtures for teleoperated manipulation, simulation-only, using acados/OCS2/CasADi in Isaac Lab/MuJoCo. This note is the spec-in-miniature.
-- **FENCE-BOT** already touched the adjacent pieces — DLS IK, contact sensing, the VR teleop pipeline — which is the practical substrate this builds on.
 
 ## Interview follow-ups
 
@@ -51,10 +46,6 @@
 - **Q:** What makes MPC hard in real time?
     - **A:** Solving the optimization within the control period. Mitigations: linearize to a QP, warm-start from the last solution, condense the problem, use embedded solvers like acados. Nonlinear MPC is the expensive case.
 
-## Gotchas / what trips me up
-
-- Saying MPC is "just better LQR" — it's LQR _plus constraints_ at the cost of online optimization; unconstrained infinite-horizon MPC literally reduces to LQR.
-- Underestimating the real-time solve burden — the entire engineering challenge is fitting the QP/NLP in the loop.
 
 ## Links
 

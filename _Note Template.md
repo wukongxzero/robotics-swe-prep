@@ -23,16 +23,12 @@ tags: []
 ## Key facts & formulas
 *The durable reference. Equations, parameter meanings, units.*
 
-## Where I've used it
-*Anchor to real work — Articulus, WALL-E V3, FENCE-BOT, coursework. Concrete beats abstract in interviews: "I used DLS IK with λ=0.1 on the ASEM arm" lands; "DLS damps the Jacobian" doesn't.*
 
 ## Interview follow-ups
 *The curveballs an interviewer asks after the surface answer. Write the question, then your answer.*
 - **Q:**
   - **A:**
 
-## Gotchas / what trips me up
-*The thing I get wrong under pressure. Be honest here.*
 
 ## Links
 - Related: [[ ]]

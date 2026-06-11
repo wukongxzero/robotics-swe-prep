@@ -46,10 +46,6 @@ $$\text{TWBR} = \frac{F_{CPU}/f_{SCL} - 16}{2 \times \text{prescaler}}$$
 - **ADC**: 10-bit, configured via ADMUX (reference + channel) and ADCSRA (enable, prescaler, start). Result in ADCH:ADCL.
 - **PWM frequency** = timer overflow frequency; **duty** = OCRx / (MAX+1).
 
-## Where I've used it
-
-- **WALL-E V3**: PWM for L298N motor drivers (ENA/ENB), ADC for the Parallax joystick, TWI for [[AVR Register Programming|TCA9548A I2C mux + AS5600 encoders]], USART/Serial1 for HC-05 Bluetooth on the Mega. Every one of these formulas was a real config, not a textbook exercise.
-- **Kapila final**: explicitly drilled UBRR, timer overflow, TWBR derivations.
 
 ## Interview follow-ups
 
@@ -60,11 +56,6 @@ $$\text{TWBR} = \frac{F_{CPU}/f_{SCL} - 16}{2 \times \text{prescaler}}$$
 - **Q:** PWM frequency too low, causing audible whine — what do you change?
     - **A:** Lower the prescaler or use a smaller TOP (Fast PWM with ICR/OCR as TOP) to raise the overflow frequency above ~20 kHz.
 
-## Gotchas / what trips me up
-
-- Off-by-one on the −1 in UBRR and the MAX+1 in timer math.
-- Forgetting U2X mode changes the 16 to an 8.
-- TWSR prescaler bits are separate from the TWBR value.
 
 ## Links
 

@@ -92,9 +92,6 @@ $$\chi_0 = \hat{x}, \quad \chi_i = \hat{x} + (\sqrt{(n+\lambda)P})_i, \quad \chi
 
 All in `/home/wukong/Robot_practice/core_robotics_programs/`
 
-## Where I've used it
-
-- **WALL-E V3 gimbal**: ran a **discrete Kalman filter** in the [[LQG]] variant for attitude estimation at 200 Hz on the Arduino UNO — fusing IMU readings into angle+rate state. The [[Complementary Filter]] was the lightweight alternative I also implemented; the Kalman version is the principled one when you want to model the noise explicitly.
 
 ## Interview follow-ups
 
@@ -122,11 +119,6 @@ The update step requires inverting $(HP^-H^T + R)$ — an $m \times m$ matrix wh
 - **Information filter** — work in inverse covariance space $(\Omega = P^{-1})$. Avoids the inversion for update-heavy scenarios.
 - **Sequential scalar updates** — split a large measurement vector into individual scalar updates. Each update is a scalar divide — no matrix inversion at all.
 
-## Gotchas / what trips me up
-
-- Confusing Kalman's Q/R (process/measurement noise) with LQR's Q/R (state/effort weights). Different objects, same letters.
-- Forgetting covariance _grows_ in predict and _shrinks_ in update.
-- Assuming linearity — real robots usually need EKF.
 
 ## Links
 

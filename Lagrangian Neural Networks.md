@@ -34,9 +34,6 @@ A Lagrangian Neural Network learns a system's **Lagrangian** $L = T - V$ with a 
 - **Free-flight LNN converged** to MSE ~1.12 — smooth, conservative dynamics, exactly what the LNN structure assumes.
 - **Contact LNN underfit** — only **28 collision samples**, and contact dynamics are **non-smooth/discontinuous** ([[Contact Modeling]]), violating the smoothness the Euler–Lagrange + Hessian machinery relies on. Sparse data + non-smooth physics = the LNN's worst case. This isn't a bug, it's the structural limitation.
 
-## Where I've used it
-
-- **FENCE-BOT**: identified and fixed the three bugs above in Jordan's LNN; the system used a 2D rigid-body + pendulum collision sim (SymPy Lagrangian, scipy `solve_ivp`) to generate training data. Full pipeline confirmed end-to-end.
 
 ## Interview follow-ups
 
@@ -49,11 +46,6 @@ A Lagrangian Neural Network learns a system's **Lagrangian** $L = T - V$ with a 
 - **Q:** Why did contact underfit but free-flight converge?
     - **A:** Free-flight is smooth and conservative — ideal for the LNN. Contact is non-smooth/discontinuous and I had only 28 samples; the smoothness assumption behind Euler–Lagrange and the Hessian breaks down, so it underfits. Structural limit, not a code bug.
 
-## Gotchas / what trips me up
-
-- Naively normalizing data in a physics-structured model — breaks the invariants.
-- Feeding discrete signals through a path that gets differentiated twice.
-- Expecting an energy-conserving architecture to fit dissipative/contact dynamics well.
 
 ## Links
 

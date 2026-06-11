@@ -28,10 +28,6 @@ Contact is where a robot touches the world — and it's notoriously hard because
 - **In dynamics**: contact enters the EOM as $J_c^T\lambda$ (contact Jacobian transpose × contact force) — same structure as [[Floating-Base & Whole-Body|floating-base]] and the [[Jacobian|force duality]] $\tau = J^TF$.
 - **Rising-edge detection**: detect the _transition_ into contact (force crosses threshold going up), not just the sustained state — debounces noise and catches the instant of impact.
 
-## Where I've used it
-
-- **FENCE-BOT**: wired **contact sensing via a force threshold** with **rising-edge hit detection**, logged to CSV (t / xyz / error / in_contact / force_mag). The rising edge marks the moment of impact cleanly vs a noisy sustained signal. The free-flight vs contact LNN split is exactly the smooth-vs-discontinuous dynamics problem — the contact LNN underfit (only 28 collision samples) _because_ contact events are rare and the dynamics are non-smooth, which is the core modeling difficulty in action.
-- **Surgical framing**: contact force estimation is the analogy for **surgical force sensing** — knowing tool-tissue interaction force, which is what the [[PINN Contact Estimation|PINN]] work and [[Force Feedback & Haptics|haptics]] address. Ties directly to the surgical-robotics differentiator.
 
 ## Interview follow-ups
 
@@ -44,11 +40,6 @@ Contact is where a robot touches the world — and it's notoriously hard because
 - **Q:** Why did the contact LNN underfit?
     - **A:** Contact events were rare (28 samples) and the dynamics are non-smooth/discontinuous — hard for a smooth network to fit from sparse data. The free-flight LNN converged fine (smooth dynamics, MSE ~1.12); contact is the genuinely hard regime.
 
-## Gotchas / what trips me up
-
-- Conflating detection (discrete event) with dynamics (continuous force/constraint).
-- Forgetting penalty models permit penetration and are numerically stiff.
-- Treating contact as smooth — its non-smoothness is the whole difficulty (and why the contact LNN struggled).
 
 ## Links
 

@@ -24,9 +24,6 @@ Nix is a purely-functional package manager (and NixOS, a Linux distro built on i
 - **vs Docker**: Docker reproduces a _container image_; Nix reproduces the _build itself_ (and can build the image). They compose — Nix for hermetic builds, Docker for deployment/isolation. ([[Docker for ROS]])
 - **The cost**: steep learning curve, the Nix language, and ARM/Jetson + proprietary NVIDIA drivers (CUDA) are genuinely painful to get working under Nix's purity model.
 
-## Where I've used it
-
-- **WALL-E V3 / FENCE-BOT**: ran a **NixOS Jetson (nixjetson)** for reproducible embedded builds alongside the Docker path — using `arduino-cli` and integrating [[AVR Peripherals|TCA9548A/AS5600 encoders]]. The reproducibility was the draw: a declarative robot environment vs hand-installed drift.
 
 ## Interview follow-ups
 
@@ -37,10 +34,6 @@ Nix is a purely-functional package manager (and NixOS, a Linux distro built on i
 - **Q:** What's hard about NixOS on a Jetson?
     - **A:** ARM plus proprietary NVIDIA/CUDA drivers fight Nix's purity model, and the learning curve/language is steep. It's a real investment for the reproducibility payoff.
 
-## Gotchas / what trips me up
-
-- Proprietary CUDA drivers vs Nix purity — the main friction on Jetson.
-- Steep Nix-language learning curve; easy to underestimate.
 
 ## Links
 

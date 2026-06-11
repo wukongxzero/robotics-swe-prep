@@ -46,11 +46,6 @@ Two math toolkits underpinning estimation and control. **Probability** models un
 - **Q:** When QP vs general NLP?
     - **A:** QP (quadratic cost, linear constraints) is convex and fast — linear MPC and whole-body control use it. NLP handles nonlinear dynamics/costs (nonlinear MPC, trajopt) via SQP/interior-point, slower and needing gradients.
 
-## Gotchas / what trips me up
-
-- Conflating covariance (spread+correlation) with variance (single-variable spread).
-- Assuming a solver found the global optimum on a non-convex problem.
-- Forgetting Gaussian MLE = least squares (the probability↔optimization bridge).
 
 ## Links
 

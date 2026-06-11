@@ -32,9 +32,6 @@ Inverse kinematics maps **desired end-effector pose → joint values**. The inve
     - **λ (damping factor)** trades accuracy vs stability: small λ → accurate but jittery/unstable near singularities; large λ → smooth and robust but sluggish and with steady-state error. **I used λ = 0.1** on FENCE-BOT — a moderate value favoring stability for the teleop sweep.
     - It's literally solving $\min_{\dot q} |J\dot q - \dot x|^2 + \lambda^2|\dot q|^2$ — least-squares task tracking with a penalty on joint speed (the second term is what keeps it bounded near singularities).
 
-## Where I've used it
-
-- **FENCE-BOT**: implemented DLS IK with **λ = 0.1** driving the 6-DOF ASEM V2 arm in Isaac Lab — the `robot_controller` took the `/vr_pose` target and solved joint commands at 50 Hz. The circle-sweep validation was IK tracking a moving target through configurations that approach singularity; the damping is what kept it smooth. This is the single most directly-implemented algorithm in my kinematics stack.
 
 ## Interview follow-ups
 
@@ -47,11 +44,6 @@ Inverse kinematics maps **desired end-effector pose → joint values**. The inve
 - **Q:** Multiple IK solutions — how do you choose?
     - **A:** Pick by secondary criteria — closest to current config (minimal motion), joint-limit avoidance, manipulability — often via the null-space of the Jacobian for redundant arms.
 
-## Gotchas / what trips me up
-
-- Calling DLS "the pseudoinverse" — the λ²I term is the whole point and what makes it singularity-robust.
-- Forgetting λ is a tradeoff knob, not a fixed constant (adaptive damping exists).
-- Numerical IK needs a good seed (usually current q) or it converges to a far solution or not at all.
 
 ## Links
 

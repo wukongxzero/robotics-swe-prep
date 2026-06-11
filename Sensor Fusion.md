@@ -64,10 +64,6 @@ Common on mobile robots: integrate wheel odometry for position, fuse with IMU fo
 ### Visual-Inertial Odometry (VIO)
 IMU + camera tightly coupled: IMU predicts at 200–1000 Hz, camera corrects at 30 Hz. Used in drones, AR, and legged robots where GPS is unavailable.
 
-## Where I've used it
-- **WALL-E V3 gimbal**: [[Complementary Filter]] for attitude — fused MPU-6050 gyro + accel to get stable pitch/roll. Chose complementary over Kalman because it's cheap (no matrix math) and sufficient for a 2-axis gimbal.
-- **FENCE-BOT**: IMU + encoder fusion for dead-reckoning — encoder gives wheel displacement, IMU corrects heading. This is the `sensor_fusion` node in the stack.
-- Conceptual foundation for [[SLAM & RTAB-Map]] — SLAM is sensor fusion at the map level.
 
 ## Interview follow-ups
 - **Q:** Why use a complementary filter instead of a Kalman filter for attitude?
@@ -77,10 +73,6 @@ IMU + camera tightly coupled: IMU predicts at 200–1000 Hz, camera corrects at 
 - **Q:** Your odometry drifts after 10 meters. What's causing it and what fixes it?
   - **A:** Encoder slip + IMU gyro bias accumulate. Fix: add loop closure (visual or LiDAR SLAM), absolute corrections (GPS, fiducial markers), or a better gyro. The drift is fundamental to dead-reckoning without absolute reference.
 
-## Gotchas / what trips me up
-- Complementary filter $\alpha$ too high → gyro drift accumulates; too low → accel noise bleeds through. Tune empirically.
-- EKF can diverge if the initial covariance is badly set or the linearization assumption breaks down. When in doubt, particle filter is more robust.
-- Sensor timestamps: fusing sensors at different rates requires careful interpolation — a 1 ms timestamp error in IMU data corrupts the prediction step.
 
 ## Links
 - Related: [[Kalman Filter]], [[Complementary Filter]], [[SLAM & RTAB-Map]], [[Real-Time Determinism]]

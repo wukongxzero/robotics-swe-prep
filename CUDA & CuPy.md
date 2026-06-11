@@ -24,10 +24,6 @@ CUDA is NVIDIA's model for general-purpose GPU compute: launch the _same_ functi
 - **The offload tax**: host↔device copies. On a discrete GPU this often dominates; on the [[Jetson Orin Setup|Jetson's unified memory]] it's cheaper. Offload only when compute >> transfer cost.
 - **CuPy**: NumPy-compatible array library backed by CUDA — write `cp.array` ops, run on GPU, near-zero code change from NumPy. **RawKernel** lets you drop to a hand-written CUDA C kernel when you need it. The pragmatic middle: NumPy ergonomics, CUDA speed, escape hatch for custom kernels.
 
-## Where I've used it
-
-- **Kapila final**: Jetson/CUDA material — OpenCV GPU pipelines, **CuPy RawKernel**, CNN inference via jetson_inference. Register-level embedded plus GPU compute were the two poles of the course.
-- **WALL-E V3**: the GPU on the [[Jetson Orin Setup|Orin Nano]] ran perception ([[YOLOv8 Detection]]) and the LLM — the practical "why CUDA matters on a robot" context.
 
 ## Interview follow-ups
 
@@ -38,11 +34,6 @@ CUDA is NVIDIA's model for general-purpose GPU compute: launch the _same_ functi
 - **Q:** Why CuPy instead of raw CUDA?
     - **A:** NumPy-compatible API means GPU acceleration with almost no code change, and RawKernel is the escape hatch for a custom CUDA C kernel when the vectorized ops aren't enough. Productivity without giving up control.
 
-## Gotchas / what trips me up
-
-- Assuming GPU is always faster — copy overhead and small problems kill it.
-- Warp divergence from branchy kernels silently tanking throughput.
-- Memory-access patterns (coalescing) matter more than FLOP count.
 
 ## Links
 

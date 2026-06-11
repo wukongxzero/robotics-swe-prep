@@ -47,10 +47,6 @@ Classical control analyzes a system through its **transfer function** $G(s)$ —
 - **Lag** compensator: boosts low-frequency gain → kills steady-state error (≈ an I term) at the cost of some phase.
 - **Lead-lag**: both. The classical analog of tuning PID, but done by shaping the frequency response.
 
-## Where I've used it / where it connects
-
-- This is the analysis lens for the **stability margins** of any loop, including the gimbal controllers in WALL-E and the real-time control loops at Articulus. Even when I _design_ in state-space (LQR/LQG), I reason about robustness in the frequency domain — which is exactly why the [[LQG]] caveat matters: **LQR guarantees ≥60° phase / ≥6 dB gain margin; LQG can destroy those**, and the only way to see that is a Bode/Nyquist check of the actual loop.
-- Pairs with [[PID Control]] (lead/lag ≈ PID terms) and [[State-Space & Pole Placement]] (poles = eigenvalues).
 
 ## Interview follow-ups
 
@@ -63,11 +59,6 @@ Classical control analyzes a system through its **transfer function** $G(s)$ —
 - **Q:** What does root locus give you that Bode doesn't?
     - **A:** A direct picture of _where the closed-loop poles go_ as gain changes — so I can pick a gain for target damping and see exactly when a pole crosses into the RHP.
 
-## Gotchas / what trips me up
-
-- GM/PM from a Bode plot can mislead on non-minimum-phase or multi-crossing systems — fall back to Nyquist.
-- Forgetting that **pure time delay** adds frequency-dependent phase lag (−ωT) but no gain change — it silently eats phase margin. Huge in real digital control loops.
-- Confusing bandwidth (speed) with stability margin (robustness) — pushing bandwidth up usually trades margin away.
 
 ## Links
 

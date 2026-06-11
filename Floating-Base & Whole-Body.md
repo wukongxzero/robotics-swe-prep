@@ -26,10 +26,6 @@ A **fixed-base** manipulator is bolted down — its base frame is the inertial w
 - **Whole-body control (WBC)**: coordinate all joints simultaneously to satisfy multiple prioritized tasks (maintain balance / CoM, track a foot or hand trajectory, respect contact and torque limits) — typically as a hierarchical QP each timestep. Connects to [[MPC & Virtual Fixtures|optimization-based control]].
 - **Centroidal dynamics / momentum**: a common reduced model — track the robot's center-of-mass and total momentum rather than every link, for tractable balance/gait planning.
 
-## Where I've used it
-
-- **Prof. Kim's Advanced Robotics**: gait/locomotion, whole-body kinematics, floating-base dynamics, the BSB (balance) stability framework, trajectory optimization. This is the theoretical context for the embodied-AI / optimization direction of the [[MPC & Virtual Fixtures|Kim research project]].
-- Not in my hands-on robot work (my arms were fixed-base), so this is **coursework/theory depth** — I'd frame it honestly as such.
 
 ## Interview follow-ups
 
@@ -40,10 +36,6 @@ A **fixed-base** manipulator is bolted down — its base frame is the inertial w
 - **Q:** What does whole-body control do?
     - **A:** Solves for joint commands satisfying multiple prioritized objectives at once — balance/CoM, end-effector tasks, contact and limit constraints — usually a hierarchical QP per control step.
 
-## Gotchas / what trips me up
-
-- Forgetting the base is unactuated — the selection matrix $S$ is where that lives.
-- Conflating whole-body _control_ (instantaneous QP) with trajectory _optimization_ (whole motion over time).
 
 ## Links
 

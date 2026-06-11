@@ -23,10 +23,6 @@ LLM tool calling = the model, instead of replying in prose, emits a **structured
 - **Edge LLM**: running a small model locally (Ollama + a quantized model) avoids cloud latency/connectivity dependence — but small models are weaker at parsing and you pay compute on a device already running perception + control.
 - **Safety layering**: the LLM output is a _suggestion_ that passes through validation, bounds-checking, and the [[ROS2 Node & Lifecycle|state machine]] before any motion. Never wire model output straight to actuators — the deterministic safety layer sits between.
 
-## Where I've used it
-
-- **WALL-E V3**: **LLaMA 3.2:3b via Ollama** for natural-language command parsing — spoken/typed commands → structured robot commands routed through the `controller_node` and MANUAL/AUTONOMOUS/IDLE [[ROS2 Node & Lifecycle|state machine]]. Ran in a Docker Compose service (`ollama/ollama`) alongside the ROS2 stack on the Jetson Orin Nano. The 3b model was the size-vs-capability tradeoff for on-device parsing while [[YOLOv8 Detection|YOLOv8n]] and the control nodes shared the GPU.
-- The LLM is the _intent_ layer; the deterministic stack underneath is what's actually safe — an important framing for a safety-critical-minded interviewer.
 
 ## Interview follow-ups
 
@@ -37,11 +33,6 @@ LLM tool calling = the model, instead of replying in prose, emits a **structured
 - **Q:** How do you make LLM output parseable for control?
     - **A:** Constrain it — function-calling schemas or JSON/grammar-constrained decoding — so the output is a finite, typed, validatable command set rather than free text.
 
-## Gotchas / what trips me up
-
-- Treating the LLM as the controller — it's the intent front-end; the deterministic stack is the controller.
-- Forgetting on-device small models are meaningfully weaker at structured parsing.
-- Not validating/bounding model output before it reaches motion.
 
 ## Links
 

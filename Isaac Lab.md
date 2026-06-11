@@ -203,9 +203,6 @@ cube_cfg = RigidObjectCfg(
 
 ---
 
-## Where I've used it
-
-**FENCE-BOT**: ASEM V2 6-DOF arm in Isaac Lab, driven by ROS2 C++ middleware over UDP (port 5006). Full setup: ArticulationCfg with ImplicitActuatorCfg (stiffness=800, damping=40), ContactSensor on link6, DifferentialIKController (DLS λ=0.1), red cube RigidObjectCfg as visual EE target, CSVLogger for all states. See [[FENCE-BOT]] for the complete system.
 
 ---
 
@@ -220,14 +217,6 @@ cube_cfg = RigidObjectCfg(
 - **Q:** What's the parallel-sim advantage for?
     - **A:** Generating training data / running RL at scale — thousands of simulated robots per GPU step beats CPU sims by orders of magnitude.
 
-## Gotchas / what trips me up
-
-- **Jacobian off-by-one:** `get_jacobians()[:, ee_idx - 1, ...]` — index is body index minus 1. Easy debug trap.
-- **QoS mismatch on UDP bridge:** Port 5005/5006 must not conflict. UDP is fire-and-forget — no error if Isaac listener is down.
-- **USD path hardcoded:** Always use an env var (`FENCEBOT_USD_PATH`) + repo-relative fallback. Hardcoded `/home/wukong/...` breaks on any other machine.
-- **OMNI_KIT_ACCEPT_EULA:** Must be set in the shell that runs `isaaclab.sh --install`, not just `.bashrc` for later runs.
-- **`activate_contact_sensors=True`**: Must be in UsdFileCfg — forgetting it means ContactSensor returns all zeros silently.
-- Conflating Isaac Sim (the simulator) with Isaac Lab (the learning framework on top).
 
 ## Links
 

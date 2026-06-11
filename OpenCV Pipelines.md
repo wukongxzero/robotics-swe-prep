@@ -24,10 +24,6 @@ Classical computer vision = hand-engineered image operations (filters, threshold
 - **Morphological ops**: erosion/dilation/open/close to remove speckle and fill holes in a binary mask before contour extraction.
 - **Camera model**: pinhole + intrinsics (focal length, principal point) and distortion coefficients; calibration (checkerboard) maps pixels to rays — prerequisite for any metric vision.
 
-## Where I've used it
-
-- **WALL-E V3**: OpenCV pipelines on the Jetson for the camera processing feeding the semantic-nav side alongside [[YOLOv8 Detection]]. Classical CV handles the cheap, deterministic preprocessing; YOLO handles semantic detection. Ran in the Jetson/CUDA context ([[CUDA & CuPy]], [[Jetson Orin Setup]]).
-- **Kapila final**: OpenCV pipelines on Jetson came up explicitly (alongside CuPy RawKernel, CNN inference).
 
 ## Interview follow-ups
 
@@ -38,10 +34,6 @@ Classical computer vision = hand-engineered image operations (filters, threshold
 - **Q:** Clean up a noisy binary mask?
     - **A:** Morphological opening (erode then dilate) to remove speckle, closing to fill holes, then contour extraction for blobs/centroids.
 
-## Gotchas / what trips me up
-
-- Thresholding in RGB and wondering why it fails under lighting change.
-- Skipping calibration then expecting metric/geometric results.
 
 ## Links
 

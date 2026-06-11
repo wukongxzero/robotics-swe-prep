@@ -423,11 +423,6 @@ Latency budget breakdown → see [[Latency Budgets]].
 
 ---
 
-## Where I've used it
-
-- **Articulus**: multi-process ROS2 architecture — iceoryx for the hot control path, SCHED_FIFO for the control thread, `mlockall` to avoid page faults. Debugged a priority-inversion bug where the logging mutex was starving the control thread under load.
-- **WALL-E V3**: diagnosed a timing jitter issue using `cyclictest` on the Orin Nano; found the USB camera driver interrupt was preempting the control thread. Fixed with CPU affinity separation.
-- **FENCE-BOT**: used `strace` to find an unexpected `write()` syscall inside what should have been a lock-free path on the AVR bridge.
 
 ---
 
@@ -453,13 +448,6 @@ Latency budget breakdown → see [[Latency Budgets]].
 
 ---
 
-## Gotchas / what trips me up
-
-- Forgetting `mlockall` — the first page fault in the control thread shows up as a latency spike under load, not during testing.
-- Using `std::cout` or ROS logging (`RCLCPP_INFO`) inside a real-time thread — both can malloc and lock.
-- Confusing mutex ownership with semaphore non-ownership — semaphore doesn't protect against priority inversion by itself.
-- Deadlock from inconsistent lock ordering — always lock in the same global order or use `std::lock(m1, m2)`.
-- Forgetting to call `sched_setscheduler` as root — it silently fails without `CAP_SYS_NICE`.
 
 ---
 

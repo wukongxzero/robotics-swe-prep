@@ -28,9 +28,6 @@ The manipulator Jacobian $J(q)$ is the matrix that maps **joint velocities → e
 - **Manipulability** (Yoshikawa): $w = \sqrt{\det(JJ^T)}$ — a scalar "how far from singular / how freely can I move" measure. The manipulability ellipsoid visualizes directions of easy vs hard motion.
 - **Force–torque duality (statics)**: $\tau = J^T F$. Joint torques needed to exert end-effector wrench $F$ are the Jacobian-transpose times the wrench. The _same_ matrix relates velocities (forward) and forces (transpose) — elegant and heavily asked.
 
-## Where I've used it
-
-- **FENCE-BOT**: the DLS IK I implemented operates directly on the Jacobian — $\dot{q} = J^T(JJ^T + \lambda^2 I)^{-1}\dot{x}$. Driving the ASEM arm's circle sweep meant computing $J$, watching for near-singular configs, and the λ damping is precisely the singularity-robustness fix. The force/contact-sensing side ties to $\tau = J^TF$.
 
 ## Interview follow-ups
 
@@ -43,11 +40,6 @@ The manipulator Jacobian $J(q)$ is the matrix that maps **joint velocities → e
 - **Q:** How do you measure closeness to singularity?
     - **A:** Manipulability $\sqrt{\det(JJ^T)}$ or the smallest singular value of J — both go to zero at a singularity.
 
-## Gotchas / what trips me up
-
-- Mixing geometric vs analytic Jacobian (analytic uses a specific orientation parameterization; geometric uses angular velocity directly).
-- Forgetting the force duality is the _transpose_, not the inverse.
-- Treating a near-singular J as invertible → numerically explodes (the whole reason for DLS).
 
 ## Links
 

@@ -146,10 +146,6 @@ target_link_libraries(my_node
 
 ---
 
-## Where I've used it
-
-- **Articulus Surgical**: primary architect of the real-time control stack for the multi-arm laparoscopic system. Ran **iceoryx over DDS** specifically to hit the latency budget on the control path — zero-copy meant high-rate state/command data moved between processes without serialize/copy tax, keeping end-to-end loop timing deterministic. This is the concrete reason the surgical system met its latency SLA.
-- Ties directly to [[Latency Budgets]] and [[Safety-Critical Architecture]] — low, *predictable* latency is a safety property in teleoperated surgery, not just a performance win.
 
 ---
 
@@ -181,14 +177,6 @@ target_link_libraries(my_node
 
 ---
 
-## Gotchas / what trips me up
-
-- Calling it "faster networking" — it is *not* networking. It's POSIX shared memory on one host.
-- Forgetting the POD/fixed-size constraint — first thing a sharp interviewer probes.
-- Forgetting to handle `expected<>` errors from `loan()` — pool can be exhausted if subscribers hold chunks too long.
-- Conflating intra-process zero-copy (same process, [[ROS2 Node & Lifecycle]] composition) with iceoryx (separate processes, shared memory). Both avoid copies, different scope and mechanism.
-- RouDi must be running before any node starts — "connection refused" at startup means RouDi isn't up.
-- `release()` on a subscriber chunk is automatic via RAII, but if you copy the raw pointer out of the `sample` scope, you've broken the ref count.
 
 ---
 

@@ -235,11 +235,6 @@ snap interfaces
 
 ---
 
-## Where I've used it
-
-- **Articulus Surgical**: multi-package ROS2 workspace with `colcon`; pinned vendor kinematics lib as a git submodule so all devs built the same SHA. Had to debug a `find_package` failure caused by an out-of-order `ament_target_dependencies` call.
-- **WALL-E V3**: CMake cross-compile toolchain file targeting ARM Cortex-A; used `CMAKE_TOOLCHAIN_FILE` and `CMAKE_SYSROOT` to avoid host/target library mixup.
-- **FENCE-BOT**: used `git bisect` to find the commit that broke encoder interrupt timing after a refactor of the AVR peripheral layer.
 
 ---
 
@@ -265,13 +260,6 @@ snap interfaces
 
 ---
 
-## Gotchas / what trips me up
-
-- Forgetting `source install/setup.bash` after a `colcon build` — the old overlay is stale and you get wrong library versions silently.
-- `ament_target_dependencies` vs `target_link_libraries` — they're not equivalent. `ament_target_dependencies` also handles `ament_index` exports; missing it breaks downstream `find_package`.
-- `git rebase` on a shared branch — rewrites SHAs, causes diverged history for teammates. Only rebase unpublished commits.
-- CMake cache poisoning: old `CMakeCache.txt` after changing a toolchain. Fix: delete the build directory entirely, don't just re-run cmake.
-- `git stash pop` on a dirty tree can silently merge stash changes with current edits. Prefer `git stash apply` + manual verify before `git stash drop`.
 
 ---
 

@@ -27,9 +27,6 @@ $$u(t) = K_p e(t) + K_i \int_0^t e(\tau),d\tau + K_d \frac{de(t)}{dt}$$
 - **Integral windup**: if the actuator saturates, the integral keeps accumulating while the output can't respond → huge overshoot when it unsaturates. Fixes: clamp the integral, conditional integration (stop integrating when saturated), back-calculation.
 - **Derivative kick**: a step change in setpoint makes $de/dt$ spike. Fix: take the derivative of the _measurement_ ($-dy/dt$) instead of the error, and low-pass filter it.
 
-## Where I've used it
-
-- Baseline controller intuition behind the WALL-E gimbal work before stepping up to [[State-Space & Pole Placement]] / [[LQR]]. PID is the thing you compare a state-space controller _against_ in an interview — "why not just PID?"
 
 ## Interview follow-ups
 
@@ -40,10 +37,6 @@ $$u(t) = K_p e(t) + K_i \int_0^t e(\tau),d\tau + K_d \frac{de(t)}{dt}$$
 - **Q:** Adding D made things worse — why?
     - **A:** Derivative amplifies measurement noise and causes derivative kick on setpoint steps. Filter the derivative and take it on the measurement, not the error.
 
-## Gotchas / what trips me up
-
-- Forgetting anti-windup — works in sim, blows up on real saturating hardware.
-- Raw (unfiltered) derivative on a noisy sensor.
 
 ## Links
 

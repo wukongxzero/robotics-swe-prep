@@ -29,10 +29,6 @@ On AVR (ATmega328/2560 — Arduino UNO/Mega), GPIO is controlled by three regist
 - **Why registers over digitalWrite**: `digitalWrite()` does pin-mapping lookups, interrupt-disable, and is ~50× slower. Register writes are single instructions — necessary for bit-banged protocols and tight timing.
 - Same pattern generalizes to every peripheral: configure by setting bits in control registers (see [[AVR Peripherals]]).
 
-## Where I've used it
-
-- **WALL-E V3**: Arduino UNO ran the 200 Hz gimbal loop and Arduino Mega ran tank motor control. Register-level control matters when you're hitting 200 Hz and bit-banging the [[Serial Packet Protocols|TankStatus protocol]] — the HAL overhead is real at that rate.
-- **Kapila final (ROB-GY 6103)**: drilled DDRx/PORTx, USART, Timer2, I2C/TWI, ADC, PWM at register level.
 
 ## Interview follow-ups
 
@@ -43,10 +39,6 @@ On AVR (ATmega328/2560 — Arduino UNO/Mega), GPIO is controlled by three regist
 - **Q:** What's the fastest way to toggle a pin?
     - **A:** `PORTB ^= (1<<PB5)`, or the AVR trick of writing 1 to the PINB bit, which toggles PORTB in one instruction.
 
-## Gotchas / what trips me up
-
-- Assignment (`=`) vs read-modify-write (`|=`, `&=~`) — assignment clobbers neighbors.
-- Forgetting that writing PINx toggles PORTx (looks like a no-op read, isn't).
 
 ## Links
 

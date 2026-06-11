@@ -24,9 +24,6 @@ The Python scientific stack split: **SymPy** does _symbolic_ math (derive equati
     - `optimize`, `linalg`, `signal` — numeric optimization, linear algebra, signal processing.
 - **The workflow**: SymPy derives $M(q)\ddot q + C\dot q + g = \tau$ symbolically → lambdify to a numeric RHS → `solve_ivp` integrates it → trajectory data. Exact derivation, fast simulation.
 
-## Where I've used it
-
-- **FENCE-BOT / Jordan's collision sim**: the 2D rigid-body + pendulum simulator used **SymPy for the Lagrangian derivation** and **scipy `solve_ivp`** to integrate the dynamics — generating the training data for the [[Lagrangian Neural Networks|LNN]]. So the symbolic ground-truth dynamics (SymPy) produced trajectories (solve_ivp) that the LNN then tried to learn — and the [[Lagrangian Neural Networks|StandardScaler/Hessian bugs]] I fixed were about preserving that symbolic structure in the learned model.
 
 ## Interview follow-ups
 
@@ -37,10 +34,6 @@ The Python scientific stack split: **SymPy** does _symbolic_ math (derive equati
 - **Q:** What's solve_ivp?
     - **A:** scipy's initial-value-problem integrator — give it ẋ = f(t,x) and x₀, it adaptively steps (RK45 etc.) to produce the trajectory. The numeric simulation workhorse.
 
-## Gotchas / what trips me up
-
-- Forgetting to lambdify — symbolic expressions are slow to evaluate in a loop.
-- solve_ivp stiffness — contact/stiff dynamics need a stiff solver (Radau/BDF), not RK45.
 
 ## Links
 

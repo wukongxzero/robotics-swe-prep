@@ -31,10 +31,6 @@ For high-rate MCU↔MCU or MCU↔host comms, you send **fixed-size binary packet
 - **Framing/sync**: a raw byte stream needs a way to find packet boundaries — a start/sync byte (or magic header), fixed length, and ideally a checksum/CRC. Without it, one dropped byte desyncs every subsequent packet.
 - **Endianness**: sender and receiver must agree (AVR is little-endian) — multi-byte fields (`short`) must be interpreted consistently.
 
-## Where I've used it
-
-- **WALL-E V3**: designed/debugged the 16-byte TankStatus protocol between Arduino Mega (motor control) and the ROS2 side, plus the 22-byte odometry packet. The `TANKSTATUS_PACKET_LENGTH=16` constant being correct on both ends is the whole game — a mismatch silently corrupts every field.
-- Conceptually the same discipline as defining [[iceoryx Zero-Copy|POD message layouts for zero-copy]] — fixed, alignment-safe structs that are valid across a boundary.
 
 ## Interview follow-ups
 
@@ -45,11 +41,6 @@ For high-rate MCU↔MCU or MCU↔host comms, you send **fixed-size binary packet
 - **Q:** One byte gets dropped on the line — what happens without framing?
     - **A:** The receiver desyncs and every subsequent packet is misaligned. A sync header + fixed length lets it re-find boundaries; a checksum lets it reject corrupt frames.
 
-## Gotchas / what trips me up
-
-- Assuming `sizeof(struct)` matches the wire size — padding bites you. That's why TankStatus has explicit padding bytes.
-- Forgetting framing — works on the bench, desyncs under real-world dropped bytes.
-- Endianness mismatch on multi-byte fields.
 
 ## Links
 

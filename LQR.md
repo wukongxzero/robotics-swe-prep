@@ -38,9 +38,6 @@ $$J = \int_0^\infty \left( x^T Q x + u^T R u \right) dt$$
 - **Requirements**: $(A,B)$ controllable (or stabilizable) for a stabilizing solution to exist; $(A,\sqrt{Q})$ observable for uniqueness.
 - LQR closed loop is _guaranteed stable_ (poles of $A-BK$ in LHP) — a big advantage over hand pole-placement.
 
-## Where I've used it
-
-- **WALL-E V3 gimbal**: ran **LQR** on the 2-axis gimbal at 200 Hz on the Arduino UNO, with Q/R tuned to balance tracking against servo effort — sitting next to pole-placement ($K=[0.72\dots]$) and the [[LQG]] variant. State = angle + rate per axis. Computed the gain offline (solve the Riccati once), shipped the constant $K$ to the MCU — you don't solve Riccati on an ATmega in the loop.
 
 ## Interview follow-ups
 
@@ -53,11 +50,6 @@ $$J = \int_0^\infty \left( x^T Q x + u^T R u \right) dt$$
 - **Q:** Do you solve Riccati on the embedded target?
     - **A:** No — solve offline, ship the constant gain. The MCU just does $u = -Kx$, which is cheap and deterministic. Re-solving online is for gain-scheduled or adaptive cases.
 
-## Gotchas / what trips me up
-
-- Saying Q/R absolute values matter — it's the _ratio_.
-- Forgetting LQR needs full-state feedback; if you can't measure all states you pair it with an estimator → [[LQG]].
-- Mixing up CARE (continuous) and DARE (discrete) forms.
 
 ## Links
 

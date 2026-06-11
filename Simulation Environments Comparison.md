@@ -80,13 +80,6 @@ Quick prototype or learning?
 
 ---
 
-## Gotchas / what trips me up
-
-- Gazebo ODE drift making controller tuning results invalid — tune in Isaac/MuJoCo instead
-- Isaac Sim needs `OMNI_KIT_ACCEPT_EULA=YES` env var set to import non-interactively
-- MuJoCo MJCF ≠ URDF — converting between them loses some joint/inertia data
-- Gazebo Harmonic (gz sim) uses different topic names than Gazebo Classic (gazebo/) — breaks old launch files
-- Isaac Sim pip install needs Python 3.10 in conda, does NOT work on system Python 3.12
 
 ---
 

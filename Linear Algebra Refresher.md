@@ -38,11 +38,6 @@ Linear algebra is the substrate under all of robotics — transforms, control, e
 
 - **LU decomposition** ($A = LU$): factor a square matrix into lower-triangular $L$ and upper-triangular $U$. **Why it matters**: solving $Ax=b$ becomes two triangular solves ($Ly=b$, then $Ux=y$) — each $O(n^2)$ once you have the factors. **In robotics**: solving the equations of motion $M(q)\ddot{q} = \tau - C(q,\dot{q})\dot{q} - G(q)$ for $\ddot{q}$ at every timestep; $M(q)$ is SPD so Cholesky ($LL^T$, the SPD special case of LU) is the fast path. Also appears in any least-squares normal-equation solve and in MPC QP solvers. **Partial pivoting** (PA=LU) is the numerically stable form — swaps rows to put the largest pivot on the diagonal.
 
-## Gotchas / what trips me up
-
-- Singular values (always ≥0, from SVD) vs eigenvalues (can be complex) — different objects.
-- Pseudoinverse blows up near rank-deficiency — the reason DLS damps it ([[Inverse Kinematics & DLS]]).
-- LU vs Cholesky: Cholesky only works on SPD matrices but is ~2× faster and more numerically stable — always prefer it for inertia matrices.
 
 ## Links
 

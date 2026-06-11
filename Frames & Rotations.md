@@ -27,10 +27,6 @@ Robotics is bookkeeping of coordinate frames. A rigid-body pose = position + ori
     - **Quaternion** (4 numbers, unit norm): no gimbal lock, compact, numerically stable, best for interpolation (SLERP) and integration. The default for orientation state. Double-cover: $q$ and $-q$ are the same rotation.
     - **Axis-angle / rotation vector** (3 numbers): minimal, great for representing small rotations / angular velocity integration.
 
-## Where I've used it
-
-- **FENCE-BOT**: the whole `/vr_pose` → `robot_controller` → Isaac Lab pipeline is transform bookkeeping — VR controller pose in one frame, mapped to the ASEM arm's base/tool frames. Pose errors there are frame errors.
-- **WALL-E gimbal**: attitude as euler (eulerX/Y/Z in the [[Serial Packet Protocols|TankStatus packet]]) — and euler is exactly where gimbal lock and the [[Complementary Filter]]'s angle handling matter.
 
 ## Interview follow-ups
 
@@ -41,11 +37,6 @@ Robotics is bookkeeping of coordinate frames. A rigid-body pose = position + ori
 - **Q:** When quaternion vs rotation matrix?
     - **A:** Quaternion for orientation _state_, integration, and interpolation (compact, stable, no singularity). Rotation matrix when I need to actually transform vectors or compose with translations in an $SE(3)$ chain.
 
-## Gotchas / what trips me up
-
-- Euler angle order/convention mismatches (XYZ vs ZYX) — silent, catastrophic.
-- Forgetting the structured inverse and doing a full 4×4 inversion.
-- Quaternion double-cover ($q \equiv -q$) biting interpolation/learning.
 
 ## Links
 

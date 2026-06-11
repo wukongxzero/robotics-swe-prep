@@ -166,9 +166,6 @@ Note: even with `SYS_NICE`, the container still shares the kernel scheduler. Val
 
 ---
 
-## Where I've used it
-
-- **WALL-E V3**: ran the stack via **Docker Compose** with two services — `ros:humble` (the ROS2 nodes) and `ollama/ollama` (the [[LLM Tool Calling|LLaMA]] server) — on the [[Jetson Orin Setup|Orin Nano]]. Containerizing kept the heavy LLM + ROS2 dependency sets from colliding and made the whole thing reproducible.
 
 ## Interview follow-ups
 
@@ -179,11 +176,6 @@ Note: even with `SYS_NICE`, the container still shares the kernel scheduler. Val
 - **Q:** Would you put a hard-real-time control loop in a container?
     - **A:** Cautiously — containers add scheduling indirection. Fine for perception/LLM; for hard real-time I'd validate latency/jitter and consider keeping that path on the host or a tuned runtime.
 
-## Gotchas / what trips me up
-
-- Forgetting `--gpus` / NVIDIA runtime → no CUDA in the container.
-- Serial/camera/CAN devices not passed through → "device not found" that works fine on host.
-- DDS discovery failing across containers without host networking.
 
 ## Links
 

@@ -39,11 +39,6 @@ Subscriber's _requested_ QoS must be **no stronger** than the publisher's _offer
 - Pub `RELIABLE` + Sub `BEST_EFFORT` → compatible (sub asked for less).
 - Same logic for durability and deadline. "Requesting more than is offered" breaks the match.
 
-## Where I've used it
-
-- **Articulus**: control commands on `RELIABLE` + `depth=1` (latest command, guaranteed); high-rate telemetry on `BEST_EFFORT` so a dropped sample never stalls the loop. This is the QoS-mirror of the executor grouping decision.
-- **WALL-E V3**: odometry / IMU streams want `BEST_EFFORT depth=1` — I only care about the newest pose, not a backlog. State-machine mode commands want `RELIABLE`.
-- **FENCE-BOT**: `/vr_pose` at 50 Hz is a freshness-over-completeness stream → `BEST_EFFORT`, `KEEP_LAST depth=1`.
 
 ## Interview follow-ups
 
@@ -54,11 +49,6 @@ Subscriber's _requested_ QoS must be **no stronger** than the publisher's _offer
 - **Q:** What's `TRANSIENT_LOCAL` for?
     - **A:** Latching — a late-joining subscriber immediately gets the last published value. Used for static transforms, maps, descriptions that don't republish.
 
-## Gotchas / what trips me up
-
-- Forgetting compatibility is _directional_ — sub can ask for less than pub offers, never more.
-- Using `sensor_data` QoS preset blindly (it's BEST_EFFORT) then wondering why a RELIABLE subscriber gets nothing.
-- Confusing QoS (delivery contract) with the executor (threading). Different layers — see [[ROS2 Executors]].
 
 ## Links
 

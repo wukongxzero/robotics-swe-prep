@@ -23,11 +23,6 @@ The NVIDIA Jetson is an embedded GPU compute module — a real CUDA GPU + ARM CP
 - **SDK Manager**: the host-side tool to flash JetPack onto the Jetson over USB (recovery mode). The Orin Nano can also boot JetPack from SD/NVMe.
 - **Power modes**: configurable power/clock budgets (nvpmodel) — trade watts for TOPS. Matters when the board runs perception + control + LLM simultaneously and thermals/power are constrained.
 
-## Where I've used it
-
-- **WALL-E V3**: Jetson Orin Nano was the brain — ran the full ROS2 Humble stack, [[YOLOv8 Detection|YOLOv8n]], [[LLM Tool Calling|LLaMA 3.2 via Ollama]], and [[OpenCV Pipelines]], orchestrated via [[Docker for ROS|Docker Compose]]. Compute budget was the real constraint (nano model choices driven by it).
-- **FENCE-BOT**: set up a Jetson Orin Nano with SDK Manager (JetPack 6.x).
-- Also ran a **[[NixOS for Jetson|NixOS Jetson]]** (nixjetson) variant for reproducible builds.
 
 ## Interview follow-ups
 
@@ -38,10 +33,6 @@ The NVIDIA Jetson is an embedded GPU compute module — a real CUDA GPU + ARM CP
 - **Q:** What bites you in Jetson setup?
     - **A:** JetPack version pinning — CUDA/TensorRT/cuDNN versions are coupled to the JetPack release, so library compatibility (and getting frameworks to match) is the recurring pain.
 
-## Gotchas / what trips me up
-
-- JetPack/CUDA/TensorRT version coupling — mismatches are the classic setup failure.
-- Forgetting power-mode/thermal limits when stacking workloads.
 
 ## Links
 

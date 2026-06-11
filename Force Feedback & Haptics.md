@@ -27,10 +27,6 @@ Haptics closes the loop back to the operator's hand: the surgeon _feels_ the for
     - **Estimation**: infer force from motor currents / joint torques ([[Jacobian|τ = JᵀF]]) or a model-based estimator — no tip sensor. This is exactly the [[PINN Contact Estimation|PINN contact-force]] / [[Contact Modeling|contact-sensing]] direction.
 - **Bilateral teleoperation**: force flows both ways (master↔slave); stability of that two-way loop under latency is the classic teleop-haptics research problem (wave variables, passivity controllers).
 
-## Where I've used it / connects
-
-- **FENCE-BOT** (hands-on-adjacent): the [[Contact Modeling|force-threshold contact sensing]] and [[PINN Contact Estimation|PINN]] force estimation are the _sensing_ half of haptics — knowing tool-tissue force, framed explicitly as surgical force sensing.
-- **Articulus**: the real-time/latency stack is the substrate a stable haptic loop would need — flag your actual haptics exposure here.
 
 ## Interview follow-ups
 
@@ -41,11 +37,6 @@ Haptics closes the loop back to the operator's hand: the surgeon _feels_ the for
 - **Q:** Why do some surgical robots ship without haptics?
     - **A:** Stable, sterile, cost-effective force feedback is genuinely hard — the stability-under-latency problem plus sensor sterilization/cost. Some systems rely on visual force estimation instead; it's an active tradeoff.
 
-## Gotchas / what trips me up
-
-- Treating haptics as "just add a force sensor" — rendering stability is the real difficulty.
-- Forgetting it's bidirectional (bilateral) — both directions must be stable under latency.
-- Provenance: sensing/estimation ties to my work; rendering/feel is domain-level.
 
 ## Links
 

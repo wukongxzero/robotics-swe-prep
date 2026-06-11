@@ -27,10 +27,6 @@ Real-time means **deterministic timing** — the system guarantees a response wi
 - **Real-time-safe coding**: pre-allocate (no malloc on the hot path), bounded loops, lock-free or priority-inheritance mutexes, pin threads, `RT_PREEMPT` kernel for Linux RT.
 - **Priority inversion**: a low-priority task holding a lock blocks a high-priority task. Fix: priority inheritance / ceiling protocols. (Mars Pathfinder is the classic war story.)
 
-## Where I've used it
-
-- **Articulus**: the entire control stack was built around bounded, predictable timing — that's _why_ iceoryx zero-copy mattered ([[iceoryx Zero-Copy]]): constant latency independent of payload removes a jitter source. No-alloc hot paths, deterministic dispatch via mutually-exclusive callback groups ([[ROS2 Executors]]).
-- **WALL-E V3**: the 200 Hz gimbal loop on the Arduino UNO is a hard-real-time inner loop — a complementary filter + LQG at fixed dt. Jitter there shows up as attitude estimate drift.
 
 ## Interview follow-ups
 
@@ -41,10 +37,6 @@ Real-time means **deterministic timing** — the system guarantees a response wi
 - **Q:** What's priority inversion and how do you prevent it?
     - **A:** A high-priority task blocked by a low-priority task holding a shared lock. Prevent with priority inheritance or priority-ceiling protocols on the mutex.
 
-## Gotchas / what trips me up
-
-- Saying "real-time = fast." It's _predictable_. This is the single most common misconception and a great place to sound senior by correcting it.
-- Budgeting for average instead of worst-case execution time.
 
 ## Links
 

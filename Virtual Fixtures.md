@@ -42,11 +42,6 @@ A virtual fixture is software-enforced **active assistance/constraint** on a tel
 - **Q:** Why implement a forbidden region with MPC?
     - **A:** It's a state constraint; MPC enforces constraints predictively over a horizon, so the tool decelerates/redirects before reaching the boundary instead of reacting at it. Anticipation is the safety advantage over a reactive barrier.
 
-## Gotchas / what trips me up
-
-- Guidance (steer toward) vs forbidden-region (keep out) — don't blur them.
-- The surgeon stays in control — fixtures assist/constrain, they don't automate the surgery.
-- Provenance: clinical framing is domain; the MPC implementation is the planned Kim project, not shipped.
 
 ## Links
 

@@ -27,10 +27,6 @@ CAN (Controller Area Network) is a multi-master, message-based serial bus design
 - **Error handling**: built-in CRC, ACK slot, error frames, and fault confinement (error-active / error-passive / bus-off states) — a misbehaving node removes itself.
 - **Bitrate vs length tradeoff**: 1 Mbit/s up to ~40 m; longer buses run slower (propagation must fit the bit time for arbitration to work).
 
-## Where I've used it
-
-- **Articulus**: CAN bus connected distributed motor controllers in the multi-arm laparoscopic system — safety/control-critical messages had guaranteed deterministic bus access
-- **CAN-CONTROL-CODE project**: SocketCAN on Linux to control a brushless motor — absolute position sweeps over extended CAN IDs
 
 ## 120 Ω termination — why and what happens without it
 
@@ -593,11 +589,6 @@ Roboticists encounter both. Know the tradeoff so you can justify your choice in 
 
 ---
 
-## Gotchas / what trips me up
-
-- Saying collisions are "detected and both retransmit" (that's Ethernet CSMA/CD) — CAN is _non-destructive_, the winner is never corrupted.
-- Forgetting the 120 Ω termination and the bitrate/length tradeoff.
-- Lower ID = higher priority (not higher number).
 
 ## Links
 

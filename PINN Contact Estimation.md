@@ -25,10 +25,6 @@ A Physics-Informed Neural Network (PINN) embeds a known **physical law (a PDE/OD
 - **PINN vs [[Lagrangian Neural Networks|LNN]]**: an LNN bakes structure into the _architecture_ (learns $L$, derives dynamics so physics holds exactly by construction). A PINN bakes physics into the _loss_ (soft constraint — penalized, not guaranteed). PINN is more flexible (any PDE, including dissipative/forced), LNN is stricter (conservation guaranteed). Different knob: architecture vs objective.
 - **Collocation points**: where the physics residual is enforced — can be unlabeled, which is why PINNs need less labeled data.
 
-## Where I've used it
-
-- **FENCE-BOT**: wrote the PINN scaffolding — `pinn_contact.py`, `train_pinn.py`, `predict_contact.py` — for **contact force estimation**, framed as the analogy for **surgical force sensing**: estimating tool–tissue interaction force when you can't (or don't want to) put a direct force sensor at the tip. The contact force enters the dynamics as $J^TF$ ([[Jacobian]], [[Contact Modeling]]), so a PINN constrained by the equation of motion can infer $F$ from motion data.
-- This is the **surgical differentiator tie-in** for the ML branch — force sensing is a core surgical-robotics problem ([[Force Feedback & Haptics]]).
 
 ## Interview follow-ups
 
@@ -39,10 +35,6 @@ A Physics-Informed Neural Network (PINN) embeds a known **physical law (a PDE/OD
 - **Q:** Why use a PINN for contact force?
     - **A:** Contact force is hard to measure directly at a tool tip but appears in the dynamics as $J^TF$. A PINN constrained by the equation of motion can infer the force from observable motion, with the physics term compensating for sparse data — directly analogous to surgical tool–tissue force sensing.
 
-## Gotchas / what trips me up
-
-- Calling PINN physics a hard constraint — it's a _soft_ loss penalty (weighted by λ), unlike the LNN's architectural guarantee.
-- Loss-balancing (the λ between data and physics terms) is finicky and a real training challenge.
 
 ## Links
 

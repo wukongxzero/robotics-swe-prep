@@ -65,12 +65,6 @@ Medical device software is built under standards and regulatory oversight that d
 - **Q:** 510(k) vs PMA?
     - **A:** 510(k) is clearance by substantial equivalence to an existing predicate device — faster, most devices. PMA is the stringent approval path for high-risk Class III devices, requiring clinical evidence of safety and efficacy.
 
-## Gotchas / what trips me up
-
-- Don't overclaim — "worked under it," not "did the regulatory submissions."
-- Verification ≠ validation (the most common slip).
-- 510(k) is _clearance_ (equivalence); PMA is _approval_ (evidence) — different words on purpose.
-- It governs _process and evidence_, not the algorithms themselves.
 
 ## Links
 

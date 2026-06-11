@@ -113,9 +113,6 @@ Most common in robotics interviews and codebases:
 - **Q:** When would you use Decorator over subclassing?
   - **A:** When you want to mix and match behaviors at runtime without a class explosion. Three features combinable means 8 subclasses vs 3 decorators.
 
-## Gotchas / what trips me up
-- Singleton thread-safety: double-checked locking is broken in C++ without `std::call_once` or `static` local variable (Meyers Singleton — the `static` inside a function IS thread-safe in C++11+).
-- State vs Strategy confusion under pressure — remember: State manages its own transitions, Strategy doesn't.
 
 ## Links
 - Related: [[Modern C++ for Robotics]], [[Safety-Critical Architecture]], [[Nav2 Stack]]

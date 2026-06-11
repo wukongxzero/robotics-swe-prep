@@ -29,9 +29,6 @@ With full-state feedback $u = -Kx$, the closed loop becomes $\dot{x} = (A - BK)x
 - **Pole placement** (e.g. Ackermann): pick desired poles, solve for $K$. Powerful but _arbitrary_ — you're guessing good pole locations by hand.
 - **Limitation**: pole placement says nothing about _cost_. Aggressive poles may demand impossible control effort. [[LQR]] fixes this by optimizing a cost instead of guessing poles.
 
-## Where I've used it
-
-- **WALL-E V3 gimbal (Arduino UNO, 200 Hz)**: implemented **pole placement** on the 2-axis gimbal with a feedback gain $K = [0.72\dots]$, alongside [[LQR]] and [[LQG]] variants. State vector = angle and angular rate per axis; the [[Complementary Filter]] fed the attitude estimate. Running this inside a hard 200 Hz loop is the [[Real-Time Determinism]] tie-in.
 
 ## Interview follow-ups
 
@@ -42,10 +39,6 @@ With full-state feedback $u = -Kx$, the closed loop becomes $\dot{x} = (A - BK)x
 - **Q:** Why do you need observability for the gimbal?
     - **A:** I don't measure the full state directly (rate vs angle); I estimate it via the complementary filter / Kalman. That estimation requires the system to be observable from the available outputs.
 
-## Gotchas / what trips me up
-
-- Placing poles too aggressively → huge control effort, actuator saturation. LQR avoids this by construction.
-- Conflating controllability (input→state) with observability (output→state).
 
 ## Links
 

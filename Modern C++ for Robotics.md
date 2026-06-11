@@ -65,10 +65,6 @@ From your own code: `lock_guard<mutex>` unlocks on scope exit, `~MegaNode()` clo
 - `const` correctness, `constexpr` (compile-time computation — zero runtime cost), templates/generics, `auto`, range-for, `std::optional`/`std::variant`, structured bindings.
 - **Concurrency**: `std::thread`, `std::atomic`, lock-free patterns for the RT path; but real-time threading usually means OS priorities + pinning ([[Real-Time Determinism]]).
 
-## Where I've used it
-
-- **Articulus**: the real-time control stack in C++ — RAII for deterministic resource lifetime, no-alloc hot paths, careful ownership. The real-time-safe discipline above wasn't theory, it was the daily constraint.
-- **FENCE-BOT**: the [[VR Teleop Pipeline|ROS2 C++ middleware]] (`vr_udp_publisher`, `robot_controller`) — modern C++ with [[colcon ament & launch|ament_cmake]].
 
 ## Interview follow-ups
 
@@ -81,11 +77,6 @@ From your own code: `lock_guard<mutex>` unlocks on scope exit, `~MegaNode()` clo
 - **Q:** unique_ptr vs shared_ptr?
     - **A:** unique_ptr is a single move-only owner, zero overhead. shared_ptr is reference-counted shared ownership with an atomic refcount cost — use it only when ownership is genuinely shared, not by default.
 
-## Gotchas / what trips me up
-
-- Hidden heap allocations on the RT path (`std::function`, growing a `vector`, `std::string`).
-- Reaching for `shared_ptr` by default — atomic refcounting isn't free; prefer `unique_ptr`.
-- Forgetting `std::move` leaves the source in a valid-but-unspecified state (don't reuse it assuming old value).
 
 ## Links
 

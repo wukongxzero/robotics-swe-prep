@@ -24,9 +24,6 @@ A complementary filter fuses two sensors with **opposite error characteristics**
 - **α and the time constant**: $\tau = \frac{\alpha, dt}{1-\alpha}$ sets the crossover — how long before the accelerometer pulls the estimate back.
 - Dirt-cheap: a few multiply-adds per axis, one tuning constant. No matrices, no covariance.
 
-## Where I've used it
-
-- **WALL-E V3 gimbal**: implemented the complementary filter for attitude on the Arduino UNO at 200 Hz, feeding the [[State-Space & Pole Placement|pole-placement]]/[[LQR]] controller. It's the lightweight estimator I ran _alongside_ the discrete [[Kalman Filter]] in the [[LQG]] variant — so I can directly contrast "cheap and good enough" vs "principled and optimal" on the same plant.
 
 ## Interview follow-ups
 
@@ -37,10 +34,6 @@ A complementary filter fuses two sensors with **opposite error characteristics**
 - **Q:** What does α control?
     - **A:** The crossover frequency / time constant — how much to trust the integrated gyro vs how fast the accelerometer corrects drift. Higher α = trust gyro longer.
 
-## Gotchas / what trips me up
-
-- Forgetting the accelerometer is corrupted by _linear_ acceleration, not just gravity — during motion it's unreliable, which is why α is high.
-- Treating it as a Kalman filter — it's a fixed-gain frequency split, no covariance, no optimality claim.
 
 ## Links
 

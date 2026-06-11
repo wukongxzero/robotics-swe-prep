@@ -24,10 +24,6 @@ A node is the unit of computation — it owns publishers, subscribers, services,
 - **Composition**: multiple nodes loaded into a single process (component container) → intra-process comms can skip serialization entirely (pointer passing). This is the ROS2 answer to the ROS1 nodelet.
 - Intra-process zero-copy is the "free" latency win before you reach for [[iceoryx Zero-Copy]] (which handles inter-process).
 
-## Where I've used it
-
-- **Articulus**: a safety-critical system wants deterministic bring-up — you don't want the motor driver publishing before the safety monitor is active. Managed lifecycle = controlled activation order and a clean fail-safe (deactivate → stop output, hold resources).
-- **WALL-E V3**: the `state_machine` node (MANUAL/AUTONOMOUS/IDLE) is application-level state, distinct from lifecycle state — worth being precise about that in interviews.
 
 ## Interview follow-ups
 
@@ -38,10 +34,6 @@ A node is the unit of computation — it owns publishers, subscribers, services,
 - **Q:** Difference between lifecycle Active and your app's "running" state?
     - **A:** Lifecycle is a framework-level managed-node concept; an app state machine (like WALL-E's modes) is your own logic. Don't conflate them.
 
-## Gotchas / what trips me up
-
-- Saying "configure starts publishing" — no, configure sets things up; **activate** starts output.
-- Forgetting that composition's zero-copy is _intra-process_; cross-process still needs a transport ([[DDS & RMW]] / [[iceoryx Zero-Copy]]).
 
 ## Links
 

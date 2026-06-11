@@ -27,10 +27,6 @@ Edge inference = running trained neural nets _on the robot_ under tight compute/
 - **jetson_inference**: NVIDIA's ready-made library/wrappers for running classification/detection/segmentation on Jetson with TensorRT under the hood — fast path to deployed CNNs.
 - **Why not raw PyTorch on-device**: works, but leaves large speed/memory on the table — no fusion, no INT8, framework overhead. On a shared-compute robot that's the difference between hitting frame rate and not.
 
-## Where I've used it
-
-- **Kapila final**: CNN inference via **jetson_inference** on the Jetson was explicit course material (with CuPy RawKernel, OpenCV pipelines).
-- **WALL-E V3**: [[YOLOv8 Detection|YOLOv8n]] on the [[Jetson Orin Setup|Orin Nano]] — the case for exporting to TensorRT rather than running PyTorch directly, since the board shared compute with ROS2 and the LLM.
 
 ## Interview follow-ups
 
@@ -41,11 +37,6 @@ Edge inference = running trained neural nets _on the robot_ under tight compute/
 - **Q:** Why not run PyTorch directly on the Jetson?
     - **A:** It works but wastes performance — no operator fusion, no INT8, framework overhead. On a robot sharing compute across perception, control, and an LLM, the TensorRT engine is what makes frame rate achievable.
 
-## Gotchas / what trips me up
-
-- INT8 without proper calibration → accuracy cliff.
-- TensorRT engines are hardware/precision-specific — not portable across Jetson models.
-- Forgetting the ONNX export step in the path.
 
 ## Links
 

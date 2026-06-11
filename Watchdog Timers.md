@@ -40,10 +40,6 @@ A watchdog timer (WDT) is an independent timer that resets (or interrupts) the s
 - **Reset-cause register**: after a reset the MCU latches the source — **MCUSR** on AVR (WDRF bit = watchdog reset flag), RCC reset flags on STM32. Read it on boot to _know_ it was the dog vs a brownout vs a power cycle.
 - **Boot-loop handling**: read and clear the flag on boot; if you see repeated WDT resets, fall to a safe mode / log instead of resetting forever. (Also: clear MCUSR and disable the WDT early in startup on AVR, or a short timeout can trap you in a reset loop before `setup()` finishes.)
 
-## Where I've used it
-
-- **WALL-E V3 (hands-on war story)**: extended debugging on **WDT timeout resets** tied to **I²C bus failures** — when the [[AVR Peripherals|TCA9548A mux / AS5600 encoder]] I²C transaction hung, the main loop stalled and the WDT reset the board. The reset _was the symptom pointing at the real bug_: a blocking I²C read with no timeout. Two-part fix: add a timeout/recovery to the I²C path so it can't block, keep the WDT as the backstop. Reading MCUSR/WDRF on boot is how you'd confirm the dog (not a brownout) caused it.
-- **Surgical-robotics framing (design-level)**: the windowed + independent-clock + multi-stage pattern is exactly what a safety-critical actuator controller wants — a hung control loop must reach a _defined fail-safe state_ (motors disabled, brakes engaged), not just reboot mid-motion. _(If I ran a windowed/external watchdog at Articulus, anchor it here with specifics.)_
 
 ## Interview follow-ups
 
@@ -60,13 +56,6 @@ A watchdog timer (WDT) is an independent timer that resets (or interrupts) the s
 - **Q:** Reset is blunt — how do you degrade gracefully instead?
     - **A:** Multi-stage watchdog: first expiry fires an NMI to capture state and command a fail-safe state (disable actuators, log), then hard-reset only if that doesn't complete. In an RTOS, a task watchdog restarts the one hung task instead of the whole system.
 
-## Gotchas / what trips me up
-
-- Calling all watchdogs the same — plain vs windowed vs independent-clock vs external IC are different guarantees.
-- Kicking in the wrong place masks the hang it's meant to catch (windowed WDT defends against this).
-- Treating WDT resets as noise instead of a signal — they point at a blocking/hung path.
-- Forgetting to read/clear the reset-cause flag → you never learn it was the dog, and risk a boot loop.
-- Watchdog sharing the failing clock — looks safe, isn't.
 
 ## Links
 

@@ -23,9 +23,6 @@ LQG (Linear Quadratic Gaussian) = **[[LQR]] optimal control + [[Kalman Filter]] 
 - Closed-loop poles of the LQG system = LQR regulator poles ∪ Kalman estimator poles (the two designs' eigenvalues stack).
 - **Caveat**: LQG has no guaranteed robustness margins (the famous "LQG has no guaranteed gain/phase margin" result). LQR alone has great margins; adding the estimator can erode them. LQG/LTR (loop transfer recovery) recovers some.
 
-## Where I've used it
-
-- **WALL-E V3 gimbal**: the **LQG** variant = discrete [[Kalman Filter]] for attitude estimation feeding the [[LQR]] gain, at 200 Hz on the Arduino UNO. This is the "principled full stack" version sitting alongside the simpler pole-placement ($K=[0.72\dots]$) and [[Complementary Filter]] implementations. Being able to say "I implemented LQR, LQG, _and_ pole placement on the same plant and compared them" is a strong interview line.
 
 ## Interview follow-ups
 
@@ -36,10 +33,6 @@ LQG (Linear Quadratic Gaussian) = **[[LQR]] optimal control + [[Kalman Filter]] 
 - **Q:** Any downside to LQG vs LQR?
     - **A:** LQR has guaranteed gain/phase margins; LQG does not — the estimator can erode robustness. LQG/LTR can recover margins by tuning the filter.
 
-## Gotchas / what trips me up
-
-- Stating LQG inherits LQR's robustness — it doesn't; that's the classic gotcha.
-- Forgetting LQG = LQR + Kalman; if asked "what's in it," name both halves and the separation principle.
 
 ## Links
 

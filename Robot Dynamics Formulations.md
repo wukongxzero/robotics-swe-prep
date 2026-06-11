@@ -36,10 +36,6 @@ $$M(q)\ddot{q} + C(q,\dot{q})\dot{q} + g(q) = \tau$$
 - **Inverse dynamics**: given desired motion $(q,\dot q,\ddot q)$, find required $\tau$. Used for feedforward control / computed-torque. Newton–Euler does this in O(n).
 - **Forward dynamics**: given $\tau$, find resulting $\ddot q$ (solve $M^{-1}(\tau - C\dot q - g)$). Used for **simulation** (then integrate). This is what physics engines like [[MuJoCo & Gazebo|MuJoCo]] / Isaac do.
 
-## Where I've used it
-
-- **FENCE-BOT / Jordan's LNN**: derived the Lagrangian dynamics symbolically (SymPy, `solve_ivp`) for the 2D rigid-body + pendulum collision sim — and the [[Lagrangian Neural Networks|LNN]] bugs I fixed (StandardScaler breaking Euler–Lagrange consistency, discrete collision input corrupting Hessians) are _exactly_ failures of preserving this structure in a learned model.
-- **Prof. Kim coursework**: Lagrange / Newton–Euler / Hamiltonian, floating-base, whole-body — the theoretical backbone for the [[MPC & Virtual Fixtures|MPC project]].
 
 ## Interview follow-ups
 
@@ -50,11 +46,6 @@ $$M(q)\ddot{q} + C(q,\dot{q})\dot{q} + g(q) = \tau$$
 - **Q:** Forward vs inverse dynamics?
     - **A:** Inverse: motion → required torque (control/feedforward). Forward: torque → resulting acceleration (simulation). Simulators do forward dynamics then integrate.
 
-## Gotchas / what trips me up
-
-- Saying the three formulations give different physics — they give the _same_ EOM, different derivation paths and computational profiles.
-- Mixing up forward (sim) and inverse (control) dynamics directions.
-- Forgetting $M$ is configuration-dependent (not constant).
 
 ## Links
 

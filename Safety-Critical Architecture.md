@@ -26,10 +26,6 @@ Teleoperation maps a human operator's motion (master device) onto a remote/const
 - **Clutching**: decouple master and slave to re-center the master without moving the instrument (like lifting a mouse) — needed because the master workspace is smaller than the task.
 - **Latency is safety-critical**: the master-slave loop must be low-latency and deterministic, or the surgeon feels lag/instability — which is _why_ the [[iceoryx Zero-Copy|zero-copy]] / [[Real-Time Determinism|real-time]] work matters here specifically.
 
-## Where I've used it
-
-- **Articulus** (hands-on, control/comms): the real-time stack underneath the master-slave loop — the deterministic, low-latency path that makes scaled teleop feel direct. I built the systems layer; the surgeon-facing scaling ratios / ergonomics are domain knowledge.
-- **FENCE-BOT** (hands-on, the pattern): VR master → DLS IK → simulated slave is exactly this loop minus the clinical transforms — a concrete demonstration I can point to.
 
 ## Interview follow-ups
 
@@ -40,11 +36,6 @@ Teleoperation maps a human operator's motion (master device) onto a remote/const
 - **Q:** Why is latency such a big deal in surgical teleop?
     - **A:** The surgeon is in a closed feedback loop with the instrument (and haptics); lag makes it feel sluggish or unstable and is a safety issue. That's the direct motivation for deterministic, low-latency comms — zero-copy, real-time dispatch.
 
-## Gotchas / what trips me up
-
-- Motion scaling is a mapping gain, not the robot "being slower" — precision, not speed.
-- Filtering (tremor) trades latency for smoothness — a [[Frequency-Domain Analysis|phase-margin]] tradeoff, not free.
-- Provenance: I owned the control/comms layer; scaling ratios and console ergonomics are domain-level.
 
 ## Links
 

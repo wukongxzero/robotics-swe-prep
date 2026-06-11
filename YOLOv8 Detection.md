@@ -25,9 +25,6 @@ YOLO is a **single-stage** object detector: one forward pass over the whole imag
 - **Model sizes** n/s/m/l/x trade accuracy for speed/size. **YOLOv8n** = nano, fewest params, fastest — the right pick for a Jetson where you're sharing compute with everything else.
 - **Edge deployment**: export to TensorRT/ONNX for the Jetson, quantize (FP16/INT8) for throughput — see [[Edge Inference]].
 
-## Where I've used it
-
-- **WALL-E V3**: ran **YOLOv8n** for semantic navigation primitives — detecting objects/landmarks to drive the AUTONOMOUS-mode behavior, on the Jetson Orin Nano alongside [[OpenCV Pipelines]] and the [[LLM Tool Calling|LLaMA command parser]]. Nano specifically because the Jetson was also running the ROS2 stack, Ollama, and the rest — compute budget was tight ([[Jetson Orin Setup]], [[CUDA & CuPy]]).
 
 ## Interview follow-ups
 
@@ -38,11 +35,6 @@ YOLO is a **single-stage** object detector: one forward pass over the whole imag
 - **Q:** Why the nano model on the robot?
     - **A:** YOLOv8n has the fewest parameters and highest throughput, and the Jetson was simultaneously running ROS2, the LLM, and other nodes — I traded some accuracy for a model that fits the shared compute and hits frame rate.
 
-## Gotchas / what trips me up
-
-- Forgetting NMS — raw output is a cloud of overlapping boxes.
-- Running the PyTorch model directly on the Jetson instead of exporting to TensorRT — leaves huge throughput on the table.
-- Confusing confidence threshold (per-box filter) with IoU threshold (NMS overlap).
 
 ## Links
 

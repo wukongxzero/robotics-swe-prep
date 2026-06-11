@@ -28,9 +28,6 @@ The Parallax Propeller is an 8-core ("cog") microcontroller with **no interrupts
 - **cog_run / cognew / coginit**: launch a task on a free cog. This is how you spin up a dedicated driver (e.g. a software UART, a PWM generator) on its own core.
 - **No interrupts**: a task that needs precise timing gets its own cog running a tight loop — no preemption, no jitter from ISR contention.
 
-## Where I've used it / context
-
-- **Kapila final**: covered the 8-cog model, dira/outa/ina, cog_run alongside the AVR and Jetson material. The contrast with AVR is the teaching point — AVR multiplexes with interrupts and timers; Propeller dedicates a core per task.
 
 ## Interview follow-ups
 
@@ -41,10 +38,6 @@ The Parallax Propeller is an 8-core ("cog") microcontroller with **no interrupts
 - **Q:** dira/outa/ina vs DDRx/PORTx/PINx?
     - **A:** Same conceptual roles (direction / output / input) but per-cog, and pin outputs are OR-combined across all cogs at the hub.
 
-## Gotchas / what trips me up
-
-- Calling it interrupt-driven — the whole point is it _isn't_.
-- Forgetting outputs are OR-combined across cogs (two cogs driving the same pin interact).
 
 ## Links
 

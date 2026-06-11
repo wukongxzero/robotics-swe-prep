@@ -170,11 +170,6 @@ Full note: [[Foundations of Robotics — UR10e Project]]
 
 ---
 
-## Where I've used it / context
-
-- **UR10e NYU project**: MuJoCo Menagerie, PDController, velocity controller with `mj_inverse` gravity comp, 4 kinematics tasks, rendered as animated GIFs (see [[Foundations of Robotics — UR10e Project]])
-- **FENCE-BOT** used [[Isaac Lab|Isaac]] for GPU-parallel sim; MuJoCo is what I'd reach for if contact accuracy and differentiability mattered more than rendering
-- On the roadmap as simulation target for the [[MPC & Virtual Fixtures|Kim MPC project]]
 
 ---
 
@@ -189,13 +184,6 @@ Full note: [[Foundations of Robotics — UR10e Project]]
 - **Q:** How do you read EE position in MuJoCo?
     - **A:** Via a named site: `mujoco.mj_name2id(model, mjOBJ_SITE, "attachment_site")` then `data.site_xpos[site_id]`. Sites are defined in MJCF at a fixed offset from a body — cleaner than computing through the body chain.
 
-## Gotchas / what trips me up
-
-- Calling MuJoCo's contact "rigid" — it's a smooth soft-constraint approximation (that's why it's stable and fast).
-- Assuming one simulator is universally best — they're specialized.
-- Forgetting gravity compensation in velocity control — arm sags without `mj_inverse` feedforward.
-- `data.site_xpos` vs `data.body_xpos` — prefer sites for named EE links (cleaner offset handling).
-- `mj_forward` computes kinematics but does not step physics; `mj_step` does both.
 
 ## Links
 

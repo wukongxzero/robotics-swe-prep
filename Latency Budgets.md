@@ -31,9 +31,6 @@ A latency budget is the total allowable delay from cause to effect, divided up a
     - No dynamic allocation on the hot path — no unbounded pauses.
 - **The unifying story**: each of those isn't a separate "cool tech" — they're all line items spending or protecting the latency budget that the surgical loop demands.
 
-## Where I've used it (Articulus)
-
-- **Hands-on**: architecting the multi-arm stack _was_ latency budgeting — choosing zero-copy over plain DDS, CAN for the motor net, deterministic executors, and shallow QoS were all decisions to keep the end-to-end loop bounded and predictable across multiple coordinated arms. This is the single best "why did you make that architectural choice" narrative I have.
 
 ## Interview follow-ups
 
@@ -44,11 +41,6 @@ A latency budget is the total allowable delay from cause to effect, divided up a
 - **Q:** Connect your low-level choices to the latency budget.
     - **A:** Zero-copy removed the serialize/copy comms cost; CAN priority arbitration bounded motor-message latency; depth-1 QoS avoided stale queue buildup; deterministic executor dispatch kept the safety path un-preempted; no hot-path allocation avoided unbounded pauses. Every one was spending or protecting the budget the surgical loop demanded.
 
-## Gotchas / what trips me up
-
-- Average latency is the wrong target — bound the worst case and the jitter.
-- Deep queues silently add latency (a [[ROS2 QoS|QoS depth]] trap).
-- Frame the low-level tech as _serving the budget_, not as isolated achievements — that's the senior narrative.
 
 ## Links
 
