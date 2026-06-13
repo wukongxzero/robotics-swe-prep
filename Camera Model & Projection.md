@@ -64,17 +64,24 @@ Full projection: `p = K * [R|t] * P_world`
 
 Real lenses aren't perfect pinholes. Distortion bends straight lines.
 
-**Radial distortion** (barrel/pincushion):
+**Radial distortion** — radially symmetric around principal point (cx, cy). Two forms:
+- **Barrel** — lines bow *outward* toward edges. Common in wide-angle/fisheye lenses. Typical in robotics cameras.
+- **Pincushion** — lines pinch *inward* toward center. Common in telephoto/zoom lenses.
+
 ```
 x_d = x(1 + k1*r² + k2*r⁴ + k3*r⁶)
 y_d = y(1 + k1*r² + k2*r⁴ + k3*r⁶)
 ```
 
-**Tangential distortion** (lens not parallel to image plane):
+Coefficients: `k1, k2, k3`
+
+**Tangential distortion** — caused by lens elements not perfectly parallel to the image sensor (mechanical misalignment). Makes the image look *skewed or shifted asymmetrically* toward one side or corner — unlike radial which is symmetric, tangential shears the image in a direction.
 ```
 x_d = x + 2*p1*x*y + p2*(r² + 2x²)
 y_d = y + p1*(r² + 2y²) + 2*p2*x*y
 ```
+
+Coefficients: `p1, p2`
 
 Distortion coefficients: `[k1, k2, p1, p2, k3]` — output of `cv2.calibrateCamera()`
 
